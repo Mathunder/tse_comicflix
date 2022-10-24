@@ -3,6 +3,7 @@
 **Project : *COMICS LIBRARY***
 
 Started : *24/10/2022*
+Deadline : * 24/01/2023*
 
 # DEVS 
 
