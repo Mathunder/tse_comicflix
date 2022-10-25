@@ -40,19 +40,7 @@ When creating a new feature branch, take care of the name, **it has to be cohere
 To get a name, go on Jira, click on the ticket associated to the feature and look at the panel *"Details-->Developpement"* : just next to *"Créer une branche"*, click on the right arrow and next click on the copy button to get the command line. Be carefull the name can be very long according to the title of the ticket !  
 
 ## Finish a feature branch
-When you have finished the development work on the feature, the next step is to merge the feature branch into the develop branch :  
-
-Positioning on the development branch : 
-`git checkout develop`  
-Merge your feature branch : 
-`git merge feature_branch`
-
-
-## Deploying new main version 
-Positioning on the main branch : 
-`git checkout main`  
-Merge your develop branch : 
-`git merge develop`
+When you have finished the development work on the feature, the next step is to merge the feature branch into the develop branch, but to limit the risk of conflit you have to create a merge request on Gitlab that have to be accepted by Axel before merging in the develop branch.
 
 
 
