@@ -1,10 +1,7 @@
 package app.ui.frames;
 
 import app.entities.Comics;
-import app.ui.components.*;
-
 import java.awt.*;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
@@ -12,19 +9,21 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import app.ui.components.*;
+import app.ui.themes.*;
 class MainFrame extends JFrame {
 		
 		// UI COMPONENTS
 		static JFrame mf;
 		static JPanel sideLeftBar;
 		static JPanel searchBar;
-		static JPanel visuComics;
 		static JPanel loginInfo;
 		static LeftBarButton discoverBtn;
 		static LeftBarButton recommandBtn;
 		static LeftBarButton myLibrary;
 		static JLabel lbl_title;
 		static JLabel lbl_username;
+		private JButton btnUserLogin;
 		    
 		MainFrame() {		
 			initComponents();
@@ -36,35 +35,33 @@ class MainFrame extends JFrame {
 			Image icon = Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png");  
 			mf.setIconImage(icon);  
 			mf.setSize(1600,900);      
-			mf.setBackground(Color.decode("#AC0101"));
+			mf.setBackground(CustomColor.WhiteCloud.getColor());
 			mf.setResizable(false);
-			mf.setLayout(null);
+			mf.getContentPane().setLayout(null);
 
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
 			loginInfo = new JPanel();
-			loginInfo.setLayout(new GridLayout(0,1));
 			loginInfo.setBounds(0,0,250,150);
-			loginInfo.setBackground(Color.decode("#790000"));
+			loginInfo.setBackground(CustomColor.CrimsonRed.getColor());
 			
 			//LeftBar Panel
 			sideLeftBar = new JPanel();
 			sideLeftBar.setLayout(new GridLayout(0,1));
 			sideLeftBar.setBounds(0,150,250,750);
-			sideLeftBar.setBackground(Color.decode("#AC0101"));
+			sideLeftBar.setBackground(CustomColor.Red.getColor());
 			
 			//SearchBar Panel
 			searchBar = new JPanel();
 			searchBar.setBounds(250,0,1350,150);
-			searchBar.setBackground(Color.gray);
+			searchBar.setBackground(CustomColor.Gray.getColor());
 			
 			//VisuComics Panel
 			VisuComicsPanel visuComics = new VisuComicsPanel();
 			
 			//ScrollBar VisuComics Panel
 			JScrollPane scrollPaneVisuComics = new JScrollPane(visuComics);
-			scrollPaneVisuComics.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			scrollPaneVisuComics.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			scrollPaneVisuComics.setBounds(250, 150, 1290, 750);
 			
 			//Load a test image, resize and convert into an ImageIcon
@@ -85,16 +82,17 @@ class MainFrame extends JFrame {
 			Comics comics1 = new Comics("Batman", imageTest);
 			for (int i = 0; i < 15; i++) {
 				visuComics.displayComics(comics1, i);
-				}
+			}
 				 
 			//Add Panels to Main Frame
-			mf.add(loginInfo);
-			mf.add(sideLeftBar);
-			mf.add(searchBar);
-			mf.add(scrollPaneVisuComics);
+			mf.getContentPane().add(loginInfo);
+			mf.getContentPane().add(sideLeftBar);
+			mf.getContentPane().add(searchBar);
+			mf.getContentPane().add(scrollPaneVisuComics);
 			
 			//Button Discover
-			discoverBtn = new LeftBarButton("Découvrir","#5F0000",20);
+			discoverBtn = new LeftBarButton("Découvrir",CustomColor.Red.getColorHexValue(),20,true);
+			discoverBtn.setBackground(new Color(121, 0, 0));
 			discoverBtn.setBorderColorOnFocus();
 			discoverBtn.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
@@ -104,7 +102,7 @@ class MainFrame extends JFrame {
 			sideLeftBar.add(discoverBtn);
 			
 			//Button Recommendation
-			recommandBtn = new LeftBarButton("Recommandation","#AC0101",20);
+			recommandBtn = new LeftBarButton("Recommandation",CustomColor.Red.getColorHexValue(),20,true);
 			recommandBtn.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
 	            	recommandBtnActionPerformed(evt);
@@ -113,27 +111,57 @@ class MainFrame extends JFrame {
 			sideLeftBar.add(recommandBtn);
 			
 			//Button MyLibrary
-			myLibrary = new LeftBarButton("Ma bibliothèque","#AC0101",20);
+			myLibrary = new LeftBarButton("Ma bibliothèque",CustomColor.Red.getColorHexValue(),20,true);
 			myLibrary.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
 	            	myLibraryBtnActionPerformed(evt);
 	            }
 			});
 			sideLeftBar.add(myLibrary);
+			loginInfo.setLayout(null);
 			
 			//Label Title
 			lbl_title = new JLabel("Comics Library");
+			lbl_title.setHorizontalAlignment(SwingConstants.CENTER);
+			lbl_title.setLocation(0, 0);
 			lbl_title.setFont(new Font("Arial", Font.PLAIN,30));
 			lbl_title.setForeground(Color.white);
-			lbl_title.setSize(100,20);
+			lbl_title.setSize(250,50);
 			loginInfo.add(lbl_title);
 			
 			//Label Title
-			lbl_username = new JLabel("      Invité");
+			lbl_username = new JLabel("Invité");
+			lbl_username.setHorizontalAlignment(SwingConstants.CENTER);
+			lbl_username.setLocation(125, 43);
 			lbl_username.setFont(new Font("Arial", Font.PLAIN,20));
-			lbl_username.setForeground(Color.lightGray);
-			lbl_username.setSize(100,20);
+			lbl_username.setForeground(CustomColor.LightGray.getColor());
+			lbl_username.setSize(115,50);
 			loginInfo.add(lbl_username);
+			
+			btnUserLogin = new JButton("Login");
+			btnUserLogin.setForeground(new Color(255, 255, 255));
+			btnUserLogin.setBorderPainted(true);
+			btnUserLogin.setFocusPainted(false);	
+			btnUserLogin.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1, Color.darkGray));
+			btnUserLogin.setFont(new Font("Candara", Font.BOLD, 20));
+			btnUserLogin.setBackground(new Color(121, 0, 0));
+			btnUserLogin.setBounds(147, 85, 71, 34);
+			loginInfo.add(btnUserLogin);
+			
+			PanelRound UserCard = new PanelRound();
+			UserCard.setRoundTopRight(75);
+			UserCard.setRoundTopLeft(75);
+			UserCard.setRoundBottomRight(75);
+			UserCard.setRoundBottomLeft(75);
+			UserCard.setBounds(30, 53, 75, 75);
+			loginInfo.add(UserCard);
+			UserCard.setLayout(null);
+			
+			JLabel lblUserID = new JLabel("IN");
+			lblUserID.setForeground(Color.GRAY);
+			lblUserID.setBounds(18, 13, 42, 49);
+			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 40));
+			UserCard.add(lblUserID);
 			
 			mf.setVisible(true);  
 		}
@@ -142,10 +170,9 @@ class MainFrame extends JFrame {
 		
 		private void discoverBtnActionPerformed(ActionEvent evt) {  
 			
-			//UI
-	    	discoverBtn.setBackground(Color.decode("#5F0000"));
-	    	recommandBtn.setBackground(Color.decode("#AC0101"));
-	    	myLibrary.setBackground(Color.decode("#AC0101"));
+	    	discoverBtn.setBackground(CustomColor.DarkRed.getColor());
+	    	recommandBtn.setBackground(CustomColor.Red.getColor());
+	    	myLibrary.setBackground(CustomColor.Red.getColor());
 	    	discoverBtn.setBorderColorOnFocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnUnfocus();
@@ -153,10 +180,9 @@ class MainFrame extends JFrame {
 	    
 	    private void recommandBtnActionPerformed(ActionEvent evt) {  
 
-	    	//UI
-	    	recommandBtn.setBackground(Color.decode("#5F0000"));
-	    	discoverBtn.setBackground(Color.decode("#AC0101"));
-	    	myLibrary.setBackground(Color.decode("#AC0101"));
+	    	recommandBtn.setBackground(CustomColor.DarkRed.getColor());
+	    	discoverBtn.setBackground(CustomColor.Red.getColor());
+	    	myLibrary.setBackground(CustomColor.Red.getColor());
 	    	discoverBtn.setBorderColorOnUnfocus();
 	    	recommandBtn.setBorderColorOnFocus();
 	    	myLibrary.setBorderColorOnUnfocus();
@@ -164,10 +190,9 @@ class MainFrame extends JFrame {
 	    
 	    private void myLibraryBtnActionPerformed(ActionEvent evt) {   
 
-	    	//UI
-	    	myLibrary.setBackground(Color.decode("#5F0000"));
-	    	discoverBtn.setBackground(Color.decode("#AC0101"));
-	    	recommandBtn.setBackground(Color.decode("#AC0101"));
+	    	myLibrary.setBackground(CustomColor.DarkRed.getColor());
+	    	discoverBtn.setBackground(CustomColor.Red.getColor());
+	    	recommandBtn.setBackground(CustomColor.Red.getColor());
 	    	discoverBtn.setBorderColorOnUnfocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnFocus();
@@ -176,5 +201,4 @@ class MainFrame extends JFrame {
 		public static void main(String[] args) { 
 			new MainFrame();
 		}
-
 }
