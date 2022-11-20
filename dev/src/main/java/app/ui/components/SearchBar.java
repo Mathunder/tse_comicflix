@@ -13,7 +13,7 @@ import javax.swing.border.Border;
 public class SearchBar extends JTextField {
 	
 	//constructor
-	SearchBar(){
+	public SearchBar(){
 		
 		Border emptyBorder = BorderFactory.createEmptyBorder();
 		//JTextField search = new JTextField();
