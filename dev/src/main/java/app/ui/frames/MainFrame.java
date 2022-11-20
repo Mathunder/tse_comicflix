@@ -174,7 +174,6 @@ class MainFrame extends JFrame {
 		}
 		
 		//Actions -------------------------------------------------------------
-		
 		private void discoverBtnActionPerformed(ActionEvent evt) {  
 			
 	    	discoverBtn.setBackground(CustomColor.DarkRed);
