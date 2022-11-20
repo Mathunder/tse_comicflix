@@ -15,7 +15,4 @@ public class SearchResultDto {
 	private int number_of_page_results;
 	private int number_of_total_results;
 	private List<Issue> results;
-	
-	
-	
 }
