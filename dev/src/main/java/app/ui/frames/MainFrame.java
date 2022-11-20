@@ -37,8 +37,12 @@ class MainFrame extends JFrame {
 			mf.setSize(1600,900);      
 			mf.setBackground(CustomColor.WhiteCloud.getColor());
 			mf.setResizable(false);
+<<<<<<< Upstream, based on origin/develop
 			mf.getContentPane().setLayout(null);
 
+=======
+			
+>>>>>>> 1fc757a Add commentary for MainFrame
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
 			loginInfo = new JPanel();
@@ -92,7 +96,7 @@ class MainFrame extends JFrame {
 			
 			//Button Discover
 			discoverBtn = new LeftBarButton("Découvrir",CustomColor.Red.getColorHexValue(),20,true);
-			discoverBtn.setBackground(new Color(121, 0, 0));
+			discoverBtn.setBackground(CustomColor.DarkRed.getColor());
 			discoverBtn.setBorderColorOnFocus();
 			discoverBtn.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
@@ -132,12 +136,13 @@ class MainFrame extends JFrame {
 			//Label Title
 			lbl_username = new JLabel("Invité");
 			lbl_username.setHorizontalAlignment(SwingConstants.CENTER);
-			lbl_username.setLocation(125, 43);
+			lbl_username.setLocation(125, 50);
 			lbl_username.setFont(new Font("Arial", Font.PLAIN,20));
 			lbl_username.setForeground(CustomColor.LightGray.getColor());
 			lbl_username.setSize(115,50);
 			loginInfo.add(lbl_username);
 			
+			//Button login
 			btnUserLogin = new JButton("Login");
 			btnUserLogin.setForeground(new Color(255, 255, 255));
 			btnUserLogin.setBorderPainted(true);
@@ -145,9 +150,10 @@ class MainFrame extends JFrame {
 			btnUserLogin.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1, Color.darkGray));
 			btnUserLogin.setFont(new Font("Candara", Font.BOLD, 20));
 			btnUserLogin.setBackground(new Color(121, 0, 0));
-			btnUserLogin.setBounds(147, 85, 71, 34);
+			btnUserLogin.setBounds(146, 94, 71, 34);
 			loginInfo.add(btnUserLogin);
 			
+			//RoundPanel UserIdCard
 			PanelRound UserCard = new PanelRound();
 			UserCard.setRoundTopRight(75);
 			UserCard.setRoundTopLeft(75);
@@ -157,6 +163,7 @@ class MainFrame extends JFrame {
 			loginInfo.add(UserCard);
 			UserCard.setLayout(null);
 			
+			//UserLabelId
 			JLabel lblUserID = new JLabel("IN");
 			lblUserID.setForeground(Color.GRAY);
 			lblUserID.setBounds(18, 13, 42, 49);
