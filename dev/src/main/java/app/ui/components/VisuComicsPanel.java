@@ -12,7 +12,7 @@ public class VisuComicsPanel extends JPanel{
 	
 	public VisuComicsPanel(){
 
-		this.setBackground(CustomColor.WhiteCloud.getColor());
+		this.setBackground(CustomColor.WhiteCloud);
 		this.setBounds(250, 150, 1350, 900);
 		this.setLayout(new GridLayout(0,4,0,40));
 	}
