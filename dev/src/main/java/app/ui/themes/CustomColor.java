@@ -2,24 +2,17 @@ package app.ui.themes;
 
 import java.awt.Color;
 
-public enum CustomColor {
-	Red("#AC0101"),CrimsonRed("#790000"),DarkRed("#5F0000"),WhiteCloud("#F9F6F1"),
-	LightGray("#DCDAD5"),Gray("#BEBDB8"),DarkGray("#83847F"),Black("#0C120C");
+public class CustomColor {
 
-	private String ColorHexValue;
+	public static final Color Red = new Color(0xac0101,false);
+	public static final Color DarkRed = new Color(0x5F0000,false);
+	public static final Color CrimsonRed = new Color(0x790000,false);
+	public static final Color WhiteCloud = new Color(0xF9F6F1,false);
+	public static final Color LightGray = new Color(0xDCDAD5,false);
+	public static final Color Gray = new Color(0xBEBDB8,false);
+	public static final Color DarkGray = new Color(0x83847F,false);
+	public static final Color Black = new Color(0x0C120C,false);
 	
-	CustomColor(String ColorHexValue) {
-		if(!ColorHexValue.contains("#")) {
-			this.ColorHexValue = "#" + ColorHexValue;
-		}
-		else this.ColorHexValue = ColorHexValue;
-	}
+	CustomColor() {};
 
-	public Color getColor() {
-		return Color.decode(ColorHexValue);
-	}
-	
-	public String getColorHexValue() {
-		return ColorHexValue;
-	}
 }
