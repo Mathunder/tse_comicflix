@@ -28,9 +28,9 @@ public class SearchBar extends JTextField {
 	
 	
 	//event handler
-//	public void mouseClicked(MouseEvent e){
-//        textField.setText("");
-//    }
+	public void mouseClicked(MouseEvent e){
+        this.setText("");
+    }
 	
 	
 	public static void main(String[] args) {
@@ -39,10 +39,11 @@ public class SearchBar extends JTextField {
 		//instancier un JPanel
 		JPanel myPanel = new JPanel();
 		myPanel.setBounds(250, 0, 1350, 150);
-		myPanel.setBackground(Color.blue);
+		myPanel.setBackground(Color.red);
 		
 		//instancier un textField
 		SearchBar mySearchBar = new SearchBar();
+		mySearchBar.mouseClicked(null);
         
 		
 		//continuer l'instanciation du Panel
