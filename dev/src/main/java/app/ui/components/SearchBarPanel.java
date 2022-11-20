@@ -1,43 +1,51 @@
 package app.ui.components;
 
 import java.awt.Color;
-
-
-import javax.swing.JFrame;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import app.ui.themes.CustomColor;
 
 public class SearchBarPanel extends JPanel {
 	
-	SearchBarPanel(){
-		this.setBounds(250, 0, 1350, 150);
-		this.setBackground(Color.LIGHT_GRAY);
-		this.setLayout(null);
+	private SearchBar searchRoundBar;
+	private JButton btnFilter;
+	
+	public SearchBarPanel(){
+		searchRoundBar = new SearchBar();
+		initButtonSearch();
+		
+		this.add(searchRoundBar);
+		this.add(btnFilter);
+		this.setLayout(new GridLayout(0,2));
+
 	}
 	
-	
-	public void displaySearchBar() {
-		//instanciate the SearchBar
-		SearchBar mySearchBar = new SearchBar();
+	//Init button search
+	private void initButtonSearch() {
+		btnFilter = new JButton("Search");
+		btnFilter.setForeground(CustomColor.WhiteCloud);
+		btnFilter.setBorderPainted(true);
+		btnFilter.setFocusPainted(false);	
+		btnFilter.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.darkGray));
+		btnFilter.setFont(new Font("Candara", Font.BOLD, 20));
+		btnFilter.setBackground(CustomColor.DarkGray);
 		
-		
-		//add the search bar to this Panel
-		this.add(mySearchBar);
+		btnFilter.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+            	btnFilterActionPerformed(evt);
+            }
+		});
 	}
 	
-	public static void main(String[] args) {
-		
-		
-		SearchBarPanel myPanel = new SearchBarPanel();
-		
-		//instancier une fenêtre
-		JFrame myWindow = new JFrame();
-		myWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		myWindow.setLayout(null); //that line allows to have panels which have not the size of
-		//the window
-		myWindow.setSize(1400, 900);		
-		myWindow.setVisible(true);
-		
-				
-		myWindow.add(myPanel);
+	//Action button search
+	private void btnFilterActionPerformed(ActionEvent evt) {
+		searchRoundBar.setSearchText("");
 	}
+	
 }
