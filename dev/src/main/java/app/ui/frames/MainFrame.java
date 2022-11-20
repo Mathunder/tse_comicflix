@@ -37,12 +37,8 @@ class MainFrame extends JFrame {
 			mf.setSize(1600,900);      
 			mf.setBackground(CustomColor.WhiteCloud.getColor());
 			mf.setResizable(false);
-<<<<<<< Upstream, based on origin/develop
 			mf.getContentPane().setLayout(null);
-
-=======
 			
->>>>>>> 1fc757a Add commentary for MainFrame
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
 			loginInfo = new JPanel();
