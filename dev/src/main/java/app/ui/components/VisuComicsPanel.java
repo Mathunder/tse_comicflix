@@ -1,13 +1,9 @@
 package app.ui.components;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
 
+import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-
 import app.entities.Comics;
 import app.ui.themes.CustomColor;
 
