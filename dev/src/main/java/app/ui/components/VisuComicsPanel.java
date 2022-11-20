@@ -2,22 +2,20 @@ package app.ui.components;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
+
 import javax.swing.JPanel;
 import app.entities.Comics;
+import app.ui.themes.CustomColor;
 
 public class VisuComicsPanel extends JPanel{
 	
 	public VisuComicsPanel(){
 
-		this.setBackground(Color.LIGHT_GRAY);
-//		this.setBounds(250, 150, 1350, 750);
-//		this.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));
-		this.setLayout(null);
-		this.setPreferredSize(new Dimension(1350, 3000));
-
-
+		this.setBackground(CustomColor.WhiteCloud.getColor());
+		this.setBounds(250, 150, 1350, 900);
+		this.setLayout(new GridLayout(0,4,0,40));
 	}
-	
 	
 	public void displayComics(Comics comics, int n) {
 		//Add a comic at the right position

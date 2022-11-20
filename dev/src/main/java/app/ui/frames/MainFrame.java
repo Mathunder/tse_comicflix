@@ -38,10 +38,8 @@ class MainFrame extends JFrame {
 			mf.setSize(1600,900);      
 			mf.setBackground(CustomColor.WhiteCloud.getColor());
 			mf.setResizable(false);
-
 			mf.getContentPane().setLayout(null);
 
-		
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
 			loginInfo = new JPanel();
@@ -61,13 +59,15 @@ class MainFrame extends JFrame {
 			
 			//VisuComics Panels
 			VisuComicsPanel visuComics = new VisuComicsPanel();
-			
+	
 			//ScrollBar VisuComics Panel
 			JScrollPane scrollPaneVisuComics = new JScrollPane(visuComics);
+			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-			scrollPaneVisuComics.setBounds(250, 150, 1290, 750);
+			scrollPaneVisuComics.setBounds(250, 150, 1255, 750);
+			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
 			
-			//Load a test image, resize and convert into an ImageIcon
+			//Load a test image, resize and convert into an ImageIcon ______________________ TEST _______________________
 			ImageIcon imageTest = null;
 
 			try {
@@ -80,13 +80,16 @@ class MainFrame extends JFrame {
 				System.out.println("Problem load img");
 				e.printStackTrace();
 			}
-			
+						
 			//Add test comics to VisuComics Panel
 			Comics comics1 = new Comics("Batman", imageTest);
 			for (int i = 0; i < 15; i++) {
+				
 				visuComics.displayComics(comics1, i);
+				
 			}
-			 
+			//____________________________________________________________________________________________________________
+			
 			//Add Panels to Main Frame
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
