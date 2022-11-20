@@ -1,5 +1,6 @@
 package app.ui.frames;
 
+
 import app.entities.Comics;
 import java.awt.*;
 import javax.imageio.ImageIO;
@@ -8,9 +9,9 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import app.ui.components.*;
 import app.ui.themes.*;
+
 class MainFrame extends JFrame {
 		
 		// UI COMPONENTS
@@ -37,8 +38,10 @@ class MainFrame extends JFrame {
 			mf.setSize(1600,900);      
 			mf.setBackground(CustomColor.WhiteCloud.getColor());
 			mf.setResizable(false);
+
 			mf.getContentPane().setLayout(null);
-			
+
+		
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
 			loginInfo = new JPanel();
@@ -83,13 +86,13 @@ class MainFrame extends JFrame {
 			for (int i = 0; i < 15; i++) {
 				visuComics.displayComics(comics1, i);
 			}
-				 
+			 
 			//Add Panels to Main Frame
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
 			mf.getContentPane().add(searchBar);
 			mf.getContentPane().add(scrollPaneVisuComics);
-			
+	
 			//Button Discover
 			discoverBtn = new LeftBarButton("Découvrir",CustomColor.Red.getColorHexValue(),20,true);
 			discoverBtn.setBackground(CustomColor.DarkRed.getColor());
