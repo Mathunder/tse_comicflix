@@ -1,6 +1,5 @@
 package app.ui.frames;
 
-
 import app.entities.Comics;
 import java.awt.*;
 import javax.imageio.ImageIO;
@@ -17,7 +16,7 @@ class MainFrame extends JFrame {
 		// UI COMPONENTS
 		static JFrame mf;
 		static JPanel sideLeftBar;
-		static JPanel searchBar;
+		static SearchBarPanel searchBar;
 		static JPanel loginInfo;
 		static LeftBarButton discoverBtn;
 		static LeftBarButton recommandBtn;
@@ -53,9 +52,10 @@ class MainFrame extends JFrame {
 			sideLeftBar.setBackground(CustomColor.Red);
 			
 			//SearchBar Panel
-			searchBar = new JPanel();
+			searchBar = new SearchBarPanel();
+			searchBar.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 			searchBar.setBounds(250,0,1350,150);
-			searchBar.setBackground(CustomColor.Gray);
+			searchBar.setBackground(CustomColor.WhiteCloud);
 			
 			//VisuComics Panels
 			VisuComicsPanel visuComics = new VisuComicsPanel();
@@ -88,17 +88,18 @@ class MainFrame extends JFrame {
 				visuComics.displayComics(comics1, i);
 				
 			}
+			
 			//____________________________________________________________________________________________________________
 			
 			//Add Panels to Main Frame
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
-			mf.getContentPane().add(searchBar);
+			mf.getContentPane().add(searchBar);		
 			mf.getContentPane().add(scrollPaneVisuComics);
-	
+			
 			//Button Discover
 			discoverBtn = new LeftBarButton("Découvrir",CustomColor.Red,20,true);
-			discoverBtn.setBackground(CustomColor.DarkRed);
+			discoverBtn.setBackground(new Color(121, 0, 0));
 			discoverBtn.setBorderColorOnFocus();
 			discoverBtn.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
@@ -138,13 +139,12 @@ class MainFrame extends JFrame {
 			//Label Title
 			lbl_username = new JLabel("Invité");
 			lbl_username.setHorizontalAlignment(SwingConstants.CENTER);
-			lbl_username.setLocation(125, 50);
+			lbl_username.setLocation(125, 43);
 			lbl_username.setFont(new Font("Arial", Font.PLAIN,20));
 			lbl_username.setForeground(CustomColor.LightGray);
 			lbl_username.setSize(115,50);
 			loginInfo.add(lbl_username);
 			
-			//Button login
 			btnUserLogin = new JButton("Login");
 			btnUserLogin.setForeground(new Color(255, 255, 255));
 			btnUserLogin.setBorderPainted(true);
@@ -152,20 +152,18 @@ class MainFrame extends JFrame {
 			btnUserLogin.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1, Color.darkGray));
 			btnUserLogin.setFont(new Font("Candara", Font.BOLD, 20));
 			btnUserLogin.setBackground(new Color(121, 0, 0));
-			btnUserLogin.setBounds(146, 94, 71, 34);
+			btnUserLogin.setBounds(147, 85, 71, 34);
 			loginInfo.add(btnUserLogin);
 			
-			//RoundPanel UserIdCard
 			PanelRound UserCard = new PanelRound();
 			UserCard.setRoundTopRight(75);
 			UserCard.setRoundTopLeft(75);
 			UserCard.setRoundBottomRight(75);
 			UserCard.setRoundBottomLeft(75);
 			UserCard.setBounds(30, 53, 75, 75);
-			loginInfo.add(UserCard);
 			UserCard.setLayout(null);
+			loginInfo.add(UserCard);
 			
-			//UserLabelId
 			JLabel lblUserID = new JLabel("IN");
 			lblUserID.setForeground(Color.GRAY);
 			lblUserID.setBounds(18, 13, 42, 49);
@@ -176,7 +174,6 @@ class MainFrame extends JFrame {
 		}
 		
 		//Actions -------------------------------------------------------------
-		
 		private void discoverBtnActionPerformed(ActionEvent evt) {  
 			
 	    	discoverBtn.setBackground(CustomColor.DarkRed);
