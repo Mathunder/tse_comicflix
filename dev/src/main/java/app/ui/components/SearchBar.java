@@ -2,6 +2,7 @@ package app.ui.components;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -9,34 +10,45 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-public class SearchBar extends JPanel {
+public class SearchBar extends JTextField {
 	
 	//constructor
 	SearchBar(){
 		
-		//this.setBackground(Color.red);
-		this.setBounds(250, 0, 1350, 150);
-		
 		Border emptyBorder = BorderFactory.createEmptyBorder();
-		JTextField search = new JTextField();
-        search.setText("Search Your Book");
-        search.setForeground(new Color(38, 47, 79));
-        search.setFont(new Font("Roboto", Font.PLAIN, 22));
-        search.setBounds(134, 85, 550, 21);
-        search.setBorder(emptyBorder);
+		//JTextField search = new JTextField();
+        this.setText("Search Your Book");
+        this.setForeground(new Color(38, 47, 79));
+        this.setFont(new Font("Roboto", Font.PLAIN, 22));
+        this.setBounds(350, 85, 550, 21);
+        this.setBorder(emptyBorder);
 
-		
-        this.setLayout(null);
-        
-		this.add(search);
 		
 	}
 	
 	
+	//event handler
+//	public void mouseClicked(MouseEvent e){
+//        textField.setText("");
+//    }
+	
+	
 	public static void main(String[] args) {
 		
-		//rajouter des panneaux
+		
+		//instancier un JPanel
+		JPanel myPanel = new JPanel();
+		myPanel.setBounds(250, 0, 1350, 150);
+		myPanel.setBackground(Color.blue);
+		
+		//instancier un textField
 		SearchBar mySearchBar = new SearchBar();
+        
+		
+		//continuer l'instanciation du Panel
+		myPanel.setLayout(null);
+		//add the text field to the panel
+		myPanel.add(mySearchBar);
 		
 		
 		
@@ -49,16 +61,9 @@ public class SearchBar extends JPanel {
 		myWindow.setSize(1400, 900);		
 		myWindow.setVisible(true);
 		
-		
-	
-		
-		myWindow.add(mySearchBar);
-		
-		
-		
-		
-		
 				
+		myWindow.add(myPanel);
+					
 		
 	}
 
