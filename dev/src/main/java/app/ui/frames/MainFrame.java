@@ -56,7 +56,7 @@ class MainFrame extends JFrame {
 			searchBar.setBounds(250,0,1350,150);
 			searchBar.setBackground(CustomColor.Gray.getColor());
 			
-			//VisuComics Panel
+			//VisuComics Panels
 			VisuComicsPanel visuComics = new VisuComicsPanel();
 			
 			//ScrollBar VisuComics Panel
