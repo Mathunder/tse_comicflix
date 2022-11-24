@@ -35,7 +35,7 @@ public class SearchBar extends PanelRound {
 		searchTextField.setFont(new Font("Roboto", Font.PLAIN, 22));
 		searchTextField.setSize(300, 85);
 		searchTextField.setBorder(emptyBorder);
-		searchTextField.setText("Search book ...");
+		searchTextField.setText("Search book ...        ");
 		
 		this.add(searchTextField);
         
