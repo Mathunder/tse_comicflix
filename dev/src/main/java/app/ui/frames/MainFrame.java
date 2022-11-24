@@ -67,6 +67,15 @@ class MainFrame extends JFrame {
 			scrollPaneVisuComics.setBounds(250, 150, 1255, 750);
 			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
 			
+			//ComicsInfos Panel
+			ComicsInfosPanel visuComicInfos = new ComicsInfosPanel();
+			
+			//ScrollBar ComicsInfos Panel
+			JScrollPane scrollPaneComicsInfos = new JScrollPane(visuComicInfos);
+			scrollPaneComicsInfos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			scrollPaneComicsInfos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			scrollPaneComicsInfos.setBounds(260, 160, 1000, 650);
+			
 			//Load a test image, resize and convert into an ImageIcon ______________________ TEST _______________________
 			ImageIcon imageTest = null;
 
@@ -84,18 +93,18 @@ class MainFrame extends JFrame {
 			//Add test comics to VisuComics Panel
 			Comics comics1 = new Comics("Batman", imageTest);
 			for (int i = 0; i < 15; i++) {
-				
 				visuComics.displayComics(comics1, i);
-				
 			}
 			
-			//____________________________________________________________________________________________________________
-			
+			//Display of comics infos
+			visuComicInfos.displayComicsInfos(comics1);
+				 
 			//Add Panels to Main Frame
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
 			mf.getContentPane().add(searchBar);		
 			mf.getContentPane().add(scrollPaneVisuComics);
+//			mf.getContentPane().add(scrollPaneComicsInfos);
 			
 			//Button Discover
 			discoverBtn = new LeftBarButton("Découvrir",CustomColor.Red,20,true);
