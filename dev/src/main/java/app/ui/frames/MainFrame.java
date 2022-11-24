@@ -1,5 +1,6 @@
 package app.ui.frames;
 
+import app.dto.SearchResultDto;
 import app.entities.Comics;
 import java.awt.*;
 import javax.imageio.ImageIO;
@@ -11,21 +12,22 @@ import java.io.IOException;
 import app.ui.components.*;
 import app.ui.themes.*;
 
-class MainFrame extends JFrame {
+public class MainFrame extends JFrame {
 		
 		// UI COMPONENTS
 		static JFrame mf;
 		static JPanel sideLeftBar;
 		static SearchBarPanel searchBar;
 		static JPanel loginInfo;
+		public static VisuComicsPanel visuComics;
 		static LeftBarButton discoverBtn;
 		static LeftBarButton recommandBtn;
 		static LeftBarButton myLibrary;
 		static JLabel lbl_title;
 		static JLabel lbl_username;
 		private JButton btnUserLogin;
-		    
-		MainFrame() {		
+				
+		public MainFrame() {		
 			initComponents();
 		}
 		
@@ -58,13 +60,13 @@ class MainFrame extends JFrame {
 			searchBar.setBackground(CustomColor.WhiteCloud);
 			
 			//VisuComics Panels
-			VisuComicsPanel visuComics = new VisuComicsPanel();
+			visuComics = new VisuComicsPanel();
 	
 			//ScrollBar VisuComics Panel
 			JScrollPane scrollPaneVisuComics = new JScrollPane(visuComics);
 			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-			scrollPaneVisuComics.setBounds(250, 150, 1255, 750);
+			scrollPaneVisuComics.setBounds(250, 150, 1255, 712);
 			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
 			
 			//ComicsInfos Panel
@@ -74,37 +76,14 @@ class MainFrame extends JFrame {
 			JScrollPane scrollPaneComicsInfos = new JScrollPane(visuComicInfos);
 			scrollPaneComicsInfos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneComicsInfos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-			scrollPaneComicsInfos.setBounds(260, 160, 1000, 650);
-			
-			//Load a test image, resize and convert into an ImageIcon ______________________ TEST _______________________
-			ImageIcon imageTest = null;
-
-			try {
-				BufferedImage imageBrute = ImageIO.read(new File("src\\main\\resources\\batman.jpg"));
-				Image imageResize = imageBrute.getScaledInstance(206, 320, Image.SCALE_DEFAULT);
-				imageTest = new ImageIcon(imageResize);
-				
-
-			} catch (IOException e) {
-				System.out.println("Problem load img");
-				e.printStackTrace();
-			}
-						
-			//Add test comics to VisuComics Panel
-			Comics comics1 = new Comics("Batman", imageTest);
-			for (int i = 0; i < 15; i++) {
-				visuComics.displayComics(comics1, i);
-			}
-			
-			//Display of comics infos
-			visuComicInfos.displayComicsInfos(comics1);
-				 
+			scrollPaneComicsInfos.setBounds(250, 150, 1255, 712);
+							 
 			//Add Panels to Main Frame
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
 			mf.getContentPane().add(searchBar);		
-			mf.getContentPane().add(scrollPaneVisuComics);
-//			mf.getContentPane().add(scrollPaneComicsInfos);
+			//mf.getContentPane().add(scrollPaneVisuComics);
+			mf.getContentPane().add(scrollPaneComicsInfos);
 			
 			//Button Discover
 			discoverBtn = new LeftBarButton("Découvrir",CustomColor.Red,20,true);
@@ -213,7 +192,7 @@ class MainFrame extends JFrame {
 	    	myLibrary.setBorderColorOnFocus();
 	    } 
 		
-		public static void main(String[] args) { 
-			new MainFrame();
-		}
+	    public void refreshContent(SearchResultDto results) {
+	    	
+	    }
 }
