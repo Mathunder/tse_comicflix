@@ -34,7 +34,7 @@ public class ComicsInfosPanel extends JPanel {
 		JPanel box2 = new JPanel();  // new JPanel which will be the second column of informations will be displayed
 		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));// chosen layout: BoxLayout
 		
-		JLabel image = new JLabel(comic.image);  // adding the image
+		JLabel image = new JLabel(comic.getImage());  // adding the image
 		box2.add(image);
 		box2.add(Box.createRigidArea(new Dimension(0, 50)));  // adding some space between the blocks
 		image.setAlignmentX(Component.CENTER_ALIGNMENT);  // center the image
