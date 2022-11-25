@@ -7,10 +7,9 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchResultDto {
-	private int limit;
-	private int offset;
-	private int number_of_page_results;
-	private int number_of_total_results;
-	private List<Issue> results;
+public class ImageResultDto {
+	private String icon_url;
+	private String medium_url;
+	private String original_url;
+	private String screen_url;
 }

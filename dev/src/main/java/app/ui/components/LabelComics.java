@@ -7,7 +7,7 @@ import app.ui.themes.CustomColor;
 
 public class LabelComics extends JLabel{
 	
-	LabelComics(Comics comics, int n){
+	LabelComics(Comics comics){
 				
 		super(comics.getTitle(), comics.getImage(), JLabel.CENTER); //Call constructor of the mother class (JLabel)
 				
