@@ -62,7 +62,7 @@ public class VisuComicsPanel extends JPanel{
 			try {
 				URL url = new URL(result.getResults().get(i).getImage().getMedium_url());
 				BufferedImage imageBrute = ImageIO.read(url);
-				Image imageResize = imageBrute.getScaledInstance(306, 460, Image.SCALE_DEFAULT);
+				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
 				imageURL = new ImageIcon(imageResize);
 				
 
