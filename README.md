@@ -27,18 +27,9 @@ Deadline : *24/01/2023*
     - featureN  
 **Feature branches use "develop" as a parent branch ! NOT MAIN !**
 
-**When a feature is finished, it is merged back into the development branch.**, 
+**When a feature is finished, it is merged back into the development branch with a "Merge request" process.**, 
 
-## Create a new feature branch
-Positioning on the development branch :   
-On Eclipse, in the *Git Repositories panel*, double click on the branch develop in *Branches/**local***  
-Create feature branch :  
-Right click on *Local* in *Branches* and after follow *Switch to* -> *New branch*
+## Create/Develop/Deploy a new feature branch
 
-### Naming feature branch
-When creating a new feature branch, take care of the name, **it has to be coherent with the task declared on Jira !**  
-To get a name, go on Jira, click on the ticket associated to the feature and look at the panel *"Details-->Developpement"* : just next to *"Créer une branche"*, click on the right arrow and next click on the copy button to get the command line. Be carefull the name can be very long according to the title of the ticket !  
-
-## Finish a feature branch
-When you have finished the development work on the feature, the next step is to merge the feature branch into the develop branch, but to limit the risk of conflict you have to create a merge request on Gitlab that have to be accepted by Axel before merging in the develop branch.
+Follow carefullly this [tutorial](https://devops.telecomste.fr/prinfo/2022-23/Info5/-/wikis/Guide-Git/Tutoriel-GitXEclipse) 
 
