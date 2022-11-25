@@ -103,8 +103,8 @@ class MainFrame extends JFrame {
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
 			mf.getContentPane().add(searchBar);		
-			mf.getContentPane().add(scrollPaneVisuComics);
-//			mf.getContentPane().add(scrollPaneComicsInfos);
+//			mf.getContentPane().add(scrollPaneVisuComics);
+			mf.getContentPane().add(scrollPaneComicsInfos);
 			
 			//Button Discover
 			discoverBtn = new LeftBarButton("Découvrir",CustomColor.Red,20,true);
