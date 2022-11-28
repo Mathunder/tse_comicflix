@@ -5,6 +5,7 @@ import javax.swing.ImageIcon;
 public class Comics {
 	private String title;
 	private ImageIcon image;
+	private String ID;
 	
 	//Constructor
 	public Comics(String title, ImageIcon image2) {
@@ -21,14 +22,14 @@ public class Comics {
 	}
 
 	public ImageIcon getImage() {
-		return image;
+		return this.image;
 	}
 
 	public void setImage(ImageIcon image) {
 		this.image = image;
 	}
 	
-	//Methods...
-	
-	
+	public String getID() {
+		return this.ID;
+	}
 }
