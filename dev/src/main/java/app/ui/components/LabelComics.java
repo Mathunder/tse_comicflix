@@ -4,6 +4,7 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import app.entities.Comics;
 import app.ui.themes.CustomColor;
+import java.awt.event.*;
 
 public class LabelComics extends JLabel{
 	
@@ -16,7 +17,11 @@ public class LabelComics extends JLabel{
 		this.setBackground(CustomColor.WhiteCloud);
 		this.setHorizontalTextPosition(JLabel.CENTER); //set text L, R, CENTER of imageIcon
 		this.setVerticalTextPosition(JLabel.BOTTOM);
-		
+		this.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				System.out.println(comics.getTitle() + " has been clicked.");
+			}
+		});
 	}
 }
 
