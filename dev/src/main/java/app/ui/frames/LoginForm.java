@@ -16,12 +16,15 @@ import javax.swing.SpringLayout;
 import java.awt.Toolkit;
 import app.ui.components.DefaultButton;
 import app.ui.themes.CustomColor;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JPasswordField;
 
 public class LoginForm extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtField_username;
-	private JTextField txtField_password;
+	private JPasswordField passwordField;
 
 	/**
 	 * Launch the application.
@@ -66,7 +69,9 @@ public class LoginForm extends JFrame {
 		contentPane.add(lblUsername);
 		
 		txtField_username = new JTextField();
-		sl_contentPane.putConstraint(SpringLayout.NORTH, txtField_username, 13, SpringLayout.NORTH, lblUsername);
+		txtField_username.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		sl_contentPane.putConstraint(SpringLayout.NORTH, txtField_username, 13, SpringLayout.NORTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.WEST, txtField_username, 34, SpringLayout.EAST, lblUsername);
 		sl_contentPane.putConstraint(SpringLayout.EAST, txtField_username, -34, SpringLayout.EAST, contentPane);
 		contentPane.add(txtField_username);
 		txtField_username.setColumns(1);
@@ -80,28 +85,49 @@ public class LoginForm extends JFrame {
 		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(lblPassword);
 		
-		txtField_password = new JTextField();
-		sl_contentPane.putConstraint(SpringLayout.WEST, txtField_password, 180, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.WEST, txtField_username, 0, SpringLayout.WEST, txtField_password);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, txtField_username, -22, SpringLayout.NORTH, txtField_password);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, txtField_password, 13, SpringLayout.NORTH, lblPassword);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, txtField_password, -156, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, txtField_password, -34, SpringLayout.EAST, contentPane);
-		contentPane.add(txtField_password);
-		txtField_password.setColumns(1);
-		
 		DefaultButton btnLogin = new DefaultButton("Login", CustomColor.Red, 14, true);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, btnLogin, 52, SpringLayout.SOUTH, txtField_password);
-		sl_contentPane.putConstraint(SpringLayout.WEST, btnLogin, 230, SpringLayout.WEST, contentPane);
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnLoginActionPerformed(e);
+			}
+		});
+		
+		sl_contentPane.putConstraint(SpringLayout.NORTH, btnLogin, 151, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnLogin, -60, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, txtField_username, -106, SpringLayout.NORTH, btnLogin);
+		sl_contentPane.putConstraint(SpringLayout.WEST, btnLogin, 230, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnLogin, -79, SpringLayout.EAST, contentPane);
 		contentPane.add(btnLogin);
 		
 		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Gray, 14, true);
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnCancelActionPerformed(e); 				
+			}
+		});
 		sl_contentPane.putConstraint(SpringLayout.NORTH, btnCancel, 0, SpringLayout.NORTH, btnLogin);
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnCancel, 66, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnCancel, -60, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnCancel, -50, SpringLayout.WEST, btnLogin);
 		contentPane.add(btnCancel);
+		
+		passwordField = new JPasswordField();
+		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		sl_contentPane.putConstraint(SpringLayout.NORTH, passwordField, 13, SpringLayout.NORTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.WEST, passwordField, 0, SpringLayout.WEST, txtField_username);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, passwordField, -9, SpringLayout.SOUTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
+		contentPane.add(passwordField);
+	}
+	
+	private void btnCancelActionPerformed(ActionEvent e) {
+		dispose();
+	}
+	
+	private void btnLoginActionPerformed(ActionEvent e) {
+		String usr_name = new String(txtField_username.getText());
+		String usr_password = new String(passwordField.getPassword());
+		System.out.println(usr_name);
+		System.out.println(usr_password);			
 	}
 }

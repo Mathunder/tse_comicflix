@@ -26,7 +26,8 @@ public class MainFrame extends JFrame {
 		static JLabel lbl_title;
 		static JLabel lbl_username;
 		private JButton btnUserLogin;
-				
+		private JLabel lblUserID;
+		
 		public MainFrame() {		
 			initComponents();
 		}
@@ -158,7 +159,7 @@ public class MainFrame extends JFrame {
 			UserCard.setLayout(null);
 			loginInfo.add(UserCard);
 			
-			JLabel lblUserID = new JLabel("IN");
+			lblUserID = new JLabel("IN");
 			lblUserID.setForeground(Color.GRAY);
 			lblUserID.setBounds(18, 13, 42, 49);
 			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 40));
@@ -202,8 +203,11 @@ public class MainFrame extends JFrame {
 	    	JFrame loginFrame = new LoginForm();
 	    	loginFrame.setVisible(true);
 	    }
-		
-	    public void refreshContent(SearchResultDto results) {
+	    
+	    public void updateUserInfo(String username) {
 	    	
+	    	lblUserID.setText(username.length() < 2 ? username : username.substring(0,2));
+	    	lbl_username.setText(username);
 	    }
+		
 }
