@@ -14,6 +14,8 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.SpringLayout;
 import java.awt.Toolkit;
+
+import app.entities.User;
 import app.ui.components.DefaultButton;
 import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.CustomColor;
@@ -118,8 +120,9 @@ public class LoginForm extends JFrame {
 		System.out.println(usr_name);
 		System.out.println(usr_password);	
 		
-		//CHECL CREDENTIAL
-		mainInterface.updateLoginInfo(usr_name);
+		//CHECK CREDENTIAL AND GET USER INFO (first/last name)
+		
+		mainInterface.updateLoginInfo(new User(true, usr_name, "",""));
 		
 		dispose();
 	}

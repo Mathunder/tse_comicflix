@@ -1,9 +1,6 @@
 package app.ui.events;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import app.ui.frames.LoginForm;
+import app.entities.User;
 import app.ui.frames.MainFrame;
 
 public class InterfaceMainFrame {
@@ -16,7 +13,7 @@ public class InterfaceMainFrame {
         
     }
 
-    public void updateLoginInfo(String username) {
-    	MainUi.updateUserInfo(username);
+    public void updateLoginInfo(User newUser) {
+    	MainUi.setUserProfile(newUser);
     }
 }

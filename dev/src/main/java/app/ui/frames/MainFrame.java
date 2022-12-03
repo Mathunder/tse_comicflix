@@ -2,6 +2,8 @@ package app.ui.frames;
 
 import app.dto.SearchResultDto;
 import app.entities.Comics;
+import app.entities.User;
+
 import java.awt.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -31,6 +33,8 @@ public class MainFrame extends JFrame {
 		
 		private static InterfaceMainFrame listenerController;
 		
+		private User user;
+		
 		public MainFrame() {		
 			listenerController = new InterfaceMainFrame(this);
 			initComponents();
@@ -46,6 +50,9 @@ public class MainFrame extends JFrame {
 			mf.setResizable(false);
 			mf.getContentPane().setLayout(null);
 
+			//User
+			user = new User(false, "Invité", "", "");
+			
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
 			loginInfo = new JPanel();
@@ -170,6 +177,7 @@ public class MainFrame extends JFrame {
 			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 30));
 			UserCard.add(lblUserID);
 			
+			updateUserPanelsAvailable();
 			mf.setVisible(true);  
 		}
 		
@@ -210,19 +218,35 @@ public class MainFrame extends JFrame {
 		    	JFrame loginFrame = new LoginForm(listenerController);
 		    	loginFrame.setVisible(true);
 	    	}
-	    	else
-	    		updateUserInfo("Invité");
+	    	else {
+	    		user = new User(false, "Invité", "","");
+	    		setUserProfile(user);
+	    	}
 	    }
 	    
-	    public void updateUserInfo(String username) {
+	    public void setUserProfile(User newUser) {
 	    	
-	    	lblUserID.setText(username.length() < 2 ? username : username.toUpperCase().substring(0,2));
-	    	lbl_username.setText(username);
+	    	user = newUser;
 	    	
-	    	if(btnUserLogin.getText() == "Login")
+	    	lblUserID.setText(user.getUsername().length() < 2 ? user.getUsername() : user.getUsername().toUpperCase().substring(0,2));
+	    	lbl_username.setText(user.getUsername());
+
+	    	updateUserPanelsAvailable();
+
+	    }
+	    
+	    private void updateUserPanelsAvailable() {
+	    	
+	    	if(user.isAuthentified()) {
 	    		btnUserLogin.setText("Logout");
-	    	else
+	    		recommandBtn.setVisible(true);
+	    		myLibrary.setVisible(true);
+	    	}
+	    	else {
 	    		btnUserLogin.setText("Login");
+	    		recommandBtn.setVisible(false);
+	    		myLibrary.setVisible(false);
+	    	}
 	    }
 		
 }
