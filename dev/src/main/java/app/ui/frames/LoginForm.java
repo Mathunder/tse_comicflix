@@ -14,7 +14,11 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.SpringLayout;
 import java.awt.Toolkit;
+
+import app.entities.User;
+import app.services.DatabaseService;
 import app.ui.components.DefaultButton;
+import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.CustomColor;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -26,26 +30,14 @@ public class LoginForm extends JFrame {
 	private JTextField txtField_username;
 	private JPasswordField passwordField;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LoginForm frame = new LoginForm();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	private InterfaceMainFrame mainInterface;
+	private DatabaseService database;
 	/**
 	 * Create the frame.
 	 */
-	public LoginForm() {
+	public LoginForm(InterfaceMainFrame mi) {
+		mainInterface = mi;
+		database = new DatabaseService();
 		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\axant\\Documents\\_AxStore\\2-TELECOM\\FISE 2\\S7\\PROJET INFORMATIQUE\\GitLab_repo\\Info5\\dev\\src\\main\\resources\\icon.png"));
 		setTitle("Login Form");
 		setResizable(false);
@@ -125,9 +117,21 @@ public class LoginForm extends JFrame {
 	}
 	
 	private void btnLoginActionPerformed(ActionEvent e) {
+		
 		String usr_name = new String(txtField_username.getText());
 		String usr_password = new String(passwordField.getPassword());
 		System.out.println(usr_name);
-		System.out.println(usr_password);			
+		System.out.println(usr_password);	
+		
+		//CHECK CREDENTIAL AND GET USER INFO
+		User newUser = database.getUserFromUsername(usr_name);
+		
+		if(newUser != null) {
+			mainInterface.updateLoginInfo(newUser);
+			dispose();
+		}
+		else 
+			System.out.println("Username invalid !");
+		
 	}
 }

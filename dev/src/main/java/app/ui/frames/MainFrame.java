@@ -2,6 +2,8 @@ package app.ui.frames;
 
 import app.dto.SearchResultDto;
 import app.entities.Comics;
+import app.entities.User;
+
 import java.awt.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import app.ui.components.*;
+import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.*;
 
 public class MainFrame extends JFrame {
@@ -28,7 +31,12 @@ public class MainFrame extends JFrame {
 		private JButton btnUserLogin;
 		private JLabel lblUserID;
 		
+		private static InterfaceMainFrame listenerController;
+		
+		private User user;
+		
 		public MainFrame() {		
+			listenerController = new InterfaceMainFrame(this);
 			initComponents();
 		}
 		
@@ -42,6 +50,9 @@ public class MainFrame extends JFrame {
 			mf.setResizable(false);
 			mf.getContentPane().setLayout(null);
 
+			//User
+			user = new User(false, "Invité", "", "");
+			
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
 			loginInfo = new JPanel();
@@ -160,11 +171,13 @@ public class MainFrame extends JFrame {
 			loginInfo.add(UserCard);
 			
 			lblUserID = new JLabel("IN");
+			lblUserID.setHorizontalAlignment(SwingConstants.CENTER);
 			lblUserID.setForeground(Color.GRAY);
-			lblUserID.setBounds(18, 13, 42, 49);
-			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 40));
+			lblUserID.setBounds(-1, 0, 78, 75);
+			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 30));
 			UserCard.add(lblUserID);
 			
+			updateUserPanelsAvailable();
 			mf.setVisible(true);  
 		}
 		
@@ -200,14 +213,47 @@ public class MainFrame extends JFrame {
 	    } 
 	    
 	    private void loginBtnActionPerformed(ActionEvent evt) {
-	    	JFrame loginFrame = new LoginForm();
-	    	loginFrame.setVisible(true);
+	    	
+	    	//If user is not authenticated
+	    	if (!user.isAuthenticated()) {
+		    	JFrame loginFrame = new LoginForm(listenerController);
+		    	loginFrame.setVisible(true);
+	    	}
+	    	else { 
+	    		user = new User(false, "Invité", "","");
+	    		setUserProfile(user);
+	    	}
 	    }
 	    
-	    public void updateUserInfo(String username) {
+	    public void setUserProfile(User newUser) {
 	    	
-	    	lblUserID.setText(username.length() < 2 ? username : username.substring(0,2));
-	    	lbl_username.setText(username);
+	    	user = newUser;
+	    	
+	    	//Update information on login panel
+	    	if(user.isAuthenticated())
+	    		lblUserID.setText( user.getFirst_name().substring(0,1).toUpperCase() + user.getLast_name().substring(0,1).toUpperCase());
+	    	else
+	    		lblUserID.setText(user.getUsername().length() < 2 ? user.getUsername() : user.getUsername().toUpperCase().substring(0,2));
+	    	
+	    	lbl_username.setText(user.getUsername());
+
+	    	//Update interface
+	    	updateUserPanelsAvailable();
+
+	    }
+	    
+	    private void updateUserPanelsAvailable() {
+	    	
+	    	if(user.isAuthenticated()) {
+	    		btnUserLogin.setText("Logout");
+	    		recommandBtn.setVisible(true);
+	    		myLibrary.setVisible(true);
+	    	}
+	    	else {
+	    		btnUserLogin.setText("Login");
+	    		recommandBtn.setVisible(false);
+	    		myLibrary.setVisible(false);
+	    	}
 	    }
 		
 }
