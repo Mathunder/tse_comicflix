@@ -135,6 +135,11 @@ public class MainFrame extends JFrame {
 			loginInfo.add(lbl_username);
 			
 			btnUserLogin = new JButton("Login");
+			btnUserLogin.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					loginBtnActionPerformed(evt);
+				}
+			});
 			btnUserLogin.setForeground(new Color(255, 255, 255));
 			btnUserLogin.setBorderPainted(true);
 			btnUserLogin.setFocusPainted(false);	
@@ -192,6 +197,11 @@ public class MainFrame extends JFrame {
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnFocus();
 	    } 
+	    
+	    private void loginBtnActionPerformed(ActionEvent evt) {
+	    	JFrame loginFrame = new LoginForm();
+	    	loginFrame.setVisible(true);
+	    }
 		
 	    public void refreshContent(SearchResultDto results) {
 	    	
