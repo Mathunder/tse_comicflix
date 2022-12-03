@@ -1,6 +1,7 @@
 package app.services;
 
 import java.sql.Statement;
+import app.entities.User;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -98,6 +99,25 @@ public class DatabaseService {
 			e.printStackTrace();
 			return null;
 		}	
+	}
+	
+	public User getUserFromUsername(String username) {
+		String sql = "SELECT first_name, last_name, username FROM users WHERE username=" + '"' +  username + '"' + " LIMIT 1";
+		
+		try (Connection conn = this.connect();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)){
+			
+
+			System.out.println(rs.getString("first_name") + "\t" + rs.getString("last_name") + "\t" + rs.getString("username"));
+
+			return new User(true,rs.getString("username"),rs.getString("first_name"),rs.getString("last_name"));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+		
 	}
 
 }

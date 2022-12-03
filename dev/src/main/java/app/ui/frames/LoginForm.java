@@ -16,6 +16,7 @@ import javax.swing.SpringLayout;
 import java.awt.Toolkit;
 
 import app.entities.User;
+import app.services.DatabaseService;
 import app.ui.components.DefaultButton;
 import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.CustomColor;
@@ -30,12 +31,13 @@ public class LoginForm extends JFrame {
 	private JPasswordField passwordField;
 
 	private InterfaceMainFrame mainInterface;
-
+	private DatabaseService database;
 	/**
 	 * Create the frame.
 	 */
 	public LoginForm(InterfaceMainFrame mi) {
 		mainInterface = mi;
+		database = new DatabaseService();
 		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\axant\\Documents\\_AxStore\\2-TELECOM\\FISE 2\\S7\\PROJET INFORMATIQUE\\GitLab_repo\\Info5\\dev\\src\\main\\resources\\icon.png"));
 		setTitle("Login Form");
 		setResizable(false);
@@ -115,15 +117,21 @@ public class LoginForm extends JFrame {
 	}
 	
 	private void btnLoginActionPerformed(ActionEvent e) {
+		
 		String usr_name = new String(txtField_username.getText());
 		String usr_password = new String(passwordField.getPassword());
 		System.out.println(usr_name);
 		System.out.println(usr_password);	
 		
-		//CHECK CREDENTIAL AND GET USER INFO (first/last name)
+		//CHECK CREDENTIAL AND GET USER INFO
+		User newUser = database.getUserFromUsername(usr_name);
 		
-		mainInterface.updateLoginInfo(new User(true, usr_name, "",""));
+		if(newUser != null) {
+			mainInterface.updateLoginInfo(newUser);
+			dispose();
+		}
+		else 
+			System.out.println("Username invalid !");
 		
-		dispose();
 	}
 }

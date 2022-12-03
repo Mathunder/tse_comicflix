@@ -228,7 +228,11 @@ public class MainFrame extends JFrame {
 	    	
 	    	user = newUser;
 	    	
-	    	lblUserID.setText(user.getUsername().length() < 2 ? user.getUsername() : user.getUsername().toUpperCase().substring(0,2));
+	    	if(user.isAuthentified())
+	    		lblUserID.setText( user.getFirst_name().substring(0,1).toUpperCase() + user.getLast_name().substring(0,1).toUpperCase());
+	    	else
+	    		lblUserID.setText(user.getUsername().length() < 2 ? user.getUsername() : user.getUsername().toUpperCase().substring(0,2));
+	    	
 	    	lbl_username.setText(user.getUsername());
 
 	    	updateUserPanelsAvailable();
