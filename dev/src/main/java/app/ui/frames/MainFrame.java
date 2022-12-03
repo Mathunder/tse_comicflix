@@ -214,11 +214,12 @@ public class MainFrame extends JFrame {
 	    
 	    private void loginBtnActionPerformed(ActionEvent evt) {
 	    	
-	    	if (btnUserLogin.getText() == "Login") {
+	    	//If user is not authenticated
+	    	if (!user.isAuthenticated()) {
 		    	JFrame loginFrame = new LoginForm(listenerController);
 		    	loginFrame.setVisible(true);
 	    	}
-	    	else {
+	    	else { 
 	    		user = new User(false, "Invité", "","");
 	    		setUserProfile(user);
 	    	}
@@ -228,20 +229,22 @@ public class MainFrame extends JFrame {
 	    	
 	    	user = newUser;
 	    	
-	    	if(user.isAuthentified())
+	    	//Update information on login panel
+	    	if(user.isAuthenticated())
 	    		lblUserID.setText( user.getFirst_name().substring(0,1).toUpperCase() + user.getLast_name().substring(0,1).toUpperCase());
 	    	else
 	    		lblUserID.setText(user.getUsername().length() < 2 ? user.getUsername() : user.getUsername().toUpperCase().substring(0,2));
 	    	
 	    	lbl_username.setText(user.getUsername());
 
+	    	//Update interface
 	    	updateUserPanelsAvailable();
 
 	    }
 	    
 	    private void updateUserPanelsAvailable() {
 	    	
-	    	if(user.isAuthentified()) {
+	    	if(user.isAuthenticated()) {
 	    		btnUserLogin.setText("Logout");
 	    		recommandBtn.setVisible(true);
 	    		myLibrary.setVisible(true);
