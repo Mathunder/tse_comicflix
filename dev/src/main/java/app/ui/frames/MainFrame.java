@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import app.ui.components.*;
+import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.*;
 
 public class MainFrame extends JFrame {
@@ -28,7 +29,10 @@ public class MainFrame extends JFrame {
 		private JButton btnUserLogin;
 		private JLabel lblUserID;
 		
+		private static InterfaceMainFrame listenerController;
+		
 		public MainFrame() {		
+			listenerController = new InterfaceMainFrame(this);
 			initComponents();
 		}
 		
@@ -160,9 +164,10 @@ public class MainFrame extends JFrame {
 			loginInfo.add(UserCard);
 			
 			lblUserID = new JLabel("IN");
+			lblUserID.setHorizontalAlignment(SwingConstants.CENTER);
 			lblUserID.setForeground(Color.GRAY);
-			lblUserID.setBounds(18, 13, 42, 49);
-			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 40));
+			lblUserID.setBounds(-1, 0, 78, 75);
+			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 30));
 			UserCard.add(lblUserID);
 			
 			mf.setVisible(true);  
@@ -200,14 +205,24 @@ public class MainFrame extends JFrame {
 	    } 
 	    
 	    private void loginBtnActionPerformed(ActionEvent evt) {
-	    	JFrame loginFrame = new LoginForm();
-	    	loginFrame.setVisible(true);
+	    	
+	    	if (btnUserLogin.getText() == "Login") {
+		    	JFrame loginFrame = new LoginForm(listenerController);
+		    	loginFrame.setVisible(true);
+	    	}
+	    	else
+	    		updateUserInfo("Invité");
 	    }
 	    
 	    public void updateUserInfo(String username) {
 	    	
-	    	lblUserID.setText(username.length() < 2 ? username : username.substring(0,2));
+	    	lblUserID.setText(username.length() < 2 ? username : username.toUpperCase().substring(0,2));
 	    	lbl_username.setText(username);
+	    	
+	    	if(btnUserLogin.getText() == "Login")
+	    		btnUserLogin.setText("Logout");
+	    	else
+	    		btnUserLogin.setText("Login");
 	    }
 		
 }

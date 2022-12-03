@@ -15,6 +15,7 @@ import java.awt.Font;
 import javax.swing.SpringLayout;
 import java.awt.Toolkit;
 import app.ui.components.DefaultButton;
+import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.CustomColor;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -26,26 +27,13 @@ public class LoginForm extends JFrame {
 	private JTextField txtField_username;
 	private JPasswordField passwordField;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LoginForm frame = new LoginForm();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private InterfaceMainFrame mainInterface;
 
 	/**
 	 * Create the frame.
 	 */
-	public LoginForm() {
+	public LoginForm(InterfaceMainFrame mi) {
+		mainInterface = mi;
 		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\axant\\Documents\\_AxStore\\2-TELECOM\\FISE 2\\S7\\PROJET INFORMATIQUE\\GitLab_repo\\Info5\\dev\\src\\main\\resources\\icon.png"));
 		setTitle("Login Form");
 		setResizable(false);
@@ -128,6 +116,11 @@ public class LoginForm extends JFrame {
 		String usr_name = new String(txtField_username.getText());
 		String usr_password = new String(passwordField.getPassword());
 		System.out.println(usr_name);
-		System.out.println(usr_password);			
+		System.out.println(usr_password);	
+		
+		//CHECL CREDENTIAL
+		mainInterface.updateLoginInfo(usr_name);
+		
+		dispose();
 	}
 }
