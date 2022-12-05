@@ -23,7 +23,7 @@ import app.ui.themes.CustomColor;
 public class SearchBarPanel extends JPanel {
 	
 	private SearchBar searchRoundBar;
-	private JButton btnFilter;
+	private DefaultButton btnFilter;
 	private SearchResultDto result;
 	
 	public SearchBarPanel(){
@@ -38,14 +38,8 @@ public class SearchBarPanel extends JPanel {
 	
 	//Init button search
 	private void initButtonSearch() {
-		btnFilter = new JButton("Search");
-		btnFilter.setForeground(CustomColor.WhiteCloud);
-		btnFilter.setBorderPainted(true);
-		btnFilter.setFocusPainted(false);	
-		btnFilter.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.darkGray));
-		btnFilter.setFont(new Font("Candara", Font.BOLD, 20));
-		btnFilter.setBackground(CustomColor.DarkGray);
-		
+		btnFilter = new DefaultButton(" Search ", CustomColor.Red, 20, true);
+			
 		btnFilter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
             	btnFilterActionPerformed(evt);
