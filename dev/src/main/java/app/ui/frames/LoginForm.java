@@ -32,6 +32,7 @@ public class LoginForm extends JFrame {
 
 	private InterfaceMainFrame mainInterface;
 	private DatabaseService database;
+	private JLabel lblErrorLogin;
 	/**
 	 * Create the frame.
 	 */
@@ -110,6 +111,14 @@ public class LoginForm extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, passwordField, -9, SpringLayout.SOUTH, lblPassword);
 		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
 		contentPane.add(passwordField);
+		
+		lblErrorLogin = new JLabel("Invalid username or password !");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorLogin, 8, SpringLayout.SOUTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.WEST, lblErrorLogin, 111, SpringLayout.WEST, contentPane);
+		lblErrorLogin.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		lblErrorLogin.setForeground(Color.RED);
+		lblErrorLogin.setVisible(false);
+		contentPane.add(lblErrorLogin);
 	}
 	
 	private void btnCancelActionPerformed(ActionEvent e) {
@@ -124,14 +133,15 @@ public class LoginForm extends JFrame {
 		System.out.println(usr_password);	
 		
 		//CHECK CREDENTIAL AND GET USER INFO
-		User newUser = database.getUserFromUsername(usr_name);
+		User newUser = database.getUserFromUsername(usr_name,usr_password);
 		
 		if(newUser != null) {
 			mainInterface.updateLoginInfo(newUser);
+			lblErrorLogin.setVisible(false);
 			dispose();
 		}
 		else 
-			System.out.println("Username invalid !");
+			lblErrorLogin.setVisible(true);
 		
 	}
 }
