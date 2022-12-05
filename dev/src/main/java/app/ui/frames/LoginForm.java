@@ -124,14 +124,14 @@ public class LoginForm extends JFrame {
 		System.out.println(usr_password);	
 		
 		//CHECK CREDENTIAL AND GET USER INFO
-		User newUser = database.getUserFromUsername(usr_name);
+		User newUser = database.getUserFromUsername(usr_name,usr_password);
 		
 		if(newUser != null) {
 			mainInterface.updateLoginInfo(newUser);
 			dispose();
 		}
 		else 
-			System.out.println("Username invalid !");
+			System.out.println("Username or password invalid !!!");
 		
 	}
 }

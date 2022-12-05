@@ -101,16 +101,16 @@ public class DatabaseService {
 		}	
 	}
 	
-	public User getUserFromUsername(String username) {
-		String sql = "SELECT first_name, last_name, username FROM users WHERE username=" + '"' +  username + '"' + " LIMIT 1";
+	public User getUserFromUsername(String username, String password) {
+		String sql = "SELECT first_name, last_name, username FROM users WHERE username=" 
+				+ '"' +  username + '"' 
+				+ " AND password=" + '"' + password + '"'
+				+ " LIMIT 1";
 		
 		try (Connection conn = this.connect();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)){
 			
-
-			System.out.println(rs.getString("first_name") + "\t" + rs.getString("last_name") + "\t" + rs.getString("username"));
-
 			return new User(true,rs.getString("username"),rs.getString("first_name"),rs.getString("last_name"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
