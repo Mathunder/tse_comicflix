@@ -42,10 +42,11 @@ public class MainFrame extends JFrame {
 		private void initComponents() {
 			// Main Frame
 			mf = new JFrame("Comics Library");   
+			mf.getContentPane().setBackground(new Color(172, 0, 0));
 			Image icon = Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png");  
 			mf.setIconImage(icon);  
 			mf.setSize(1600,900);      
-			mf.setBackground(CustomColor.WhiteCloud);
+			mf.setBackground(CustomColor.Red);
 			mf.setResizable(false);
 
 			//User
@@ -59,8 +60,7 @@ public class MainFrame extends JFrame {
 			
 			//LeftBar Panel
 			sideLeftBar = new JPanel();
-			sideLeftBar.setBounds(0, 150, 250, 750);
-			sideLeftBar.setLayout(new GridLayout(0,1));
+			sideLeftBar.setBounds(0, 150, 250, 400);
 			sideLeftBar.setBackground(CustomColor.Red);
 			
 			//VisuComics Panels
@@ -68,7 +68,7 @@ public class MainFrame extends JFrame {
 	
 			//ScrollBar VisuComics Panel
 			JScrollPane scrollPaneVisuComics = new JScrollPane(visuComics);
-			scrollPaneVisuComics.setBounds(250, 150, 1255, 712);
+			scrollPaneVisuComics.setBounds(250, 150, 1253, 740);
 			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
@@ -99,6 +99,7 @@ public class MainFrame extends JFrame {
 	            	discoverBtnActionPerformed(evt);
 	            }
 			});
+			sideLeftBar.setLayout(new GridLayout(0, 1, 0, 0));
 			sideLeftBar.add(discoverBtn);
 			
 			//Button Recommendation
@@ -170,7 +171,7 @@ public class MainFrame extends JFrame {
 			UserCard.add(lblUserID);
 			
 			SearchBarPanel searchBarPanel = new SearchBarPanel();
-			searchBarPanel.setBounds(250, 0, 1250, 150);
+			searchBarPanel.setBounds(250, 0, 1236, 150);
 			mf.getContentPane().add(searchBarPanel);
 			
 			updateUserPanelsAvailable();
