@@ -1,19 +1,19 @@
 package app.ui.frames;
 
-import app.dto.SearchResultDto;
-import app.entities.Comics;
+
 import app.entities.User;
+import app.services.ComicVineService;
 
 import java.awt.*;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
 import app.ui.components.*;
 import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.*;
+import lombok.Data;
+
+@SuppressWarnings("serial")
 
 public class MainFrame extends JFrame {
 		
@@ -30,19 +30,23 @@ public class MainFrame extends JFrame {
 		static JLabel lbl_username;
 		private JButton btnUserLogin;
 		private JLabel lblUserID;
-		
+		protected ComicVineService comicVineService;
 		private static InterfaceMainFrame listenerController;
-		
+		private  PaginationPanel paginationPanel;
 		private User user;
 		
-		public MainFrame() {		
+		public MainFrame(ComicVineService comicVineService) {	
+			super();
+			this.comicVineService = comicVineService;
 			listenerController = new InterfaceMainFrame(this);
+			
 			initComponents();
 		}
 		
 		private void initComponents() {
 			// Main Frame
 			mf = new JFrame("Comics Library");   
+			
 			Image icon = Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png");  
 			mf.setIconImage(icon);  
 			mf.setSize(1600,900);      
@@ -66,11 +70,12 @@ public class MainFrame extends JFrame {
 			sideLeftBar.setBackground(CustomColor.Red);
 			
 			//SearchBar Panel
-			searchBar = new SearchBarPanel();
+			searchBar = new SearchBarPanel(comicVineService);
 			searchBar.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-			searchBar.setBounds(250,0,1350,150);
+			searchBar.setBounds(250,0,1350,100);
 			searchBar.setBackground(CustomColor.WhiteCloud);
-			
+			//Pagination Panel
+			paginationPanel= new PaginationPanel(comicVineService);
 			//VisuComics Panels
 			visuComics = new VisuComicsPanel();
 	
@@ -94,7 +99,7 @@ public class MainFrame extends JFrame {
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
 			mf.getContentPane().add(searchBar);		
-
+			mf.getContentPane().add(paginationPanel);
 //			mf.getContentPane().add(scrollPaneComicsInfos);
 			mf.getContentPane().add(scrollPaneVisuComics);
 			
