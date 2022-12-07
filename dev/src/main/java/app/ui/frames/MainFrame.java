@@ -179,7 +179,7 @@ public class MainFrame extends JFrame {
 			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 30));
 			UserCard.add(lblUserID);
 			
-			SearchBarPanel searchBarPanel = new SearchBarPanel();
+			SearchBarPanel searchBarPanel = new SearchBarPanel(comicVineService);
 			searchBarPanel.setBounds(250, 0, 1236, 150);
 			mf.getContentPane().add(searchBarPanel);
 			

@@ -35,19 +35,19 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 		this.setBorder(BorderFactory.createEmptyBorder());
 		this.setBackground(CustomColor.WhiteCloud);
 //		this.setBackground(CustomColor.DarkRed);
-		this.setBounds(250, 60, 1350, 90);
+		this.setBounds(250, 120, 1250, 30);
 		this.setLayout(null);
 
 		// * Page Number
 		pageNumberLabel = new JLabel("0");
 		pageNumberLabel.setFont(new Font("Roboto", Font.BOLD, 22));
 
-		pageNumberLabel.setBounds(600, 40, 100, 50);
+		pageNumberLabel.setBounds(600, 0, 100, 30);
 		pageNumberLabel.setVisible(true);
 
 		// * Previous Page
 		prevPageButton = new JButton("Previous");
-		prevPageButton.setBounds(10, 40, 100, 50);
+		prevPageButton.setBounds(10, 0, 100, 30);
 		prevPageButton.setVisible(false);
 		prevPageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -59,7 +59,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 		});
 		// * Next Page
 		nextPageButton = new JButton("Next");
-		nextPageButton.setBounds(1130, 40, 100, 50);
+		nextPageButton.setBounds(1130, 0, 100, 30);
 		nextPageButton.setVisible(false);
 		nextPageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
