@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -51,15 +52,22 @@ public class SearchBarPanel extends JPanel {
 	private void btnFilterActionPerformed(ActionEvent evt) {
 
 		if(searchRoundBar.getSearchText()!="") {
-			ComicVineService comicVine = new ComicVineService();
+			ComicVineService comicVineService = new ComicVineService();
 			List<ComicVineSearchFilter> filters = new ArrayList<>();
 			//filters.add(ComicVineSearchFilter.ISSUE);
 	        filters.add(ComicVineSearchFilter.CHARACTER);
-			result = comicVine.search(searchRoundBar.getSearchText(), filters, 16, 0);
-				
-			MainFrame.visuComics.showResult(result);
+			String keyword = searchRoundBar.getSearchText();
+			CompletableFuture.runAsync(() -> {
+				System.out.println();
+				SearchResultDto AsyncResults = comicVineService.search(keyword, filters, 16, 0);
+				MainFrame.visuComics.showResult(AsyncResults);
+				AsyncResults.getResults().stream().forEach(System.out::println);
+				searchRoundBar.setSearchText("Search");
+
+
+			});
 			
-			searchRoundBar.setSearchText("Search book ...        ");
+			searchRoundBar.setSearchText("Loading...");
 
 		}
 	}
