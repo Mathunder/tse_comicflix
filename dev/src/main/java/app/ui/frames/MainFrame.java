@@ -20,7 +20,6 @@ public class MainFrame extends JFrame {
 		// UI COMPONENTS
 		static JFrame mf;
 		static JPanel sideLeftBar;
-		static SearchBarPanel searchBar;
 		static JPanel loginInfo;
 		public static VisuComicsPanel visuComics;
 		static LeftBarButton discoverBtn;
@@ -48,7 +47,6 @@ public class MainFrame extends JFrame {
 			mf.setSize(1600,900);      
 			mf.setBackground(CustomColor.WhiteCloud);
 			mf.setResizable(false);
-			mf.getContentPane().setLayout(null);
 
 			//User
 			user = new User(false, "Invité", "", "");
@@ -56,29 +54,23 @@ public class MainFrame extends JFrame {
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
 			loginInfo = new JPanel();
-			loginInfo.setBounds(0,0,250,150);
+			loginInfo.setBounds(0, 0, 250, 150);
 			loginInfo.setBackground(CustomColor.CrimsonRed);
 			
 			//LeftBar Panel
 			sideLeftBar = new JPanel();
+			sideLeftBar.setBounds(0, 150, 250, 750);
 			sideLeftBar.setLayout(new GridLayout(0,1));
-			sideLeftBar.setBounds(0,150,250,750);
 			sideLeftBar.setBackground(CustomColor.Red);
-			
-			//SearchBar Panel
-			searchBar = new SearchBarPanel();
-			searchBar.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-			searchBar.setBounds(250,0,1350,150);
-			searchBar.setBackground(CustomColor.WhiteCloud);
 			
 			//VisuComics Panels
 			visuComics = new VisuComicsPanel();
 	
 			//ScrollBar VisuComics Panel
 			JScrollPane scrollPaneVisuComics = new JScrollPane(visuComics);
+			scrollPaneVisuComics.setBounds(250, 150, 1255, 712);
 			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-			scrollPaneVisuComics.setBounds(250, 150, 1255, 712);
 			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
 			
 			//ComicsInfos Panel
@@ -89,11 +81,11 @@ public class MainFrame extends JFrame {
 			scrollPaneComicsInfos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneComicsInfos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			scrollPaneComicsInfos.setBounds(250, 150, 1255, 712);
+			mf.getContentPane().setLayout(null);
 							 
 			//Add Panels to Main Frame
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
-			mf.getContentPane().add(searchBar);		
 
 //			mf.getContentPane().add(scrollPaneComicsInfos);
 			mf.getContentPane().add(scrollPaneVisuComics);
@@ -177,6 +169,10 @@ public class MainFrame extends JFrame {
 			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 30));
 			UserCard.add(lblUserID);
 			
+			SearchBarPanel searchBarPanel = new SearchBarPanel();
+			searchBarPanel.setBounds(250, 0, 1250, 150);
+			mf.getContentPane().add(searchBarPanel);
+			
 			updateUserPanelsAvailable();
 			mf.setVisible(true);  
 		}
@@ -255,5 +251,4 @@ public class MainFrame extends JFrame {
 	    		myLibrary.setVisible(false);
 	    	}
 	    }
-		
 }
