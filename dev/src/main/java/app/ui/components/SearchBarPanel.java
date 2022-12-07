@@ -21,6 +21,7 @@ import javax.swing.SpringLayout;
 import javax.swing.JTextField;
 import java.awt.FlowLayout;
 
+
 public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 	private DefaultButton btnFilter;
 	private SearchResultDto result;
@@ -51,12 +52,10 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 	// Init button search
 	private void initButtonSearch() {
 		btnFilter = new DefaultButton(" Search ", CustomColor.Red, 20, true);
-<<<<<<< HEAD
 		btnFilter.setText("Go");
 			
-=======
 
->>>>>>> ae56810 (Pagination + handling different states of request)
+	
 		btnFilter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				btnFilterActionPerformed(evt);

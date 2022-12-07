@@ -68,7 +68,6 @@ public class MainFrame extends JFrame {
 			sideLeftBar.setBackground(CustomColor.Red);
 			
 			//SearchBar Panel
-
 			//Pagination Panel
 			paginationPanel= new PaginationPanel(comicVineService);
 			//VisuComics Panels
