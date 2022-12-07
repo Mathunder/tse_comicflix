@@ -23,8 +23,8 @@ public class ComicVineService {
 		RestAssured.baseURI = "https://comicvine.gamespot.com/api";
 		RestAssured.port = 443;
 	}
-
-	public SearchResultDto search(String keyword, List<ComicVineSearchFilter> filters, int limit, int offset) {
+	
+	public SearchResultDto  search(String keyword, List<ComicVineSearchFilter> filters, int limit, int offset) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("api_key", "f9073eee3658e2a4f39a9f531ad521b935ce87bc");
 		params.put("resources",
@@ -36,7 +36,7 @@ public class ComicVineService {
 		String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
 		SearchResultDto result = given().params(params).header("User-Agent", userAgent).expect().statusCode(200)
 				.body("status_code", equalTo(1)).when().get("/search").as(SearchResultDto.class);
-		return result;
+		return (result);
 	}
 
 }
