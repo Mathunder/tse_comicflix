@@ -3,6 +3,8 @@ package app.ui.components;
 
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,9 +14,12 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import app.dto.SearchResultDto;
 import app.entities.Comics;
 import app.ui.themes.CustomColor;
+import app.ui.components.ComicsInfosPanel;
 
 public class VisuComicsPanel extends JPanel{
 	
@@ -31,7 +36,12 @@ public class VisuComicsPanel extends JPanel{
 		//Add a comic at the right position
 		LabelComics LabelComic = new LabelComics(comics);
 		this.add(LabelComic);
-		
+		LabelComic.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				System.out.println(comics.getSynopsis() + " has been clicked.");
+				comics.setClicked(true);
+			}
+		});
 	}
 	
 	public void removeComics() {
@@ -70,7 +80,7 @@ public class VisuComicsPanel extends JPanel{
 				System.out.println("Problem load img");
 				e.printStackTrace();
 			}
-			// [result.getResults().get(i)].class = Issue
+
 			Comics comics = new Comics(result.getResults().get(i));
 			this.displayComics(comics);
 		}

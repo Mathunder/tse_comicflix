@@ -1,9 +1,9 @@
 package app.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
 
 import app.dto.ImageResultDto;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
