@@ -75,7 +75,7 @@ public class MainFrame extends JFrame {
 	
 			//ScrollBar VisuComics Panel
 			JScrollPane scrollPaneVisuComics = new JScrollPane(visuComics);
-			scrollPaneVisuComics.setBounds(250, 150, 1253, 740);
+			scrollPaneVisuComics.setBounds(250, 150, 1253, 715);
 			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
