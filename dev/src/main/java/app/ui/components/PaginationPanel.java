@@ -27,7 +27,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 	private JButton nextPageButton;
 	private JLabel pageNumberLabel;
 	protected ComicVineService comicVineService;
-	private int currentPageNumber = 0;
+	private int currentPageNumber = 1;
 
 	public PaginationPanel(ComicVineService comicVineService) {
 		comicVineService.addPropertyChangeListener(this);
@@ -54,7 +54,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 				List<ComicVineSearchFilter> filters = new ArrayList<>();
 				filters.add(ComicVineSearchFilter.CHARACTER);
 				comicVineService.search(comicVineService.getKeyword(), filters, comicVineService.getLimit(),
-						comicVineService.getLimit() * --currentPageNumber);
+						 --currentPageNumber);
 			}
 		});
 		// * Next Page
@@ -66,7 +66,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 				List<ComicVineSearchFilter> filters = new ArrayList<>();
 				filters.add(ComicVineSearchFilter.CHARACTER);
 				comicVineService.search(comicVineService.getKeyword(), filters, comicVineService.getLimit(),
-						comicVineService.getLimit() * ++currentPageNumber);
+						 ++currentPageNumber);
 			}
 		});
 		// * Add Components

@@ -37,16 +37,9 @@ public class ComicVineService {
 		RestAssured.port = 443;
 	}
 
-	public void search(String keyword, List<ComicVineSearchFilter> filters, int limit, int offset) {
+	public void search(String keyword, List<ComicVineSearchFilter> filters, int limit, int page) {
 		this.keyword = keyword;
-		if (offset <= 0) {
-			this.offset = 0;
-		} else if (offset >= totalResults) {
-			this.offset = totalResults;
-		} else {
-			this.offset = offset;
-		}
-		System.out.println(this.offset);
+		this.offset = page==1?  0 :  page* this.getLimit();
 		
 		CompletableFuture.runAsync(() -> {
 
@@ -57,7 +50,7 @@ public class ComicVineService {
 			params.put("format", "json");
 			params.put("query", keyword);
 			params.put("limit", Integer.toString(limit));
-			params.put("offset", Integer.toString(this.offset));
+			params.put("page", Integer.toString(page));
 			String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
 
 			ComicVineSearchStatus oldSearchStatus = this.getSearchStatus();
