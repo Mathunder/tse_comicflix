@@ -68,7 +68,7 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 			filters.add(ComicVineSearchFilter.ISSUE);
 	        //filters.add(ComicVineSearchFilter.CHARACTER);
 			result = comicVine.search(searchRoundBar.getSearchText(), filters, 16, 0);
-				
+
 			MainFrame.visuComics.showResult(result);
 			
 			searchRoundBar.setSearchText("Search book ...        ");

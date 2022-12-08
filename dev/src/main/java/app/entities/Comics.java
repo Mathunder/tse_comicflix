@@ -33,6 +33,8 @@ public class Comics {
 			System.out.println("Problem load img");
 			e.printStackTrace();
 		}
+		// Initialization of the description
+		this.synopsis = issue.getDescription();
 		
 	}
 
