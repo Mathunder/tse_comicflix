@@ -71,7 +71,7 @@ public class VisuComicsPanel extends JPanel{
 				e.printStackTrace();
 			}
 			
-			Comics comics = new Comics(result.getResults().get(i).getName(), imageURL);
+			Comics comics = new Comics(result.getResults().get(i).getName()+" "+i, imageURL);
 			this.displayComics(comics);
 		}
 		

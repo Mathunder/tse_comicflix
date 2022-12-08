@@ -1,23 +1,25 @@
 package app.ui.frames;
 
-import app.dto.SearchResultDto;
-import app.entities.Comics;
+
+import app.entities.User;
+import app.services.ComicVineService;
+
 import java.awt.*;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
 import app.ui.components.*;
+import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.*;
+import lombok.Data;
+
+@SuppressWarnings("serial")
 
 public class MainFrame extends JFrame {
 		
 		// UI COMPONENTS
 		static JFrame mf;
 		static JPanel sideLeftBar;
-		static SearchBarPanel searchBar;
 		static JPanel loginInfo;
 		public static VisuComicsPanel visuComics;
 		static LeftBarButton discoverBtn;
@@ -26,47 +28,56 @@ public class MainFrame extends JFrame {
 		static JLabel lbl_title;
 		static JLabel lbl_username;
 		private JButton btnUserLogin;
-				
-		public MainFrame() {		
+		private JLabel lblUserID;
+		protected ComicVineService comicVineService;
+		private static InterfaceMainFrame listenerController;
+		private  PaginationPanel paginationPanel;
+		private User user;
+		
+		public MainFrame(ComicVineService comicVineService) {	
+			super();
+			this.comicVineService = comicVineService;
+			listenerController = new InterfaceMainFrame(this);
+			
 			initComponents();
 		}
 		
 		private void initComponents() {
 			// Main Frame
 			mf = new JFrame("Comics Library");   
+			mf.getContentPane().setBackground(new Color(172, 0, 0));
+			
 			Image icon = Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png");  
 			mf.setIconImage(icon);  
 			mf.setSize(1600,900);      
-			mf.setBackground(CustomColor.WhiteCloud);
+			mf.setBackground(CustomColor.Red);
 			mf.setResizable(false);
-			mf.getContentPane().setLayout(null);
 
+			//User
+			user = new User(false, "Invité", "", "");
+			
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
 			loginInfo = new JPanel();
-			loginInfo.setBounds(0,0,250,150);
+			loginInfo.setBounds(0, 0, 250, 150);
 			loginInfo.setBackground(CustomColor.CrimsonRed);
 			
 			//LeftBar Panel
 			sideLeftBar = new JPanel();
-			sideLeftBar.setLayout(new GridLayout(0,1));
-			sideLeftBar.setBounds(0,150,250,750);
+			sideLeftBar.setBounds(0, 150, 250, 400);
 			sideLeftBar.setBackground(CustomColor.Red);
 			
 			//SearchBar Panel
-			searchBar = new SearchBarPanel();
-			searchBar.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-			searchBar.setBounds(250,0,1350,150);
-			searchBar.setBackground(CustomColor.WhiteCloud);
-			
+			//Pagination Panel
+			paginationPanel= new PaginationPanel(comicVineService);
 			//VisuComics Panels
 			visuComics = new VisuComicsPanel();
 	
 			//ScrollBar VisuComics Panel
 			JScrollPane scrollPaneVisuComics = new JScrollPane(visuComics);
+			scrollPaneVisuComics.setBounds(250, 150, 1253, 715);
 			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-			scrollPaneVisuComics.setBounds(250, 150, 1255, 712);
 			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
 			
 			//ComicsInfos Panel
@@ -77,13 +88,16 @@ public class MainFrame extends JFrame {
 			scrollPaneComicsInfos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneComicsInfos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			scrollPaneComicsInfos.setBounds(250, 150, 1255, 712);
+			mf.getContentPane().setLayout(null);
 							 
 			//Add Panels to Main Frame
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
-			mf.getContentPane().add(searchBar);		
+
+			
+			mf.getContentPane().add(paginationPanel);
+//			mf.getContentPane().add(scrollPaneComicsInfos);
 			mf.getContentPane().add(scrollPaneVisuComics);
-			//mf.getContentPane().add(scrollPaneComicsInfos);
 			
 			//Button Discover
 			discoverBtn = new LeftBarButton("Découvrir",CustomColor.Red,20,true);
@@ -94,6 +108,7 @@ public class MainFrame extends JFrame {
 	            	discoverBtnActionPerformed(evt);
 	            }
 			});
+			sideLeftBar.setLayout(new GridLayout(0, 1, 0, 0));
 			sideLeftBar.add(discoverBtn);
 			
 			//Button Recommendation
@@ -134,6 +149,11 @@ public class MainFrame extends JFrame {
 			loginInfo.add(lbl_username);
 			
 			btnUserLogin = new JButton("Login");
+			btnUserLogin.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					loginBtnActionPerformed(evt);
+				}
+			});
 			btnUserLogin.setForeground(new Color(255, 255, 255));
 			btnUserLogin.setBorderPainted(true);
 			btnUserLogin.setFocusPainted(false);	
@@ -152,12 +172,18 @@ public class MainFrame extends JFrame {
 			UserCard.setLayout(null);
 			loginInfo.add(UserCard);
 			
-			JLabel lblUserID = new JLabel("IN");
+			lblUserID = new JLabel("IN");
+			lblUserID.setHorizontalAlignment(SwingConstants.CENTER);
 			lblUserID.setForeground(Color.GRAY);
-			lblUserID.setBounds(18, 13, 42, 49);
-			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 40));
+			lblUserID.setBounds(-1, 0, 78, 75);
+			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 30));
 			UserCard.add(lblUserID);
 			
+			SearchBarPanel searchBarPanel = new SearchBarPanel(comicVineService);
+			searchBarPanel.setBounds(250, 0, 1236, 150);
+			mf.getContentPane().add(searchBarPanel);
+			
+			updateUserPanelsAvailable();
 			mf.setVisible(true);  
 		}
 		
@@ -191,8 +217,48 @@ public class MainFrame extends JFrame {
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnFocus();
 	    } 
-		
-	    public void refreshContent(SearchResultDto results) {
+	    
+	    private void loginBtnActionPerformed(ActionEvent evt) {
 	    	
+	    	//If user is not authenticated
+	    	if (!user.isAuthenticated()) {
+		    	JFrame loginFrame = new LoginForm(listenerController);
+		    	loginFrame.setVisible(true);
+	    	}
+	    	else { 
+	    		user = new User(false, "Invité", "","");
+	    		setUserProfile(user);
+	    	}
+	    }
+	    
+	    public void setUserProfile(User newUser) {
+	    	
+	    	user = newUser;
+	    	
+	    	//Update information on login panel
+	    	if(user.isAuthenticated())
+	    		lblUserID.setText( user.getFirst_name().substring(0,1).toUpperCase() + user.getLast_name().substring(0,1).toUpperCase());
+	    	else
+	    		lblUserID.setText(user.getUsername().length() < 2 ? user.getUsername() : user.getUsername().toUpperCase().substring(0,2));
+	    	
+	    	lbl_username.setText(user.getUsername());
+
+	    	//Update interface
+	    	updateUserPanelsAvailable();
+
+	    }
+	    
+	    private void updateUserPanelsAvailable() {
+	    	
+	    	if(user.isAuthenticated()) {
+	    		btnUserLogin.setText("Logout");
+	    		recommandBtn.setVisible(true);
+	    		myLibrary.setVisible(true);
+	    	}
+	    	else {
+	    		btnUserLogin.setText("Login");
+	    		recommandBtn.setVisible(false);
+	    		myLibrary.setVisible(false);
+	    	}
 	    }
 }

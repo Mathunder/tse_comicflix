@@ -10,6 +10,8 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import app.ui.themes.CustomColor;
+import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
 
 public class SearchBar extends PanelRound {
 	
@@ -23,19 +25,24 @@ public class SearchBar extends PanelRound {
 		this.setRoundTopLeft(25);
 		this.setRoundBottomRight(25);
 		this.setRoundBottomLeft(25);
-		this.setLayout(new FlowLayout());
-		this.setBounds(300,75,100,30);
+		this.setBounds(300,75,883,100);
 		this.setBackground(CustomColor.LightGray);		
 	
 		Border emptyBorder = BorderFactory.createEmptyBorder();
+		SpringLayout springLayout = new SpringLayout();
+		setLayout(springLayout);
 		
 		searchTextField = new JTextField();
+		searchTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		springLayout.putConstraint(SpringLayout.NORTH, searchTextField, 5, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.WEST, searchTextField, 10, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.SOUTH, searchTextField, -5, SpringLayout.SOUTH, this);
+		springLayout.putConstraint(SpringLayout.EAST, searchTextField, -10, SpringLayout.EAST, this);
 		searchTextField.setBackground(CustomColor.LightGray);
 		searchTextField.setForeground(CustomColor.DarkGray);
 		searchTextField.setFont(new Font("Roboto", Font.PLAIN, 22));
 		searchTextField.setSize(300, 85);
 		searchTextField.setBorder(emptyBorder);
-		searchTextField.setText("Search book ...        ");
 		
 		this.add(searchTextField);
         
