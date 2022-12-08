@@ -1,19 +1,19 @@
 package app.ui.frames;
 
-import app.dto.SearchResultDto;
-import app.entities.Comics;
+
 import app.entities.User;
+import app.services.ComicVineService;
 
 import java.awt.*;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
 import app.ui.components.*;
 import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.*;
+import lombok.Data;
+
+@SuppressWarnings("serial")
 
 public class MainFrame extends JFrame {
 		
@@ -29,13 +29,16 @@ public class MainFrame extends JFrame {
 		static JLabel lbl_username;
 		private JButton btnUserLogin;
 		private JLabel lblUserID;
-		
+		protected ComicVineService comicVineService;
 		private static InterfaceMainFrame listenerController;
-		
+		private  PaginationPanel paginationPanel;
 		private User user;
 		
-		public MainFrame() {		
+		public MainFrame(ComicVineService comicVineService) {	
+			super();
+			this.comicVineService = comicVineService;
 			listenerController = new InterfaceMainFrame(this);
+			
 			initComponents();
 		}
 		
@@ -43,6 +46,7 @@ public class MainFrame extends JFrame {
 			// Main Frame
 			mf = new JFrame("Comics Library");   
 			mf.getContentPane().setBackground(new Color(172, 0, 0));
+			
 			Image icon = Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png");  
 			mf.setIconImage(icon);  
 			mf.setSize(1600,900);      
@@ -63,6 +67,9 @@ public class MainFrame extends JFrame {
 			sideLeftBar.setBounds(0, 150, 250, 400);
 			sideLeftBar.setBackground(CustomColor.Red);
 			
+			//SearchBar Panel
+			//Pagination Panel
+			paginationPanel= new PaginationPanel(comicVineService);
 			//VisuComics Panels
 			visuComics = new VisuComicsPanel();
 	
@@ -87,6 +94,8 @@ public class MainFrame extends JFrame {
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
 
+			
+			mf.getContentPane().add(paginationPanel);
 //			mf.getContentPane().add(scrollPaneComicsInfos);
 			mf.getContentPane().add(scrollPaneVisuComics);
 			
@@ -170,7 +179,7 @@ public class MainFrame extends JFrame {
 			lblUserID.setFont(new Font("Tahoma", Font.PLAIN, 30));
 			UserCard.add(lblUserID);
 			
-			SearchBarPanel searchBarPanel = new SearchBarPanel();
+			SearchBarPanel searchBarPanel = new SearchBarPanel(comicVineService);
 			searchBarPanel.setBounds(250, 0, 1236, 150);
 			mf.getContentPane().add(searchBarPanel);
 			
