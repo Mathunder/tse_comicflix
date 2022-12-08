@@ -14,17 +14,25 @@ public class ComicsInfosPanel extends JPanel {
 		JPanel box1 = new JPanel();  // new JPanel which will be the first column of informations will be displayed
 		box1.setLayout(new BoxLayout(box1, BoxLayout.Y_AXIS));  // chosen layout: BoxLayout
 		
-		JTextField text = new JTextField("Synopsis");  // adding the synopsis 
+		JTextField text = new JTextField(comic.getSynopsis());  // adding the synopsis 
 		text.setPreferredSize(new Dimension(300, 400));
 		box1.add(text);
 		box1.add(Box.createRigidArea(new Dimension(0, 50))); // adding some space between the blocks
 		
-		JTextField creators = new JTextField("This area is for creators");  // adding the creators
+		JTextField creators = new JTextField();
+		// adding the creators
+//		for (int i = 0; i < comic.getCreators().size(); i++) {
+//			creators.add(comic.getCreators().get(i), creators);
+//		}
 		creators.setPreferredSize(new Dimension(300, 100));
 		box1.add(creators);
 		box1.add(Box.createRigidArea(new Dimension(0, 50)));
 		
-		JTextField characters = new JTextField("This place is for characters"); // adding the characters
+		JTextField characters = new JTextField();
+		// adding the characters
+//		for (int i = 0; i < comic.getCharacters().size(); i++) {
+//			creators.add(comic.getCharacters().get(i), characters);
+//		}
 		characters.setPreferredSize(new Dimension(300, 200));
 		box1.add(characters);
 		
