@@ -23,8 +23,8 @@ import lombok.Data;
 @Data
 @SuppressWarnings("serial")
 public class PaginationPanel extends JPanel implements PropertyChangeListener {
-	private JButton prevPageButton;
-	private JButton nextPageButton;
+	private DefaultButton prevPageButton;
+	private DefaultButton nextPageButton;
 	private JLabel pageNumberLabel;
 	protected ComicVineService comicVineService;
 	private int currentPageNumber = 1;
@@ -46,7 +46,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 		pageNumberLabel.setVisible(true);
 
 		// * Previous Page
-		prevPageButton = new JButton("Previous");
+		prevPageButton = new DefaultButton("Previous", CustomColor.Red, 16, true);
 		prevPageButton.setBounds(10, 0, 100, 30);
 		prevPageButton.setVisible(false);
 		prevPageButton.addActionListener(new ActionListener() {
@@ -58,7 +58,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 			}
 		});
 		// * Next Page
-		nextPageButton = new JButton("Next");
+		nextPageButton = new DefaultButton("Next", CustomColor.Red, 16, true);
 		nextPageButton.setBounds(1130, 0, 100, 30);
 		nextPageButton.setVisible(false);
 		nextPageButton.addActionListener(new ActionListener() {
