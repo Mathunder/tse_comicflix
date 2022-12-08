@@ -15,6 +15,7 @@ public class Issue {
 	private String issue_number;
 	private String name;
 	private ImageResultDto image;
+	private String description;
 	
 	public Issue() {}
 	
