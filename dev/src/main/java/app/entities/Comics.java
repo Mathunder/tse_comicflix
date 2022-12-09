@@ -9,23 +9,22 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import app.ui.components.ComicsInfosPanel;
+import app.ui.frames.MainFrame;
+
 // The comic class has two objectives : 
 // 1. To provide names & pictures for the comics that are to be displayed when a research is made by the user
 // 2. To provide name, picture, synopsis and all the informations that are to be displayed when the user clicks on a comic
 
 public class Comics {
-	private boolean clicked;
 	private String title;
 	private ImageIcon image;
 	private String synopsis;
 	private List<String> creators;
 	private List<String> characters;
 	
-	
 	//Constructor 
 	public Comics(Issue issue) {
-		// Initialization of the clicked value
-		this.clicked = false;
 		// Initialization of the comic's name from issue.getName()
 		this.title = issue.getName();
 		
@@ -79,11 +78,7 @@ public class Comics {
 		return this.characters;
 	}
 	
-	public void setClicked(boolean bool) {
-		this.clicked = bool;
-	}
-	
-	public boolean getClicked() {
-		return this.clicked;
+	public void displayInfos() {
+		MainFrame.visuComicInfos.updateComicsInfosPanel(this);
 	}
 }

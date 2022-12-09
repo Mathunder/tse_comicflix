@@ -6,7 +6,6 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -14,16 +13,16 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import app.dto.SearchResultDto;
 import app.entities.Comics;
 import app.ui.themes.CustomColor;
-import app.ui.components.ComicsInfosPanel;
 
 public class VisuComicsPanel extends JPanel{
 	
 	private SearchResultDto result;
+	private boolean display_comics_infos = false;
+	private Comics clicked_comics;
 	
 	public VisuComicsPanel(){
 		this.setBorder(BorderFactory.createEmptyBorder());
@@ -39,7 +38,9 @@ public class VisuComicsPanel extends JPanel{
 		LabelComic.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				System.out.println(comics.getSynopsis() + " has been clicked.");
-				comics.setClicked(true);
+				// Updating and storing the comic that has been clicked
+				display_comics_infos = true;
+				clicked_comics = comics;
 			}
 		});
 	}
@@ -47,45 +48,52 @@ public class VisuComicsPanel extends JPanel{
 	public void removeComics() {
 		this.removeAll();
 	}
+	
 	public void refreshPanel() {
 		this.revalidate();
 		this.repaint();
 	}
+	
+	// The return statement is here to store the comics that are displayed, 
+	// allowing to detect which one of them has been clicked.
 	public void showResult(SearchResultDto res) {
 		
 		removeComics();
 		
-		result = res;	
-		if(result != null) {
-			result.getResults().stream().forEach(System.out::println);			
-		}
-		else {
-			System.out.println("Result null");
-		}
-		
-		
-		
-		for(int i=0;i<result.getResults().size();i++) {
-			//Load a test image, resize and convert into an ImageIcon ______________________ TEST _______________________
-			ImageIcon imageURL = null;
-
-			try {
-				URL url = new URL(result.getResults().get(i).getImage().getMedium_url());
-				BufferedImage imageBrute = ImageIO.read(url);
-				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-				imageURL = new ImageIcon(imageResize);
-				
-
-			} catch (IOException e) {
-				System.out.println("Problem load img");
-				e.printStackTrace();
+		if (display_comics_infos == false) {
+			result = res;	
+			if(result != null) {
+				result.getResults().stream().forEach(System.out::println);			
 			}
-
-			Comics comics = new Comics(result.getResults().get(i));
-			this.displayComics(comics);
+			else {
+				System.out.println("Result null");
+			}
+			
+			
+			
+			for(int i = 0; i < result.getResults().size(); i++) {
+				//Load a test image, resize and convert into an ImageIcon ______________________ TEST _______________________
+				ImageIcon imageURL = null;
+	
+				try {
+					URL url = new URL(result.getResults().get(i).getImage().getMedium_url());
+					BufferedImage imageBrute = ImageIO.read(url);
+					Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+					imageURL = new ImageIcon(imageResize);
+					
+	
+				} catch (IOException e) {
+					System.out.println("Problem load img");
+					e.printStackTrace();
+				}
+	
+				Comics comics = new Comics(result.getResults().get(i));
+				this.displayComics(comics);
+			}
+		} else {
+			// display comic infos here
+			clicked_comics.displayInfos();
 		}
-		
 		refreshPanel();
-		
 	}
 }
