@@ -8,7 +8,7 @@ import app.entities.Comics;
 // The goal of this class is to create a panel in which the informations of the selected comic will be displayed
 public class ComicsInfosPanel extends JPanel {
 	
-	public void updateComicsInfosPanel(Comics comic) {
+	public void createComicsInfosPanel(Comics comic) {
 		
 		// Column 1 (content: summuary, creators, characters)
 		JPanel box1 = new JPanel();  // new JPanel which will be the first column of informations will be displayed
@@ -56,5 +56,9 @@ public class ComicsInfosPanel extends JPanel {
 		// Vertical separator
 		this.add(Box.createRigidArea(new Dimension(50, 0)));
 		this.add(BorderLayout.WEST, box2);
+	}
+	
+	public void displayComicsInfosPanel() {
+		// display comics infos here
 	}
 }
