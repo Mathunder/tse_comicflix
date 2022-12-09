@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.swing.JPanel;
 
 import app.dto.SearchResultDto;
+import app.entities.Comics;
 import app.helpers.ComicVineSearchFilter;
 import app.helpers.ComicVineSearchStatus;
 import app.services.ComicVineService;
@@ -90,19 +91,16 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-
+				
 		if (evt.getPropertyName() == "searchStatus") {
 			if (evt.getNewValue() == ComicVineSearchStatus.FETCHING) {
 
 				this.searchRoundBar.setSearchText("Loading...        ");
 			} else if (evt.getNewValue() == ComicVineSearchStatus.DONE) {
 				MainFrame.visuComics.showResult(this.comicVineService.getSearchResult());
-
 				this.searchRoundBar.setSearchText("Search book ...        ");
 			}
-
 		}
-
 	}
 
 }
