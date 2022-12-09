@@ -79,6 +79,6 @@ public class Comics {
 	}
 	
 	public void displayInfos() {
-		MainFrame.visuComicInfos.updateComicsInfosPanel(this);
+		MainFrame.visuComicInfos.createComicsInfosPanel(this);
 	}
 }

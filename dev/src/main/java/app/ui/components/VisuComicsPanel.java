@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import app.dto.SearchResultDto;
 import app.entities.Comics;
+import app.ui.frames.MainFrame;
 import app.ui.themes.CustomColor;
 
 public class VisuComicsPanel extends JPanel{
@@ -41,6 +42,7 @@ public class VisuComicsPanel extends JPanel{
 				// Updating and storing the comic that has been clicked
 				display_comics_infos = true;
 				clicked_comics = comics;
+				System.out.println(display_comics_infos);
 			}
 		});
 	}
@@ -60,40 +62,35 @@ public class VisuComicsPanel extends JPanel{
 		
 		removeComics();
 		
-		if (display_comics_infos == false) {
-			result = res;	
-			if(result != null) {
-				result.getResults().stream().forEach(System.out::println);			
-			}
-			else {
-				System.out.println("Result null");
-			}
-			
-			
-			
-			for(int i = 0; i < result.getResults().size(); i++) {
-				//Load a test image, resize and convert into an ImageIcon ______________________ TEST _______________________
-				ImageIcon imageURL = null;
-	
-				try {
-					URL url = new URL(result.getResults().get(i).getImage().getMedium_url());
-					BufferedImage imageBrute = ImageIO.read(url);
-					Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-					imageURL = new ImageIcon(imageResize);
-					
-	
-				} catch (IOException e) {
-					System.out.println("Problem load img");
-					e.printStackTrace();
-				}
-	
-				Comics comics = new Comics(result.getResults().get(i));
-				this.displayComics(comics);
-			}
-		} else {
-			// display comic infos here
-			clicked_comics.displayInfos();
+		result = res;	
+		if(result != null) {
+			result.getResults().stream().forEach(System.out::println);			
 		}
+		else {
+			System.out.println("Result null");
+		}
+		
+		for(int i = 0; i < result.getResults().size(); i++) {
+			//Load a test image, resize and convert into an ImageIcon ______________________ TEST _______________________
+			ImageIcon imageURL = null;
+
+			try {
+				URL url = new URL(result.getResults().get(i).getImage().getMedium_url());
+				BufferedImage imageBrute = ImageIO.read(url);
+				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+				imageURL = new ImageIcon(imageResize);
+				
+
+			} catch (IOException e) {
+				System.out.println("Problem load img");
+				e.printStackTrace();
+			}
+
+			Comics comics = new Comics(result.getResults().get(i));
+			this.displayComics(comics);
+		}
+
 		refreshPanel();
 	}
 }
+>>>>>>> 23b7956 implementing the display of comics infos
