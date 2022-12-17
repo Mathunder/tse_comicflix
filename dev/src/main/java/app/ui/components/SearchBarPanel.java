@@ -8,9 +8,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
 import javax.swing.JPanel;
-
 import app.dto.SearchResultDto;
 import app.helpers.ComicVineSearchFilter;
 import app.helpers.ComicVineSearchStatus;
@@ -19,7 +17,6 @@ import app.ui.frames.MainFrame;
 import app.ui.themes.CustomColor;
 import javax.swing.SpringLayout;
 import javax.swing.JTextField;
-
 import java.awt.Color;
 import java.awt.FlowLayout;
 
@@ -94,11 +91,11 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 		if (evt.getPropertyName() == "searchStatus") {
 			if (evt.getNewValue() == ComicVineSearchStatus.FETCHING) {
 
-				this.searchRoundBar.setSearchText("Loading...        ");
+				this.searchRoundBar.setSearchText("Loading...");
 			} else if (evt.getNewValue() == ComicVineSearchStatus.DONE) {
 				MainFrame.visuComics.showResult(this.comicVineService.getSearchResult());
 
-				this.searchRoundBar.setSearchText("Search book ...        ");
+				this.searchRoundBar.setSearchText("Search book ...");
 			}
 
 		}

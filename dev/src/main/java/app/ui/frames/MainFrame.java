@@ -1,13 +1,10 @@
 package app.ui.frames;
 
-
 import app.entities.User;
 import app.services.ComicVineService;
-
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-
 import app.ui.components.*;
 import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.*;
@@ -32,7 +29,7 @@ public class MainFrame extends JFrame {
 		private JLabel lblUserID;
 		protected ComicVineService comicVineService;
 		private static InterfaceMainFrame listenerController;
-		private  PaginationPanel paginationPanel;
+		private PaginationPanel paginationPanel;
 		private User user;
 		
 		public MainFrame(ComicVineService comicVineService) {	
@@ -73,8 +70,6 @@ public class MainFrame extends JFrame {
 			//SearchBar Panel
 			searchBarPanel = new SearchBarPanel(comicVineService);
 			searchBarPanel.setBounds(200, 0, 850, 150);
-			mf.getContentPane().add(searchBarPanel);
-			sideLeftBar.setLayout(new GridLayout(0, 1, 0, 0));
 			
 			//Pagination Panel
 			paginationPanel= new PaginationPanel(comicVineService);
@@ -84,25 +79,23 @@ public class MainFrame extends JFrame {
 	
 			//ScrollBar VisuComics Panel
 			JScrollPane scrollPaneVisuComics = new JScrollPane(visuComics);
-			scrollPaneVisuComics.setBounds(250, 150, 1253, 715);
 			scrollPaneVisuComics.setBounds(200, 150, 840, 417);
-			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
+			scrollPaneVisuComics.getHorizontalScrollBar().setUnitIncrement(14);
 			
 			//ComicsInfos Panel
 			ComicsInfosPanel visuComicInfos = new ComicsInfosPanel();
 			
 			//ScrollBar ComicsInfos Panel
 			JScrollPane scrollPaneComicsInfos = new JScrollPane(visuComicInfos);
-			scrollPaneComicsInfos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			scrollPaneComicsInfos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-			scrollPaneComicsInfos.setBounds(200, 150, 850, 400);
-			mf.getContentPane().setLayout(null);
 							 
 			//Add Panels to Main Frame
+			mf.getContentPane().setLayout(null);
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);
+			mf.getContentPane().add(searchBarPanel);
 			mf.getContentPane().add(paginationPanel);
 			mf.getContentPane().add(scrollPaneVisuComics);
 			
