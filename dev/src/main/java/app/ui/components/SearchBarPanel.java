@@ -38,18 +38,18 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 		initButtonSearch();
 		SpringLayout springLayout = new SpringLayout();
 		springLayout.putConstraint(SpringLayout.NORTH, btnFilter, 85, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, btnFilter, 550, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.WEST, btnFilter, 350, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.SOUTH, btnFilter, -25, SpringLayout.SOUTH, this);
-		springLayout.putConstraint(SpringLayout.EAST, btnFilter, -550, SpringLayout.EAST, this);
+		springLayout.putConstraint(SpringLayout.EAST, btnFilter, -350, SpringLayout.EAST, this);
 		setLayout(springLayout);
 		this.add(btnFilter);
 
 		searchRoundBar = new SearchBar();
 		searchRoundBar.setSearchText("Search");
 		springLayout.putConstraint(SpringLayout.NORTH, searchRoundBar, 25, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, searchRoundBar, 400, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.WEST, searchRoundBar, 250, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.SOUTH, searchRoundBar, -50, SpringLayout.SOUTH, btnFilter);
-		springLayout.putConstraint(SpringLayout.EAST, searchRoundBar, -400, SpringLayout.EAST, this);
+		springLayout.putConstraint(SpringLayout.EAST, searchRoundBar, -250, SpringLayout.EAST, this);
 		add(searchRoundBar);
 	}
 

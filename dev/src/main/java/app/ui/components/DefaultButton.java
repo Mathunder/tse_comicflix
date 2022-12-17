@@ -26,10 +26,11 @@ public class DefaultButton extends JButton {
 		this.isBordered = isbordered;
 		
 		
-		this.setBorderPainted(true);
+		this.setBorderPainted(false);
 		this.setFocusPainted(false);
 		if(this.isBordered) {
 			this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.LightGray));
+			this.setBorderPainted(true);
 		}
 		
 		this.setFont(new Font("Tahoma", Font.PLAIN,this.fontSize));
