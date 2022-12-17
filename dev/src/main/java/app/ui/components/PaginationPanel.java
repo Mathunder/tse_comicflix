@@ -34,15 +34,14 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 		this.comicVineService = comicVineService;
 		this.setBorder(BorderFactory.createEmptyBorder());
 		this.setBackground(CustomColor.WhiteCloud);
-//		this.setBackground(CustomColor.DarkRed);
-		this.setBounds(250, 120, 1250, 30);
+		this.setBounds(200, 120, 850, 30);
 		this.setLayout(null);
 
 		// * Page Number
 		pageNumberLabel = new JLabel("0");
 		pageNumberLabel.setFont(new Font("Roboto", Font.BOLD, 22));
 
-		pageNumberLabel.setBounds(600, 0, 100, 30);
+		pageNumberLabel.setBounds(420, 0, 100, 30);
 		pageNumberLabel.setVisible(true);
 
 		// * Previous Page
@@ -59,7 +58,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 		});
 		// * Next Page
 		nextPageButton = new DefaultButton("Next", CustomColor.Red, 16, true);
-		nextPageButton.setBounds(1130, 0, 100, 30);
+		nextPageButton.setBounds(730, 0, 100, 30);
 		nextPageButton.setVisible(false);
 		nextPageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
