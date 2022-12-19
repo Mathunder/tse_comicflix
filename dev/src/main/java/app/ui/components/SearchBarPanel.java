@@ -77,14 +77,21 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 
 	}
 
+	
+	
 	public SearchResultDto getResult() {
 		return result;
 	}
 
+	
+	
+	
 	public void setResult(SearchResultDto result) {
 		this.result = result;
 	}
 
+	
+	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 

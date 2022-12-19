@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,23 @@ public class ComicVineService {
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		this.pcs.addPropertyChangeListener(listener);
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		ComicVineService test = new ComicVineService();
+		int limit = 1;
+		int page = 1;
+		String keyword = "batman";
+		
+		List<ComicVineSearchFilter> filters = new ArrayList<ComicVineSearchFilter>();
+		filters.add(ComicVineSearchFilter.CHARACTER);
+		
+		
+		test.search(keyword, filters, limit, page);
+		System.out.println(test);
+		
 	}
 
 }
