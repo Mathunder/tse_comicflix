@@ -43,6 +43,10 @@ public class MainFrame extends JFrame {
 			initComponents();
 		}
 		
+		public static JFrame getMf() {
+			return mf;
+		}
+		
 		private void initComponents() {
 			// Main Frame
 			mf = new JFrame("Comics Library");   
@@ -81,17 +85,8 @@ public class MainFrame extends JFrame {
 			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
-			
-			//ComicsInfos Panel
-			visuComicInfos = new ComicsInfosPanel();
-			
-			//ScrollBar ComicsInfos Panel
-			JScrollPane scrollPaneComicsInfos = new JScrollPane(visuComicInfos);
-			scrollPaneComicsInfos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			scrollPaneComicsInfos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-			scrollPaneComicsInfos.setBounds(250, 150, 1253, 715);
-			mf.getContentPane().setLayout(null);
-							 
+			scrollPaneVisuComics.getHorizontalScrollBar().setUnitIncrement(14);
+					 
 			//Add Panels to Main Frame
 			mf.getContentPane().add(loginInfo);
 			mf.getContentPane().add(sideLeftBar);

@@ -4,7 +4,6 @@ import java.awt.*;
 import javax.swing.*;
 
 import app.entities.Comics;
-import app.ui.frames.MainFrame;
 
 // The goal of this class is to create a panel in which the informations of the selected comic will be displayed
 public class ComicsInfosPanel extends JPanel {
@@ -51,11 +50,15 @@ public class ComicsInfosPanel extends JPanel {
 		JTextField issue_infos = new JTextField("Informations about the issue");  // adding the informations about the issue
 		issue_infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));  // matching the size of the block to the size of the image
 		box2.add(issue_infos);
+		
+		box1.setVisible(true);
+		box2.setVisible(true);
 
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		this.add(BorderLayout.WEST, box1);
 		// Vertical separator
 		this.add(Box.createRigidArea(new Dimension(50, 0)));
 		this.add(BorderLayout.WEST, box2);
+		this.setVisible(true);
 	}
 }
