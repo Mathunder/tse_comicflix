@@ -43,6 +43,7 @@ public class VisuComicsPanel extends JPanel{
 				display_comics_infos = true;
 				clicked_comics = comics;
 				System.out.println(display_comics_infos);
+				clicked_comics.displayInfos(comics);
 			}
 		});
 	}
@@ -93,4 +94,3 @@ public class VisuComicsPanel extends JPanel{
 		refreshPanel();
 	}
 }
->>>>>>> 23b7956 implementing the display of comics infos
