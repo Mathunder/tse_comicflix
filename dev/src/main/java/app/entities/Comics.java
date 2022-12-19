@@ -78,7 +78,10 @@ public class Comics {
 		return this.characters;
 	}
 	
-	public void displayInfos() {
-		MainFrame.visuComicInfos.createComicsInfosPanel(this);
+	
+	public void displayInfos(Comics comics) {
+		MainFrame.visuComics.setVisible(false);
+		MainFrame.visuComicInfos.setVisible(true);
+		MainFrame.visuComicInfos.createComicsInfosPanel(comics);
 	}
 }

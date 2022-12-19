@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import app.entities.Comics;
+import app.ui.frames.MainFrame;
 
 // The goal of this class is to create a panel in which the informations of the selected comic will be displayed
 public class ComicsInfosPanel extends JPanel {
@@ -56,9 +57,5 @@ public class ComicsInfosPanel extends JPanel {
 		// Vertical separator
 		this.add(Box.createRigidArea(new Dimension(50, 0)));
 		this.add(BorderLayout.WEST, box2);
-	}
-	
-	public void displayComicsInfosPanel() {
-		// display comics infos here
 	}
 }
