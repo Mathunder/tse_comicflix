@@ -45,6 +45,10 @@ public class MainFrame extends JFrame {
 			initComponents();
 		}
 		
+		public static JFrame getMf() {
+			return mf;
+		}
+		
 		private void initComponents() {
 			// Main Frame
 			mf = new JFrame("Comics Library");   

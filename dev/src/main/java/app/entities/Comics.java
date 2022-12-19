@@ -19,6 +19,7 @@ import app.ui.frames.MainFrame;
 public class Comics {
 	private String title;
 	private ImageIcon image;
+	private URL url;
 	private String synopsis;
 	private List<String> creators;
 	private List<String> characters;
@@ -76,12 +77,5 @@ public class Comics {
 	
 	public List<String> getCharacters() {
 		return this.characters;
-	}
-	
-	
-	public void displayInfos(Comics comics) {
-		MainFrame.visuComics.setVisible(false);
-		MainFrame.visuComicInfos.setVisible(true);
-		MainFrame.visuComicInfos.createComicsInfosPanel(comics);
 	}
 }
