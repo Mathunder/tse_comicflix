@@ -52,7 +52,7 @@ public class MainFrame extends JFrame {
 			mf.setResizable(false);
 
 			//User
-			user = new User(false, "Invité", "", "");
+			user = new User(false, 0, "Invité", "", "");
 			
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
@@ -219,7 +219,7 @@ public class MainFrame extends JFrame {
 		    	loginFrame.setVisible(true);
 	    	}
 	    	else { 
-	    		user = new User(false, "Invité", "","");
+	    		user = new User(false, 0, "Invité", "","");
 	    		setUserProfile(user);
 	    	}
 	    }

@@ -7,11 +7,12 @@ import lombok.Data;
 public class User {
 
 	private boolean isAuthenticated ;
+	private int id;
 	private String username;
 	private String first_name; 
 	private String last_name;
 	
-	public User(boolean isAuthenticated, String username, String first_name, String last_name) {
+	public User(boolean isAuthenticated, int id, String username, String first_name, String last_name) {
 		super();
 		this.isAuthenticated = isAuthenticated;
 		this.username = username;

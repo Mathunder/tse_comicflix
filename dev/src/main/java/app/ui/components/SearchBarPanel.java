@@ -1,13 +1,11 @@
 package app.ui.components;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import javax.swing.JPanel;
 import app.dto.SearchResultDto;
 import app.helpers.ComicVineSearchFilter;
@@ -16,9 +14,7 @@ import app.services.ComicVineService;
 import app.ui.frames.MainFrame;
 import app.ui.themes.CustomColor;
 import javax.swing.SpringLayout;
-import javax.swing.JTextField;
 import java.awt.Color;
-import java.awt.FlowLayout;
 
 @SuppressWarnings("serial")
 public class SearchBarPanel extends JPanel implements PropertyChangeListener {
@@ -70,7 +66,7 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 
 			List<ComicVineSearchFilter> filters = new ArrayList<>();
 			// filters.add(ComicVineSearchFilter.ISSUE);
-			filters.add(ComicVineSearchFilter.CHARACTER);
+			filters.add(ComicVineSearchFilter.ISSUE);
 			String keyword = searchRoundBar.getSearchText().replaceAll(" ", "-");
 			this.comicVineService.search(keyword, filters, this.comicVineService.getLimit(), 0);
 		}
