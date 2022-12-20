@@ -31,6 +31,8 @@ public class MainFrame extends JFrame {
 		private static InterfaceMainFrame listenerController;
 		private PaginationPanel paginationPanel;
 		private User user;
+		private FavoritesPanel favPanel;
+		private JScrollPane scrollPaneVisuComics;
 		
 		public MainFrame(ComicVineService comicVineService) {	
 			super();
@@ -76,9 +78,12 @@ public class MainFrame extends JFrame {
 
 			//VisuComics Panels
 			visuComics = new VisuComicsPanel();
+			
+			//Favorites Panel
+			favPanel = new FavoritesPanel();
 	
 			//ScrollBar VisuComics Panel
-			JScrollPane scrollPaneVisuComics = new JScrollPane(visuComics);
+			scrollPaneVisuComics = new JScrollPane(visuComics);
 			scrollPaneVisuComics.setBounds(200, 150, 840, 417);
 			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -90,7 +95,7 @@ public class MainFrame extends JFrame {
 			
 			//ScrollBar ComicsInfos Panel
 			JScrollPane scrollPaneComicsInfos = new JScrollPane(visuComicInfos);
-							 
+			
 			//Add Panels to Main Frame
 			mf.getContentPane().setLayout(null);
 			mf.getContentPane().add(loginInfo);
@@ -189,6 +194,8 @@ public class MainFrame extends JFrame {
 	    	discoverBtn.setBorderColorOnFocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnUnfocus();
+	    	
+	    	scrollPaneVisuComics.setViewportView(visuComics);
 	    }  
 	    
 	    private void recommandBtnActionPerformed(ActionEvent evt) {  
@@ -199,6 +206,8 @@ public class MainFrame extends JFrame {
 	    	discoverBtn.setBorderColorOnUnfocus();
 	    	recommandBtn.setBorderColorOnFocus();
 	    	myLibrary.setBorderColorOnUnfocus();
+	    	
+	    	
 	    }  
 	    
 	    private void myLibraryBtnActionPerformed(ActionEvent evt) {   
@@ -209,6 +218,10 @@ public class MainFrame extends JFrame {
 	    	discoverBtn.setBorderColorOnUnfocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnFocus();
+	    	
+	    	favPanel.setUser(user);
+	    	scrollPaneVisuComics.setViewportView(favPanel);
+	    	
 	    } 
 	    
 	    private void loginBtnActionPerformed(ActionEvent evt) {
@@ -222,6 +235,7 @@ public class MainFrame extends JFrame {
 	    		user = new User(false, 0, "Invité", "","");
 	    		setUserProfile(user);
 	    	}
+	    	
 	    }
 	    
 	    public void setUserProfile(User newUser) {
@@ -247,11 +261,21 @@ public class MainFrame extends JFrame {
 	    		btnUserLogin.setText("Logout");
 	    		recommandBtn.setVisible(true);
 	    		myLibrary.setVisible(true);
+	    				
 	    	}
 	    	else {
 	    		btnUserLogin.setText("Login");
 	    		recommandBtn.setVisible(false);
 	    		myLibrary.setVisible(false);
+	    		
+		    	discoverBtn.setBackground(CustomColor.DarkRed);
+		    	recommandBtn.setBackground(CustomColor.Red);
+		    	myLibrary.setBackground(CustomColor.Red);
+		    	discoverBtn.setBorderColorOnFocus();
+		    	recommandBtn.setBorderColorOnUnfocus();
+		    	myLibrary.setBorderColorOnUnfocus();
+		    	scrollPaneVisuComics.setViewportView(visuComics);
+	    		
 	    	}
 	    }
 }

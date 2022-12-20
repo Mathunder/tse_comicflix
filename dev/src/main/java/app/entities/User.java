@@ -15,6 +15,7 @@ public class User {
 	public User(boolean isAuthenticated, int id, String username, String first_name, String last_name) {
 		super();
 		this.isAuthenticated = isAuthenticated;
+		this.id = id;
 		this.username = username;
 		this.first_name = first_name;
 		this.last_name = last_name;

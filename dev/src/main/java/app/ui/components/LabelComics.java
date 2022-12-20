@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import app.entities.Comics;
 import app.ui.themes.CustomColor;
 import java.awt.event.*;
+import javax.swing.JButton;
 
 public class LabelComics extends JLabel{
 	
