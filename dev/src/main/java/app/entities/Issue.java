@@ -7,14 +7,23 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
 	private String aliases;
 	private String api_detail_url;
 	private int id;
-	private int issue_number;
+	private String issue_number;
 	private String name;
 	private ImageResultDto image;
+	
+	public Issue() {}
+	
+	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url) {
+		this.aliases=aliases;
+		this.api_detail_url = api_detail_url;
+		this.issue_number = issue_number;
+		this.name = name;
+		this.image = new ImageResultDto(image_url);
+	}
 
 }

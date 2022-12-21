@@ -238,13 +238,7 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = Issue.builder()
-						.id(rs.getInt("issue_id"))
-						.issue_number(rs.getInt("issue_number"))
-						.name(rs.getString("issue_name"))
-						.api_detail_url(rs.getString("api_detail_url"))
-						.image(ImageResultDto.builder().medium_url(rs.getString("image_url")).build())
-						.build();
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
 				issues.add(i);
 			}
 			
