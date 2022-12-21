@@ -2,9 +2,13 @@ package app.ui.frames;
 
 import app.entities.User;
 import app.services.ComicVineService;
+import app.services.DatabaseService;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import app.ui.components.*;
 import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.*;
@@ -20,6 +24,7 @@ public class MainFrame extends JFrame {
 		static JPanel sideLeftBar;
 		static JPanel searchBarPanel;
 		public static VisuComicsPanel visuComics;
+		private static VisuComicsPanel visuFavoriteComics;
 		static LeftBarButton discoverBtn;
 		static LeftBarButton recommandBtn;
 		static LeftBarButton myLibrary;
@@ -31,7 +36,6 @@ public class MainFrame extends JFrame {
 		private static InterfaceMainFrame listenerController;
 		private PaginationPanel paginationPanel;
 		private User user;
-		private FavoritesPanel favPanel;
 		private JScrollPane scrollPaneVisuComics;
 		
 		public MainFrame(ComicVineService comicVineService) {	
@@ -80,9 +84,10 @@ public class MainFrame extends JFrame {
 			visuComics = new VisuComicsPanel();
 			visuComics.updateUser(user);
 			
-			//Favorites Panel
-			favPanel = new FavoritesPanel();
-	
+			//FavoriteComics Panels
+			visuFavoriteComics = new VisuComicsPanel();
+			visuFavoriteComics.updateUser(user);
+			
 			//ScrollBar VisuComics Panel
 			scrollPaneVisuComics = new JScrollPane(visuComics);
 			scrollPaneVisuComics.setBounds(200, 150, 840, 417);
@@ -126,7 +131,7 @@ public class MainFrame extends JFrame {
 			sideLeftBar.add(recommandBtn);
 			
 			//Button MyLibrary
-			myLibrary = new LeftBarButton("Ma bibliothèque",CustomColor.Red,20,true);
+			myLibrary = new LeftBarButton("Mes favoris",CustomColor.Red,20,true);
 			myLibrary.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
 	            	myLibraryBtnActionPerformed(evt);
@@ -196,6 +201,8 @@ public class MainFrame extends JFrame {
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnUnfocus();
 	    	
+	    	visuComics.updateUser(user);
+	    	visuComics.showResult();
 	    	scrollPaneVisuComics.setViewportView(visuComics);
 	    }  
 	    
@@ -220,9 +227,11 @@ public class MainFrame extends JFrame {
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnFocus();
 	    	
-	    	favPanel.setUser(user);
-	    	scrollPaneVisuComics.setViewportView(favPanel);
-	    	
+	    	DatabaseService database = new DatabaseService();
+	    	scrollPaneVisuComics.setViewportView(visuFavoriteComics);
+	    	visuFavoriteComics.updateUser(user);
+	    	visuFavoriteComics.updateResults(database.getUserFavorites(user.getId()));
+    	
 	    } 
 	    
 	    private void loginBtnActionPerformed(ActionEvent evt) {

@@ -18,6 +18,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SpringLayout;
+
 import app.entities.Issue;
 import app.entities.User;
 import app.services.DatabaseService;
@@ -50,14 +52,24 @@ public class ComicCoverPanel extends JPanel{
 		setPreferredSize(new Dimension(206,310));
 		
 		// Création du label titre
-		JLabel titleLabel = new JLabel(" " + this.issue.getName() + " ");
+		JLabel titleLabel = new JLabel(titleUpdate(issue.getName()));
 		titleLabel.setOpaque(true);
 		titleLabel.setFont(new Font("Tahoma", Font.PLAIN,20));
-		titleLabel.setBackground(CustomColor.Black);
+		titleLabel.setBackground(CustomColor.DarkGray);
 		titleLabel.setForeground(CustomColor.WhiteCloud); 
 		titleLabel.setHorizontalTextPosition(JLabel.CENTER);
 		titleLabel.setVerticalTextPosition(JLabel.BOTTOM);
 
+		//Count the number of "<br>" in order to adapt the label height
+		int labelHeight = countOccurrences(titleLabel.getText(), "<br>")*(-25) - 25;
+		
+		//Put constraint on Label 
+		SpringLayout springLayout = new SpringLayout();
+		springLayout.putConstraint(SpringLayout.NORTH, titleLabel, labelHeight , SpringLayout.SOUTH, this);
+		springLayout.putConstraint(SpringLayout.WEST, titleLabel, 0, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.SOUTH, titleLabel, 0, SpringLayout.SOUTH, this);
+		springLayout.putConstraint(SpringLayout.EAST, titleLabel, 0, SpringLayout.EAST, this);
+		setLayout(springLayout);
 		// Add the label to the panel
 		add(titleLabel);
 
@@ -73,6 +85,12 @@ public class ComicCoverPanel extends JPanel{
 	            	button_favActionPerformed(evt);
 	            }
 			});
+			
+			//Put Constraints on fav button
+			springLayout.putConstraint(SpringLayout.NORTH, button_fav, labelHeight - 25, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.WEST, button_fav, 0, SpringLayout.WEST, this);
+			springLayout.putConstraint(SpringLayout.SOUTH, button_fav, labelHeight, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.EAST, button_fav, -140, SpringLayout.EAST, this);
 			// Add buttons to the panel
 			add(button_fav);
 		}
@@ -105,7 +123,7 @@ public class ComicCoverPanel extends JPanel{
 			}
 			
 			//Add issues in the database
-			database.addNewIssue(issue.getId(), Integer.parseInt(issue.getIssue_number()), issue.getName(), issue.getApi_detail_url(), issue.getImage().getMedium_url(), "21/12/2022");
+			database.addNewIssue(issue.getId(), Integer.parseInt(issue.getIssue_number()), issue.getName(), issue.getApi_detail_url(), issue.getImage().getMedium_url());
 			
 			//Add link between user and favorite issue
 			database.addNewUserFavorite(userId, issue.getId());
@@ -124,4 +142,43 @@ public class ComicCoverPanel extends JPanel{
 	    return dimg;
 	}  
 	
+	public String titleUpdate(String title) {
+		//If the title is too long, transformation into HTML and add of line break
+		String titleDisplayed = new String("<html>");
+		if(title == null) { return ""; 
+		}
+		if(title.length()>13) {
+
+			for (int j=0;j<title.length();j++) {
+				titleDisplayed = titleDisplayed.concat(String.valueOf(title.charAt(j)));
+				if(j != 0 && (j % 13 == 0)) {
+					for (int k=j+1;k<title.length();k++) {
+						if(title.charAt(k) == ' ' || title.charAt(k) == '-') {
+							titleDisplayed = titleDisplayed.concat("<br>");
+							j = k;
+							break;
+						}
+						else {
+							titleDisplayed = titleDisplayed.concat(String.valueOf(title.charAt(k)));
+						}
+						j=k;
+					}
+				}
+			}
+			return titleDisplayed.concat("</html>");
+		}
+		else {
+			return title;
+		}
+	}
+	
+	public static int countOccurrences(String str, String sub) {
+	    int count = 0;
+	    int index = 0;
+	    while ((index = str.indexOf(sub, index)) != -1) {
+	        ++count;
+	        ++index;
+	    }
+	    return count;
+	}
 }

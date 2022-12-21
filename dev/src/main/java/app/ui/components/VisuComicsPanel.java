@@ -43,10 +43,12 @@ public class VisuComicsPanel extends JPanel{
 	public void removeComics() {
 		this.removeAll();
 	}
+	
 	public void refreshPanel() {
 		this.revalidate();
 		this.repaint();
 	}
+	
 	public void showResult() {
 		
 		removeComics();
@@ -87,6 +89,11 @@ public class VisuComicsPanel extends JPanel{
 	
 	public void updateResults(SearchResultDto res) {
 		this.result = res;
+		showResult();
+	}
+	
+	public void updateResults(List<Issue> res) {
+		result = new SearchResultDto(res);
 		showResult();
 	}
 	

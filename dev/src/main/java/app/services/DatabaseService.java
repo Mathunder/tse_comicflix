@@ -133,7 +133,7 @@ public class DatabaseService {
 	}
 	
 	// Issues table methods
-	public void addNewIssue(int issue_id, int issue_number, String issue_name, String api_detail_url, String image_url, String store_date) {
+	public void addNewIssue(int issue_id, int issue_number, String issue_name, String api_detail_url, String image_url) {
 		
 		// FIRST CHECK IF THE ENTRY DOESNT ALREADY EXIST
 		boolean isTupleAlreadyExists = false;
@@ -162,23 +162,7 @@ public class DatabaseService {
 		
 		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
 		if(!isTupleAlreadyExists) {
-			sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url,store_date) VALUES(?,?,?,?,?,?)";
-			
-			//Conversion String to date
-			//Date format in the input String
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			
-			// Parsing Strings in util.date
-			java.util.Date date_storeDate = null;
-			try {
-				date_storeDate = sdf.parse(store_date);
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			java.util.Date date_coverDate = null;
-			
-			Date sqlDate_storeDate = Date.valueOf(date_storeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url) VALUES(?,?,?,?,?)";
 			
 			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 				pstmt.setInt(1, issue_id);
@@ -186,7 +170,6 @@ public class DatabaseService {
 				pstmt.setString(3, issue_name);
 				pstmt.setString(4, api_detail_url);
 				pstmt.setString(5, image_url);
-				pstmt.setDate(6, sqlDate_storeDate);
 				pstmt.executeUpdate();
 							
 			} catch (SQLException e) {
