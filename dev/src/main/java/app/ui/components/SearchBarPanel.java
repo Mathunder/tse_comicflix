@@ -66,7 +66,7 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 
 			List<ComicVineSearchFilter> filters = new ArrayList<>();
 			// filters.add(ComicVineSearchFilter.ISSUE);
-			filters.add(ComicVineSearchFilter.CHARACTER);
+			filters.add(ComicVineSearchFilter.ISSUE);
 			String keyword = searchRoundBar.getSearchText().replaceAll(" ", "-");
 			this.comicVineService.search(keyword, filters, this.comicVineService.getLimit(), 0);
 		}
@@ -89,7 +89,7 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 
 				this.searchRoundBar.setSearchText("Loading...");
 			} else if (evt.getNewValue() == ComicVineSearchStatus.DONE) {
-				MainFrame.visuComics.showResult(this.comicVineService.getSearchResult());
+				MainFrame.visuComics.updateResults(this.comicVineService.getSearchResult());
 
 				this.searchRoundBar.setSearchText("Search book ...");
 			}

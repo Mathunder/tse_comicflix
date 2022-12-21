@@ -78,6 +78,7 @@ public class MainFrame extends JFrame {
 
 			//VisuComics Panels
 			visuComics = new VisuComicsPanel();
+			visuComics.updateUser(user);
 			
 			//Favorites Panel
 			favPanel = new FavoritesPanel();
@@ -234,6 +235,7 @@ public class MainFrame extends JFrame {
 	    	else { 
 	    		user = new User(false, 0, "Invité", "","");
 	    		setUserProfile(user);
+	    		visuComics.updateUser(user);
 	    	}
 	    	
 	    }
@@ -241,6 +243,7 @@ public class MainFrame extends JFrame {
 	    public void setUserProfile(User newUser) {
 	    	
 	    	user = newUser;
+	    	visuComics.updateUser(user);
 	    	
 	    	//Update information on login panel
 	    	if(user.isAuthenticated())

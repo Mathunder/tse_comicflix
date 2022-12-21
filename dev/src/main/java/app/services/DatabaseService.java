@@ -133,46 +133,66 @@ public class DatabaseService {
 	}
 	
 	// Issues table methods
-	public void addNewIssue(int issue_id, int issue_number, String issue_name, String api_detail_url, String image_url, String store_date, String cover_date) {
-		String sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url,store_date,cover_date) VALUES(?,?,?,?,?,?,?)";
+	public void addNewIssue(int issue_id, int issue_number, String issue_name, String api_detail_url, String image_url, String store_date) {
 		
+		// FIRST CHECK IF THE ENTRY DOESNT ALREADY EXIST
+		boolean isTupleAlreadyExists = false;
 		
-		//Conversion String to date
-		//Date format in the input String
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String sql = "SELECT * FROM issues WHERE issue_id = ?";
 		
-		// Parsing Strings in util.date
-		java.util.Date date_storeDate = null;
-		try {
-			date_storeDate = sdf.parse(store_date);
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		java.util.Date date_coverDate = null;
-		try {
-			date_coverDate = sdf.parse(cover_date);
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		Date sqlDate_storeDate = Date.valueOf(date_storeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-		Date sqlDate_coverDate = Date.valueOf(date_coverDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-		
-		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
 			pstmt.setInt(1, issue_id);
-			pstmt.setInt(2, issue_number);
-			pstmt.setString(3, issue_name);
-			pstmt.setString(4, api_detail_url);
-			pstmt.setString(5, image_url);
-			pstmt.setDate(6, sqlDate_storeDate);
-			pstmt.setDate(7, sqlDate_coverDate);
-			pstmt.executeUpdate();
-						
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(!rs.next()) {
+				//tuple doesn't exist yet
+				isTupleAlreadyExists = false;
+			}
+			else {
+				// tuple already exists
+				isTupleAlreadyExists = true;
+				System.out.println("Tuple already exist !!!"); 
+			}
+			
+		}
+		catch (Exception e) {
+			// TODO: handle exception
 			e.printStackTrace();
+		}
+		
+		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
+		if(!isTupleAlreadyExists) {
+			sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url,store_date) VALUES(?,?,?,?,?,?)";
+			
+			//Conversion String to date
+			//Date format in the input String
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			
+			// Parsing Strings in util.date
+			java.util.Date date_storeDate = null;
+			try {
+				date_storeDate = sdf.parse(store_date);
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			java.util.Date date_coverDate = null;
+			
+			Date sqlDate_storeDate = Date.valueOf(date_storeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			
+			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+				pstmt.setInt(1, issue_id);
+				pstmt.setInt(2, issue_number);
+				pstmt.setString(3, issue_name);
+				pstmt.setString(4, api_detail_url);
+				pstmt.setString(5, image_url);
+				pstmt.setDate(6, sqlDate_storeDate);
+				pstmt.executeUpdate();
+							
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -224,6 +244,20 @@ public class DatabaseService {
 		
 	}
 	
+	public void removeOneUserFavorite(int user_id, int issue_id) {
+		String sql = "DELETE FROM favorites WHERE issue_id = ? AND user_id = ?";
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, issue_id);
+			pstmt.setInt(2, user_id);
+			pstmt.executeUpdate();
+		} 
+		catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+	}
+	
 	public List<Issue> getUserFavorites(int user_id){
 		
 		List<Issue> issues = new ArrayList<>();
@@ -249,23 +283,6 @@ public class DatabaseService {
 		}	
 		
 		return issues;
-	}
-	public static void main(String[] args) {
-		
-//      DatabaseService data = new DatabaseService();
-		
-//		data.addNewIssue(111, 2, "TEST2", "URL2", "IMAGE_URL2", "20/12/2022", "19/12/2022");
-//		data.addNewUserFavorite(1, 111);
-		
-//		List<Issue> issues = new ArrayList<>();
-//		
-//		issues = data.getUserFavorites(2);
-//		
-//		ListIterator<Issue> listIterator = issues.listIterator();
-//		
-//		while(listIterator.hasNext()) {
-//			System.out.println(listIterator.next());
-//		}
 	}
 
 }

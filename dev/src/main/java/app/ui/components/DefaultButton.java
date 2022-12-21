@@ -39,5 +39,14 @@ public class DefaultButton extends JButton {
 		this.setVisible(true);
 		
 	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+		this.setBackground(this.color);
+	}
 
 }
