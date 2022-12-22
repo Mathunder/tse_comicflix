@@ -63,7 +63,10 @@ public class ComicCoverPanel extends JPanel{
 		titleLabel.setVerticalTextPosition(JLabel.BOTTOM);
 
 		//Count the number of "<br>" in order to adapt the label height
-		int labelHeight = countOccurrences(titleLabel.getText(), "<br>")*(-25) - 25;
+		int labelHeight = (countOccurrences(titleLabel.getText(), "<br>"))*(-25);
+		if(titleLabel.getText() != "")
+			labelHeight -= 25;
+		
 		
 		//Put constraint on Label 
 		SpringLayout springLayout = new SpringLayout();

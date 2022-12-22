@@ -24,8 +24,8 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		static JPanel loginInfo;
 		static JPanel sideLeftBar;
 		static JPanel searchBarPanel;
-		public static VisuComicsPanel visuComics;
-		private static VisuComicsPanel visuFavoriteComics;
+		public static ComicVueSearch visuSearchComics;
+		private static ComicVueFavorite visuFavoriteComics;
 		static LeftBarButton discoverBtn;
 		static LeftBarButton recommandBtn;
 		static LeftBarButton myLibrary;
@@ -85,13 +85,13 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			paginationPanel= new PaginationPanel(comicVineService);
 
 			//VisuComics Panels
-			visuComics = new VisuComicsPanel(userModel, comicVineService, dataBaseService);
+			visuSearchComics = new ComicVueSearch(userModel, comicVineService, dataBaseService);
 						
 			//FavoriteComics Panels
-			//visuFavoriteComics = new VisuComicsPanel();
+			visuFavoriteComics = new ComicVueFavorite(userModel, comicVineService, dataBaseService);
 			
 			//ScrollBar VisuComics Panel
-			scrollPaneVisuComics = new JScrollPane(visuComics);
+			scrollPaneVisuComics = new JScrollPane(visuSearchComics);
 			scrollPaneVisuComics.setBounds(200, 150, 840, 417);
 			scrollPaneVisuComics.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			scrollPaneVisuComics.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -202,6 +202,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	discoverBtn.setBorderColorOnFocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnUnfocus();
+	    	scrollPaneVisuComics.setViewportView(visuSearchComics);
 	    	
 	    }  
 	    
@@ -224,6 +225,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	discoverBtn.setBorderColorOnUnfocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnFocus();
+	    	scrollPaneVisuComics.setViewportView(visuFavoriteComics);
 	    	    	
 	    } 
 	    
@@ -271,7 +273,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		    	discoverBtn.setBorderColorOnFocus();
 		    	recommandBtn.setBorderColorOnUnfocus();
 		    	myLibrary.setBorderColorOnUnfocus();
-		    	scrollPaneVisuComics.setViewportView(visuComics);
+		    	scrollPaneVisuComics.setViewportView(visuSearchComics);
 	    		
 	    	}
 	    }
