@@ -54,6 +54,7 @@ public class ComicVineService {
 			params.put("page", Integer.toString(page));
 			String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
 
+	
 			ComicVineSearchStatus oldSearchStatus = this.getSearchStatus();
 			this.setSearchStatus(ComicVineSearchStatus.FETCHING);
 			this.pcs.firePropertyChange("searchStatus", oldSearchStatus, this.getSearchStatus());
@@ -63,6 +64,7 @@ public class ComicVineService {
 					.body("status_code", equalTo(1)).when().get("/search").as(SearchResultDto.class);
 			this.pcs.firePropertyChange("searchResults", prevSearchResult, searchResult);
 
+			System.out.println("passed there");
 			totalResults = this.searchResult.getNumber_of_total_results();
 			oldSearchStatus = this.getSearchStatus();
 			this.setSearchStatus(ComicVineSearchStatus.DONE);
@@ -75,21 +77,5 @@ public class ComicVineService {
 		this.pcs.addPropertyChangeListener(listener);
 	}
 	
-	
-	
-	public static void main(String[] args) {
-		ComicVineService test = new ComicVineService();
-		int limit = 1;
-		int page = 1;
-		String keyword = "batman";
-		
-		List<ComicVineSearchFilter> filters = new ArrayList<ComicVineSearchFilter>();
-		filters.add(ComicVineSearchFilter.CHARACTER);
-		
-		
-		test.search(keyword, filters, limit, page);
-		System.out.println(test);
-		
-	}
 
 }
