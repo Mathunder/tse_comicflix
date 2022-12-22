@@ -31,13 +31,15 @@ public class ComicCoverPanel extends JPanel{
 	private BufferedImage resizedImageBg;
 	private DefaultButton button_fav;
 	private Issue issue;
-	private int userId;
+	private User user;
+	protected DatabaseService databaseService;
 	
-	public ComicCoverPanel(Issue issue, boolean isFavorite, int uId){
+	public ComicCoverPanel(Issue issue, boolean isFavorite, User user, DatabaseService dbS){
 		
 		super();
 		this.issue=issue;
-		this.userId = uId;
+		this.user = user;
+		this.databaseService = dbS;
 		
 		//Load a test image, resize and paint of the panel background
 		try {
@@ -73,7 +75,7 @@ public class ComicCoverPanel extends JPanel{
 		// Add the label to the panel
 		add(titleLabel);
 
-		if(userId != 0)	{// Button favorite creation // \u2665 : unicode for full heart symbol
+		if(user.getId() != 0)	{// Button favorite creation // \u2665 : unicode for full heart symbol
 			button_fav = new DefaultButton(String.valueOf("\u2665"), CustomColor.Red, 24, true);
 			
 			//Change color if Comics already in user favorite
@@ -106,29 +108,22 @@ public class ComicCoverPanel extends JPanel{
 	
 	private void button_favActionPerformed(ActionEvent e) {
 		
-		DatabaseService database = new DatabaseService();
-		
 		if(button_fav.getColor() == CustomColor.Green) {
 			button_fav.setColor(CustomColor.Red);
 			
 			//Delete issue favorite link in the database
-			database.removeOneUserFavorite(userId, issue.getId());
+			databaseService.removeOneUserFavorite(user, issue);
 			
 		}
 		else {
 			button_fav.setColor(CustomColor.Green);
 			
-			if(issue.getIssue_number() == null) { //IF CHARACTER
-				issue.setIssue_number("0");
-			}
-			
 			//Add issues in the database
-			database.addNewIssue(issue.getId(), Integer.parseInt(issue.getIssue_number()), issue.getName(), issue.getApi_detail_url(), issue.getImage().getMedium_url());
+			databaseService.addNewIssue(issue);
 			
 			//Add link between user and favorite issue
-			database.addNewUserFavorite(userId, issue.getId());
+			databaseService.addNewUserFavorite(user, issue);
 		}
-		
 	}
 	
 	private static BufferedImage resizeBuffImage(BufferedImage img, int newW, int newH) { 

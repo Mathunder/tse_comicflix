@@ -1,6 +1,6 @@
 package app;
 
-import app.entities.UserModel;
+import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
 import app.ui.frames.MainFrame;

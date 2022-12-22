@@ -10,7 +10,8 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.SpringLayout;
 import java.awt.Toolkit;
-import app.entities.UserModel;
+
+import app.models.UserModel;
 import app.services.DatabaseService;
 import app.ui.components.DefaultButton;
 import app.ui.themes.CustomColor;

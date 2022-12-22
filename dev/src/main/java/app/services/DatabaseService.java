@@ -10,7 +10,7 @@ import java.util.ListIterator;
 import app.dto.ImageResultDto;
 import app.entities.Issue;
 import app.entities.User;
-import app.entities.UserModel;
+import app.models.UserModel;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -136,17 +136,28 @@ public class DatabaseService {
 			if(rs.getInt("user_id") != 0)
 				isAuthenticated = true;
 			
-			userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")));
+			userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")));
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			userModel.setUser(false, new User(0,"Invité","",""));
+			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>());
 		}	
 	}
 	
 	// Issues table methods
-	public void addNewIssue(int issue_id, int issue_number, String issue_name, String api_detail_url, String image_url) {
+	public void addNewIssue(Issue issue) {
+		
+		if(issue.getIssue_number() == null) { //IF CHARACTER
+			issue.setIssue_number("0");
+		}
+		
+		int issue_id = issue.getId();
+		int issue_number = Integer.parseInt(issue.getIssue_number());
+		String issue_name = issue.getName();
+		String api_detail_url = issue.getApi_detail_url();
+		String image_url = issue.getImage().getMedium_url();
+		
 		
 		// FIRST CHECK IF THE ENTRY DOESNT ALREADY EXIST
 		boolean isTupleAlreadyExists = false;
@@ -164,7 +175,7 @@ public class DatabaseService {
 			else {
 				// tuple already exists
 				isTupleAlreadyExists = true;
-				System.out.println("Tuple already exist !!!"); 
+				System.out.println("Issue already exist !!!"); 
 			}
 			
 		}
@@ -194,10 +205,12 @@ public class DatabaseService {
 	}
 
 	// Favorites table methods
-	public void addNewUserFavorite(int user_id, int issue_id) {
+	public void addNewUserFavorite(User user, Issue issue) {
 		
 		//FIRST : CHECK IF TUPLE DOESN'T EXIST
 		boolean isTupleAlreadyExists = false;
+		int user_id = user.getId();
+		int issue_id = issue.getId();
 		
 		String sql = "SELECT * FROM favorites WHERE issue_id = ? AND user_id = ?";
 		
@@ -213,7 +226,7 @@ public class DatabaseService {
 			else {
 				// tuple already exists
 				isTupleAlreadyExists = true;
-				System.out.println("Tuple already exist !!!"); 
+				System.out.println("Favorite already exist for this user"); 
 			}
 			
 		}
@@ -230,7 +243,9 @@ public class DatabaseService {
 				pstmt.setInt(1, issue_id);
 				pstmt.setInt(2, user_id);
 				pstmt.executeUpdate();
-						
+				
+				//Add issue in the model
+				userModel.addNewUserFavoriteIssue(issue);
 			}
 			catch (Exception e) {
 				// TODO: handle exception
@@ -240,13 +255,18 @@ public class DatabaseService {
 		
 	}
 	
-	public void removeOneUserFavorite(int user_id, int issue_id) {
+	public void removeOneUserFavorite(User user, Issue issue) {
 		String sql = "DELETE FROM favorites WHERE issue_id = ? AND user_id = ?";
+		int user_id = user.getId();
+		int issue_id = issue.getId();
 		
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
 			pstmt.setInt(1, issue_id);
 			pstmt.setInt(2, user_id);
 			pstmt.executeUpdate();
+			
+			//Remove from model
+			userModel.removeUserFavoriteIssue(issue);
 		} 
 		catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -254,7 +274,8 @@ public class DatabaseService {
 		}
 	}
 	
-	public List<Issue> getUserFavorites(int user_id){
+	//USELELL IN MVC Design ?
+	private List<Issue> getUserFavorites(int user_id){
 		
 		List<Issue> issues = new ArrayList<>();
 		

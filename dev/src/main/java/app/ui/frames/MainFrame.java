@@ -1,8 +1,8 @@
 package app.ui.frames;
 
 import app.entities.User;
-import app.entities.UserModel;
 import app.helpers.ComicVineSearchStatus;
+import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
 import java.awt.*;
@@ -85,7 +85,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			paginationPanel= new PaginationPanel(comicVineService);
 
 			//VisuComics Panels
-			//visuComics = new VisuComicsPanel();
+			visuComics = new VisuComicsPanel(userModel, comicVineService, dataBaseService);
 						
 			//FavoriteComics Panels
 			//visuFavoriteComics = new VisuComicsPanel();
@@ -235,7 +235,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		    	loginFrame.setVisible(true);
 	    	}
 	    	else { 
-	    		userModel.setUser(false, new User(0, "Invité", "",""));
+	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>());
 	    	}
 	    	
 	    }
