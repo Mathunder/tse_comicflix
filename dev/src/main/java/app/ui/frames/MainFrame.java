@@ -49,6 +49,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			this.comicVineService = comicVineService;
 			this.dataBaseService = dbS;
 			this.userModel.addPropertyChangeListener(this);
+			this.comicVineService.addPropertyChangeListener(this);
 			
 			initComponents();
 		}
@@ -195,16 +196,18 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		
 		//Actions -------------------------------------------------------------
 		private void discoverBtnActionPerformed(ActionEvent evt) {  
-			
-	    	discoverBtn.setBackground(CustomColor.DarkRed);
+			setFocusOnDiscoverPanel();
+	    }  
+		
+		private void setFocusOnDiscoverPanel() {
+			discoverBtn.setBackground(CustomColor.DarkRed);
 	    	recommandBtn.setBackground(CustomColor.Red);
 	    	myLibrary.setBackground(CustomColor.Red);
 	    	discoverBtn.setBorderColorOnFocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnUnfocus();
 	    	scrollPaneVisuComics.setViewportView(visuSearchComics);
-	    	
-	    }  
+		}
 	    
 	    private void recommandBtnActionPerformed(ActionEvent evt) {  
 
@@ -283,5 +286,12 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 				showUserInfo();
 				updateUserPanelsAvailable();
 	    	}
+	    	
+	    	if(evt.getPropertyName() == "searchStatus") //From Controller/Model ComicVineService
+			{
+				if(evt.getNewValue() == ComicVineSearchStatus.FETCHING) {
+					setFocusOnDiscoverPanel();
+				}
+			}
 	    }
 }
