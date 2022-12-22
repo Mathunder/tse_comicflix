@@ -10,6 +10,8 @@ import java.util.ListIterator;
 import app.dto.ImageResultDto;
 import app.entities.Issue;
 import app.entities.User;
+import app.entities.UserModel;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Date;
@@ -20,6 +22,12 @@ import java.sql.SQLException;
 
 public class DatabaseService {
 
+	private UserModel userModel;
+	
+	public DatabaseService(UserModel um) {
+		userModel = um;
+	}
+	
 	private Connection connect() {
 		
 		String path = "jdbc:sqlite:src\\main\\resources\\db\\app.db";
@@ -113,23 +121,28 @@ public class DatabaseService {
 		}	
 	}
 	
-	public User getUserFromUsername(String username, String password) {
+	public void loginUserFromUsername(String username, String password) {
 		String sql = "SELECT user_id, first_name, last_name, username FROM users WHERE username=" 
 				+ '"' +  username + '"' 
 				+ " AND password=" + '"' + password + '"'
 				+ " LIMIT 1";
 		
+		boolean isAuthenticated = false;
+		
 		try (Connection conn = this.connect();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)){
 			
-			return new User(true,rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name"));
+			if(rs.getInt("user_id") != 0)
+				isAuthenticated = true;
+			
+			userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")));
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			userModel.setUser(false, new User(0,"Invité","",""));
 		}	
-		
 	}
 	
 	// Issues table methods

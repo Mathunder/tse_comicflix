@@ -1,22 +1,23 @@
 package app.ui.frames;
 
 import app.entities.User;
+import app.entities.UserModel;
+import app.helpers.ComicVineSearchStatus;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
-
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-
 import app.ui.components.*;
-import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.*;
 import lombok.Data;
 
 @SuppressWarnings("serial")
 
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements PropertyChangeListener {
 		
 		// UI COMPONENTS
 		static JFrame mf;
@@ -32,16 +33,22 @@ public class MainFrame extends JFrame {
 		static JLabel lbl_username;
 		private DefaultButton btnUserLogin;
 		private JLabel lblUserID;
-		protected ComicVineService comicVineService;
-		private static InterfaceMainFrame listenerController;
 		private PaginationPanel paginationPanel;
-		private User user;
 		private JScrollPane scrollPaneVisuComics;
 		
-		public MainFrame(ComicVineService comicVineService) {	
+		//Models
+		protected UserModel userModel;
+		
+		//Controllers
+		protected ComicVineService comicVineService;
+		protected DatabaseService dataBaseService;
+		
+		public MainFrame(UserModel um, ComicVineService comicVineService, DatabaseService dbS) {	
 			super();
+			this.userModel = um;
 			this.comicVineService = comicVineService;
-			listenerController = new InterfaceMainFrame(this);
+			this.dataBaseService = dbS;
+			this.userModel.addPropertyChangeListener(this);
 			
 			initComponents();
 		}
@@ -56,9 +63,6 @@ public class MainFrame extends JFrame {
 			mf.setSize(1050,600);      
 			mf.setBackground(CustomColor.Red);
 			mf.setResizable(false);
-
-			//User
-			user = new User(false, 0, "Invité", "", "");
 			
 			// Panels -----------------------------------------------------
 			//loginInfo Panel
@@ -81,12 +85,10 @@ public class MainFrame extends JFrame {
 			paginationPanel= new PaginationPanel(comicVineService);
 
 			//VisuComics Panels
-			visuComics = new VisuComicsPanel();
-			visuComics.updateUser(user);
-			
+			//visuComics = new VisuComicsPanel();
+						
 			//FavoriteComics Panels
-			visuFavoriteComics = new VisuComicsPanel();
-			visuFavoriteComics.updateUser(user);
+			//visuFavoriteComics = new VisuComicsPanel();
 			
 			//ScrollBar VisuComics Panel
 			scrollPaneVisuComics = new JScrollPane(visuComics);
@@ -201,9 +203,6 @@ public class MainFrame extends JFrame {
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnUnfocus();
 	    	
-	    	visuComics.updateUser(user);
-	    	visuComics.showResult();
-	    	scrollPaneVisuComics.setViewportView(visuComics);
 	    }  
 	    
 	    private void recommandBtnActionPerformed(ActionEvent evt) {  
@@ -215,7 +214,6 @@ public class MainFrame extends JFrame {
 	    	recommandBtn.setBorderColorOnFocus();
 	    	myLibrary.setBorderColorOnUnfocus();
 	    	
-	    	
 	    }  
 	    
 	    private void myLibraryBtnActionPerformed(ActionEvent evt) {   
@@ -226,50 +224,37 @@ public class MainFrame extends JFrame {
 	    	discoverBtn.setBorderColorOnUnfocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
 	    	myLibrary.setBorderColorOnFocus();
-	    	
-	    	DatabaseService database = new DatabaseService();
-	    	scrollPaneVisuComics.setViewportView(visuFavoriteComics);
-	    	visuFavoriteComics.updateUser(user);
-	    	visuFavoriteComics.updateResults(database.getUserFavorites(user.getId()));
-    	
+	    	    	
 	    } 
 	    
 	    private void loginBtnActionPerformed(ActionEvent evt) {
 	    	
 	    	//If user is not authenticated
-	    	if (!user.isAuthenticated()) {
-		    	JFrame loginFrame = new LoginForm(listenerController);
+	    	if (!userModel.getIsAuthenticated()) {
+		    	JFrame loginFrame = new LoginForm(userModel, dataBaseService);
 		    	loginFrame.setVisible(true);
 	    	}
 	    	else { 
-	    		user = new User(false, 0, "Invité", "","");
-	    		setUserProfile(user);
-	    		visuComics.updateUser(user);
+	    		userModel.setUser(false, new User(0, "Invité", "",""));
 	    	}
 	    	
 	    }
 	    
-	    public void setUserProfile(User newUser) {
-	    	
-	    	user = newUser;
-	    	visuComics.updateUser(user);
+	    public void showUserInfo() {
 	    	
 	    	//Update information on login panel
-	    	if(user.isAuthenticated())
-	    		lblUserID.setText( user.getFirst_name().substring(0,1).toUpperCase() + user.getLast_name().substring(0,1).toUpperCase());
+	    	if(userModel.getIsAuthenticated())
+	    		lblUserID.setText( userModel.getUser().getFirst_name().substring(0,1).toUpperCase() + userModel.getUser().getLast_name().substring(0,1).toUpperCase());
 	    	else
-	    		lblUserID.setText(user.getUsername().length() < 2 ? user.getUsername() : user.getUsername().toUpperCase().substring(0,2));
+	    		lblUserID.setText(userModel.getUser().getUsername().length() < 2 ? userModel.getUser().getUsername() : userModel.getUser().getUsername().toUpperCase().substring(0,2));
 	    	
-	    	lbl_username.setText(user.getUsername());
-
-	    	//Update interface
-	    	updateUserPanelsAvailable();
+	    	lbl_username.setText(userModel.getUser().getUsername());
 
 	    }
 	    
 	    private void updateUserPanelsAvailable() {
 	    	
-	    	if(user.isAuthenticated()) {
+	    	if(userModel.getIsAuthenticated()) {
 	    		btnUserLogin.setText("Logout");
 	    		recommandBtn.setVisible(true);
 	    		myLibrary.setVisible(true);
@@ -288,6 +273,13 @@ public class MainFrame extends JFrame {
 		    	myLibrary.setBorderColorOnUnfocus();
 		    	scrollPaneVisuComics.setViewportView(visuComics);
 	    		
+	    	}
+	    }
+	    
+	    public void propertyChange(PropertyChangeEvent evt) {
+	    	if (evt.getPropertyName() == "userChange") {
+				showUserInfo();
+				updateUserPanelsAvailable();
 	    	}
 	    }
 }
