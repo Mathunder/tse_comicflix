@@ -54,7 +54,7 @@ public class VisuComicsPanel extends JPanel{
 		removeComics();
 			
 		if(result != null) {
-			result.getResults().stream().forEach(System.out::println);		
+			//result.getResults().stream().forEach(System.out::println);		
 			
 			if(this.user != null) {
 				//Update user favorite list
@@ -71,7 +71,7 @@ public class VisuComicsPanel extends JPanel{
 						}
 					}
 					
-					ComicCoverPanel comicCover = new ComicCoverPanel(result.getResults().get(i),isFavorite, this.user.getId()); //FALSE DOIT ETRE MODIFIER DYNAMIQUEMENT PAR LA SUITE (IF EXIST IN USER LIST ISSUE)
+					ComicCoverPanel comicCover = new ComicCoverPanel(result.getResults().get(i),isFavorite, this.user.getId());
 					this.add(comicCover);
 				}
 			}
