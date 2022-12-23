@@ -7,6 +7,9 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+
 import app.dto.ImageResultDto;
 import app.entities.Issue;
 import app.entities.User;
@@ -23,6 +26,7 @@ import java.sql.SQLException;
 public class DatabaseService {
 
 	private UserModel userModel;
+	private Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(32,64,1,15*1024,2);
 	
 	public DatabaseService(UserModel um) {
 		userModel = um;
@@ -122,9 +126,8 @@ public class DatabaseService {
 	}
 	
 	public void loginUserFromUsername(String username, String password) {
-		String sql = "SELECT user_id, first_name, last_name, username FROM users WHERE username=" 
-				+ '"' +  username + '"' 
-				+ " AND password=" + '"' + password + '"'
+		String sql = "SELECT user_id, first_name, last_name, username, password FROM users WHERE username=" 
+				+ '"' +  username + '"'
 				+ " LIMIT 1";
 		
 		boolean isAuthenticated = false;
@@ -133,10 +136,17 @@ public class DatabaseService {
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)){
 			
-			if(rs.getInt("user_id") != 0)
-				isAuthenticated = true;
-			
-			userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")));
+			if(encoder.matches(password, rs.getString("password")))
+			{
+				if(rs.getInt("user_id") != 0)
+					isAuthenticated = true;
+				
+				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")));
+			}
+			else
+			{
+				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>());
+			}
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
