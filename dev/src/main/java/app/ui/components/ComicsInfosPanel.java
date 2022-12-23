@@ -4,60 +4,98 @@ import java.awt.*;
 import javax.swing.*;
 
 import app.entities.Comics;
+import app.ui.themes.CustomColor;
 
 // The goal of this class is to create a panel in which the informations of the selected comic will be displayed
 public class ComicsInfosPanel extends JPanel {
 	
 	public void createComicsInfosPanel(Comics comic) {
 		
-		// Column 1 (content: summuary, creators, characters)
-		JPanel box1 = new JPanel();  // new JPanel which will be the first column of informations will be displayed
-		box1.setLayout(new BoxLayout(box1, BoxLayout.Y_AXIS));  // chosen layout: BoxLayout
+		JPanel box1 = new JPanel();
+		JTextArea synopsis_title = new JTextArea("Synopsis");
+		JTextArea synopsis = new JTextArea();
+		String synopsis_text;
 		
-		JTextField text = new JTextField(comic.getSynopsis());  // adding the synopsis 
-		text.setPreferredSize(new Dimension(300, 400));
-		box1.add(text);
-		box1.add(Box.createRigidArea(new Dimension(0, 50))); // adding some space between the blocks
+		JTextArea creators = new JTextArea("Creators");
+		JTextArea characters = new JTextArea("Characters");
+		JPanel box2 = new JPanel();
+		JLabel image = new JLabel(comic.getImage());
+		JTextArea issue_infos = new JTextArea("Informations about the issue");
+
+
 		
-		JTextField creators = new JTextField();
-		// adding the creators
-//		for (int i = 0; i < comic.getCreators().size(); i++) {
-//			creators.add(comic.getCreators().get(i), creators);
-//		}
-		creators.setPreferredSize(new Dimension(300, 100));
-		box1.add(creators);
+		// Column 1 (content: summary, creators, characters)
+		box1.setLayout(new BoxLayout(box1, BoxLayout.Y_AXIS));
+		
+		synopsis_title.setEditable(false);
+		box1.add(synopsis_title);
+		
+		box1.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		synopsis.setPreferredSize(new Dimension(700, 200));
+		synopsis.setMinimumSize(new Dimension(700, 100));
+		synopsis.setMaximumSize(new Dimension(700, 300));
+		try {
+			synopsis_text = comic.getSynopsis().replaceAll("\\<.*?\\>", "");
+		} catch (NullPointerException e) {
+			synopsis_text = "Description not found.";
+		}
+		synopsis.setText(synopsis_text);
+		synopsis.setEditable(false);
+		// Allow to wrap line
+		synopsis.setLineWrap(true);
+		// Wrap lines only between words (and not in the middle of one)
+		synopsis.setWrapStyleWord(true);
+		synopsis.setBackground(CustomColor.LightGray);
+		box1.add(synopsis);
+
 		box1.add(Box.createRigidArea(new Dimension(0, 50)));
 		
-		JTextField characters = new JTextField();
-		// adding the characters
-//		for (int i = 0; i < comic.getCharacters().size(); i++) {
-//			creators.add(comic.getCharacters().get(i), characters);
-//		}
-		characters.setPreferredSize(new Dimension(300, 200));
+		creators.setPreferredSize(new Dimension(700, 200));
+		creators.setMinimumSize(new Dimension(700, 100));
+		creators.setMaximumSize(new Dimension(700, 300));
+		creators.setEditable(false);
+		creators.setLineWrap(true);
+		creators.setWrapStyleWord(true);
+		creators.setBackground(CustomColor.LightGray);
+		box1.add(creators);
+		
+		box1.add(Box.createRigidArea(new Dimension(0, 50)));
+		
+		characters.setPreferredSize(new Dimension(700, 200));
+		characters.setMinimumSize(new Dimension(700, 100));
+		characters.setMaximumSize(new Dimension(700, 300));
+		characters.setEditable(false);
+		characters.setLineWrap(true);
+		characters.setWrapStyleWord(true);
+		characters.setBackground(CustomColor.LightGray);
 		box1.add(characters);
 		
 		// ---------------
 		
-		// Column 2 (content: image, infos about the issue)
-		JPanel box2 = new JPanel();  // new JPanel which will be the second column of informations will be displayed
-		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));// chosen layout: BoxLayout
-		
-		JLabel image = new JLabel(comic.getImage());  // adding the image
+		// Column 2 (content: image, info about the issue)
+		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));
+	
 		box2.add(image);
-		box2.add(Box.createRigidArea(new Dimension(0, 50)));  // adding some space between the blocks
-		image.setAlignmentX(Component.CENTER_ALIGNMENT);  // center the image
 		
-		JTextField issue_infos = new JTextField("Informations about the issue");  // adding the informations about the issue
-		issue_infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));  // matching the size of the block to the size of the image
+		box2.add(Box.createRigidArea(new Dimension(0, 50)));
+		image.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		issue_infos.setEditable(false);
+		issue_infos.setLineWrap(true);
+		// matching the size of the block to the size of the image
+		issue_infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
+		issue_infos.setEditable(false);
+		issue_infos.setLineWrap(true);
+		issue_infos.setBackground(CustomColor.LightGray);
 		box2.add(issue_infos);
 		
-		box1.setVisible(true);
-		box2.setVisible(true);
-
+		this.setPreferredSize(new Dimension(1000, 600));
+		this.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		this.add(BorderLayout.WEST, box1);
 		// Vertical separator
-		this.add(Box.createRigidArea(new Dimension(50, 0)));
+		this.add(Box.createHorizontalGlue());
 		this.add(BorderLayout.WEST, box2);
 		this.setVisible(true);
 	}
