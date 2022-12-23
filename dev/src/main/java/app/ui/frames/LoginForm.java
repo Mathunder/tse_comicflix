@@ -3,6 +3,9 @@ package app.ui.frames;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
