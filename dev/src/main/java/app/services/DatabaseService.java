@@ -284,7 +284,7 @@ public class DatabaseService {
 		}
 	}
 	
-	//USELELL IN MVC Design ?
+
 	private List<Issue> getUserFavorites(int user_id){
 		
 		List<Issue> issues = new ArrayList<>();
@@ -312,4 +312,110 @@ public class DatabaseService {
 		return issues;
 	}
 
+	private List<Issue> getUserReading(int user_id){
+		List<Issue> issues_reading = new ArrayList<>();
+		
+		String sql = "SELECT issues.* FROM issues INNER JOIN reads ON reads.issue_id = issues.issue_id WHERE reads.read_status = 'reading' AND reads.user_id = " + String.valueOf(user_id);
+		
+		try (Connection conn = this.connect();Statement pstmt = conn.createStatement()) {
+
+			ResultSet rs = pstmt.executeQuery(sql);
+			
+			while(rs.next())
+			{
+				// Build the issue
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				issues_reading.add(i);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+		
+		return issues_reading;
+	}
+	
+	private List<Issue> getUserReaded(int user_id){
+		List<Issue> issues_readed = new ArrayList<>();
+		
+		String sql = "SELECT issues.* FROM issues INNER JOIN reads ON reads.issue_id = issues.issue_id WHERE reads.read_status = 'readed' AND reads.user_id = " + String.valueOf(user_id);
+		
+		try (Connection conn = this.connect();Statement pstmt = conn.createStatement()) {
+
+			ResultSet rs = pstmt.executeQuery(sql);
+			
+			while(rs.next())
+			{
+				// Build the issue
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				issues_readed.add(i);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		return issues_readed;
+	}
+	
+	public void addNewUserReading(User user, Issue issue){
+		//FIRST : CHECK IF TUPLE DOESN'T EXIST
+			boolean isTupleAlreadyExists = false;
+			int user_id = user.getId();
+			int issue_id = issue.getId();
+			
+			String sql = "SELECT * FROM reads WHERE issue_id = ? AND user_id = ?";
+			
+			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+				pstmt.setInt(1, issue_id);
+				pstmt.setInt(2, user_id);
+				ResultSet rs = pstmt.executeQuery();
+				
+				if(!rs.next()) {
+					//tuple doesn't exist yet
+					isTupleAlreadyExists = false;
+				}
+				else {
+					// tuple already exists
+					isTupleAlreadyExists = true;
+					System.out.println("Reads already exist for this user"); 
+				}
+				
+			}
+			catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			
+			// THEN ADD TUPLE IF NOT ALREAY EXISTS	
+			if(!isTupleAlreadyExists) {
+				
+				sql = "INSERT INTO reads(issue_id,user_id,read_status) VALUES(?,?,?)";
+				try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+					pstmt.setInt(1, issue_id);
+					pstmt.setInt(2, user_id);
+					pstmt.setString(3, "reading");
+					pstmt.executeUpdate();
+					
+					//Add issue in the model
+					//userModel.addNewUserFavoriteIssue(issue);
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+	}
+	
+	public void addUserReaded(User user, Issue issue_readed){
+		
+	}
+	
+	public void removeUserRead(User user, Issue issue){
+		
+	}
 }
