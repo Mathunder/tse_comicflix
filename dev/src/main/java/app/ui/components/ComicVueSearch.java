@@ -99,6 +99,10 @@ public class ComicVueSearch extends ComicVue{
 			}
 		}
 		else if(evt.getPropertyName() == "readChange") {
+			if(evt.getNewValue() == "add")
+				System.out.println("Add new read (change state)");
+			else if(evt.getNewValue() == "remove")
+				System.out.println("remove read");
 			showResult();
 		}
 	}

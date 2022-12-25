@@ -65,15 +65,13 @@ public class UserModel {
 		
 		this.userReadingIssues.add(newReadingIssue);
 		
-		this.pcs.firePropertyChange("readingChange", oldUserReadingIssues, userReadingIssues);
+		this.pcs.firePropertyChange("readChange", oldUserReadingIssues, "add");
 	}
 	
 	public void removeUserReadingIssue(Issue oldReadingIssue) {
 		List<Issue> oldUserReadingIssues = userReadingIssues;
 		
 		this.userReadingIssues.removeIf(n -> n.getId() == oldReadingIssue.getId());
-		
-		this.pcs.firePropertyChange("readingChange", oldUserReadingIssues, userReadingIssues);
 	}
 	
 	public List<Issue> getUserReadingIssue(){
@@ -85,7 +83,7 @@ public class UserModel {
 		
 		this.userReadedIssues.add(newReadedIssue);
 		
-		this.pcs.firePropertyChange("readedChange", oldUserReadedIssues, userReadedIssues);
+		this.pcs.firePropertyChange("readChange", oldUserReadedIssues, "add");
 	}
 	
 	public void removeUserReadedIssue(Issue oldReadedIssue) {
@@ -93,7 +91,7 @@ public class UserModel {
 		
 		this.userReadedIssues.removeIf(n -> n.getId() == oldReadedIssue.getId());
 		
-		this.pcs.firePropertyChange("readedChange", oldUserReadedIssues, userReadedIssues);
+		this.pcs.firePropertyChange("readChange", oldUserReadedIssues, "remove");
 	}
 	
 	public List<Issue> getUserReadedIssues(){
