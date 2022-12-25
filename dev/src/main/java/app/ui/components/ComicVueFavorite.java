@@ -23,9 +23,27 @@ public class ComicVueFavorite extends ComicVue{
 	public void showResult() {
 		removeComics();
 		
+		String read_status = "no_read";
+		
 		if(userFavoriteIssues != null) {
-			for(int i=0;i<userFavoriteIssues.size();i++) {			
-				ComicCoverPanel comicCover = new ComicCoverPanel(userFavoriteIssues.get(i), true, userModel.getUser(), databaseService);
+			
+			for(int i=0;i<userFavoriteIssues.size();i++) {		
+				//Find read button color
+				for(int j=0;j<userModel.getUserReadingIssue().size();j++) {
+					if(userModel.getUserReadingIssue().get(j).getId() == userFavoriteIssues.get(i).getId()) {
+						read_status = "reading";
+						break;
+					}
+				}
+				if(read_status != "reading"){
+					for(int j=0; j<userModel.getUserReadedIssues().size();j++) {
+						if(userModel.getUserReadedIssues().get(j).getId() == userFavoriteIssues.get(i).getId()) {
+							read_status = "readed";
+							break;
+						}
+					}
+				}
+				ComicCoverPanel comicCover = new ComicCoverPanel(userFavoriteIssues.get(i), true, read_status, userModel.getUser(), databaseService);
 				this.add(comicCover);
 			}
 		}
@@ -46,6 +64,9 @@ public class ComicVueFavorite extends ComicVue{
 				System.out.println("Remove one favorite");
 			
 			userFavoriteIssues = userModel.getUserFavoriteIssues();
+			showResult();
+		}
+		else if(evt.getPropertyName() == "readChange") {
 			showResult();
 		}
 	}

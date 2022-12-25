@@ -23,22 +23,41 @@ public class ComicVueSearch extends ComicVue{
 		if(result != null) {
 			
 			boolean isFavorite = false;
+			String read_status = "no_read"; //"reading" OR "readed
 			
 			for(int i=0;i<result.getResults().size();i++) {	
 				
 				isFavorite = false;
+				read_status = "no_read";
+				
 				// IF AUTHENTICATED USER
 				if(userModel.getIsAuthenticated()) {
-					//Update favorite button color			
-						for(int j=0;j<userModel.getUserFavoriteIssues().size();j++) {
-							if(userModel.getUserFavoriteIssues().get(j).getId() == result.getResults().get(i).getId()) {
-								isFavorite = true;
+					//Find favorite button color			
+					for(int j=0;j<userModel.getUserFavoriteIssues().size();j++) {
+						if(userModel.getUserFavoriteIssues().get(j).getId() == result.getResults().get(i).getId()) {
+							isFavorite = true;
+							break;
+						}
+					}
+					
+					//Find read button color
+					for(int j=0;j<userModel.getUserReadingIssue().size();j++) {
+						if(userModel.getUserReadingIssue().get(j).getId() == result.getResults().get(i).getId()) {
+							read_status = "reading";
+							break;
+						}
+					}
+					if(read_status != "reading") {
+						for(int j=0; j<userModel.getUserReadedIssues().size();j++) {
+							if(userModel.getUserReadedIssues().get(j).getId() == result.getResults().get(i).getId()) {
+								read_status = "readed";
 								break;
 							}
 						}
+					}
 				}
 			
-				ComicCoverPanel comicCover = new ComicCoverPanel(result.getResults().get(i),isFavorite, userModel.getUser(), databaseService);
+				ComicCoverPanel comicCover = new ComicCoverPanel(result.getResults().get(i),isFavorite, read_status, userModel.getUser(), databaseService);
 				this.add(comicCover);
 			}
 		}
@@ -47,6 +66,11 @@ public class ComicVueSearch extends ComicVue{
 		}
 		
 		refreshPanel();
+	}
+	
+	//TO DO / OPTIMAZING DISPLAY COMICS
+	public void updateButtonStates() {
+		
 	}
 	
 	@Override
@@ -69,8 +93,12 @@ public class ComicVueSearch extends ComicVue{
 		else if(evt.getPropertyName() == "favoriteChange") {
 			if(evt.getNewValue() == "add")
 				System.out.println("Add one new favorite");
-			else if(evt.getNewValue() == "remove")
+			else if(evt.getNewValue() == "remove") {
 				System.out.println("Remove one favorite");
+				showResult();
+			}
+		}
+		else if(evt.getPropertyName() == "readChange") {
 			showResult();
 		}
 	}

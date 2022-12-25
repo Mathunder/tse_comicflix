@@ -141,17 +141,17 @@ public class DatabaseService {
 				if(rs.getInt("user_id") != 0)
 					isAuthenticated = true;
 				
-				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")));
+				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")));
 			}
 			else
 			{
-				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>());
+				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			}
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>());
+			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		}	
 	}
 	
@@ -402,7 +402,7 @@ public class DatabaseService {
 					pstmt.executeUpdate();
 					
 					//Add issue in the model
-					//userModel.addNewUserFavoriteIssue(issue);
+					userModel.addNewUserReadingIssue(issue);
 				}
 				catch (Exception e) {
 					// TODO: handle exception
@@ -411,11 +411,41 @@ public class DatabaseService {
 			}
 	}
 	
-	public void addUserReaded(User user, Issue issue_readed){
+	public void addNewUserReaded(User user, Issue issue_readed){
+		String sql = "UPDATE reads SET read_status = 'readed' WHERE issue_id = ? AND user_id = ?";
 		
+		try(Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, issue_readed.getId());
+			pstmt.setInt(2, user.getId());
+			pstmt.executeUpdate();
+			
+			//Remove issue from the model
+			userModel.removeUserReadingIssue(issue_readed);
+			//Add issue in the model
+			userModel.addNewUserReadedIssue(issue_readed);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void removeUserRead(User user, Issue issue){
+		String sql = "DELETE FROM reads WHERE issue_id = ? AND user_id = ?";
+		int user_id = user.getId();
+		int issue_id = issue.getId();
 		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, issue_id);
+			pstmt.setInt(2, user_id);
+			pstmt.executeUpdate();
+			
+			//Remove from model
+			userModel.removeUserReadedIssue(issue);
+		} 
+		catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
 	}
 }

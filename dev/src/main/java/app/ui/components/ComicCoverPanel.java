@@ -30,11 +30,12 @@ public class ComicCoverPanel extends JPanel{
 	private BufferedImage imageBrute;
 	private BufferedImage resizedImageBg;
 	private DefaultButton button_fav;
+	private DefaultButton button_read;
 	private Issue issue;
 	private User user;
 	protected DatabaseService databaseService;
 	
-	public ComicCoverPanel(Issue issue, boolean isFavorite, User user, DatabaseService dbS){
+	public ComicCoverPanel(Issue issue, boolean isFavorite, String read_status, User user, DatabaseService dbS){
 		
 		super();
 		this.issue=issue;
@@ -98,6 +99,32 @@ public class ComicCoverPanel extends JPanel{
 			springLayout.putConstraint(SpringLayout.EAST, button_fav, -140, SpringLayout.EAST, this);
 			// Add buttons to the panel
 			add(button_fav);
+			
+			//Read button
+			button_read = new DefaultButton("Non lu", CustomColor.Red,16,true);
+			if(read_status == "reading") {
+				button_read.setText("En cours");
+				button_read.setColor(CustomColor.Orange);
+			}
+			else if (read_status == "readed") {
+				button_read.setText("Lu");
+				button_read.setColor(CustomColor.Green);
+			}
+			
+			button_read.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					button_readActionPerformed(evt);
+				}
+			});
+			
+			//Put Constraints on read button
+			springLayout.putConstraint(SpringLayout.NORTH, button_read, labelHeight - 25, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.WEST, button_read, 70, SpringLayout.WEST, this);
+			springLayout.putConstraint(SpringLayout.SOUTH, button_read, labelHeight, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.EAST, button_read, -70, SpringLayout.EAST, this);
+			// Add button to the panel
+			add(button_read);
+			
 		}
 		
 	}
@@ -126,6 +153,27 @@ public class ComicCoverPanel extends JPanel{
 			
 			//Add link between user and favorite issue
 			databaseService.addNewUserFavorite(user, issue);
+		}
+	}
+	
+	private void button_readActionPerformed(ActionEvent e) {
+		if(button_read.getColor() == CustomColor.Red) { //IF ISSUE NOT ALREADY READ OR READING OR READED
+			button_read.setColor(CustomColor.Orange);
+			button_read.setText("En cours");
+			//Add issue to reading
+			databaseService.addNewUserReading(user, issue);
+		}
+		else if(button_read.getColor() == CustomColor.Orange) { //IF ISSUE IS READING
+			button_read.setColor(CustomColor.Green);
+			button_read.setText("Lu");
+			//Add issue to readed
+			databaseService.addNewUserReaded(user, issue);
+		}
+		else if(button_read.getColor() == CustomColor.Green) { //IF ISSUE IS READED
+			button_read.setColor(CustomColor.Red);
+			button_read.setText("Pas lu");
+			//Remove issue from read
+			databaseService.removeUserRead(user, issue);
 		}
 	}
 	
