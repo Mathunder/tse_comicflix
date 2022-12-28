@@ -141,17 +141,17 @@ public class DatabaseService {
 				if(rs.getInt("user_id") != 0)
 					isAuthenticated = true;
 				
-				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")));
+				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")));
 			}
 			else
 			{
-				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>());
+				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			}
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>());
+			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		}	
 	}
 	
@@ -284,7 +284,7 @@ public class DatabaseService {
 		}
 	}
 	
-	//USELELL IN MVC Design ?
+
 	private List<Issue> getUserFavorites(int user_id){
 		
 		List<Issue> issues = new ArrayList<>();
@@ -312,4 +312,140 @@ public class DatabaseService {
 		return issues;
 	}
 
+	private List<Issue> getUserReading(int user_id){
+		List<Issue> issues_reading = new ArrayList<>();
+		
+		String sql = "SELECT issues.* FROM issues INNER JOIN reads ON reads.issue_id = issues.issue_id WHERE reads.read_status = 'reading' AND reads.user_id = " + String.valueOf(user_id);
+		
+		try (Connection conn = this.connect();Statement pstmt = conn.createStatement()) {
+
+			ResultSet rs = pstmt.executeQuery(sql);
+			
+			while(rs.next())
+			{
+				// Build the issue
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				issues_reading.add(i);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+		
+		return issues_reading;
+	}
+	
+	private List<Issue> getUserReaded(int user_id){
+		List<Issue> issues_readed = new ArrayList<>();
+		
+		String sql = "SELECT issues.* FROM issues INNER JOIN reads ON reads.issue_id = issues.issue_id WHERE reads.read_status = 'readed' AND reads.user_id = " + String.valueOf(user_id);
+		
+		try (Connection conn = this.connect();Statement pstmt = conn.createStatement()) {
+
+			ResultSet rs = pstmt.executeQuery(sql);
+			
+			while(rs.next())
+			{
+				// Build the issue
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				issues_readed.add(i);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		return issues_readed;
+	}
+	
+	public void addNewUserReading(User user, Issue issue){
+		//FIRST : CHECK IF TUPLE DOESN'T EXIST
+			boolean isTupleAlreadyExists = false;
+			int user_id = user.getId();
+			int issue_id = issue.getId();
+			
+			String sql = "SELECT * FROM reads WHERE issue_id = ? AND user_id = ?";
+			
+			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+				pstmt.setInt(1, issue_id);
+				pstmt.setInt(2, user_id);
+				ResultSet rs = pstmt.executeQuery();
+				
+				if(!rs.next()) {
+					//tuple doesn't exist yet
+					isTupleAlreadyExists = false;
+				}
+				else {
+					// tuple already exists
+					isTupleAlreadyExists = true;
+					System.out.println("Reads already exist for this user"); 
+				}
+				
+			}
+			catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			
+			// THEN ADD TUPLE IF NOT ALREAY EXISTS	
+			if(!isTupleAlreadyExists) {
+				
+				sql = "INSERT INTO reads(issue_id,user_id,read_status) VALUES(?,?,?)";
+				try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+					pstmt.setInt(1, issue_id);
+					pstmt.setInt(2, user_id);
+					pstmt.setString(3, "reading");
+					pstmt.executeUpdate();
+					
+					//Add issue in the model
+					userModel.addNewUserReadingIssue(issue);
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+	}
+	
+	public void addNewUserReaded(User user, Issue issue_readed){
+		String sql = "UPDATE reads SET read_status = 'readed' WHERE issue_id = ? AND user_id = ?";
+		
+		try(Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, issue_readed.getId());
+			pstmt.setInt(2, user.getId());
+			pstmt.executeUpdate();
+			
+			//Remove issue from the model
+			userModel.removeUserReadingIssue(issue_readed);
+			//Add issue in the model
+			userModel.addNewUserReadedIssue(issue_readed);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeUserRead(User user, Issue issue){
+		String sql = "DELETE FROM reads WHERE issue_id = ? AND user_id = ?";
+		int user_id = user.getId();
+		int issue_id = issue.getId();
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, issue_id);
+			pstmt.setInt(2, user_id);
+			pstmt.executeUpdate();
+			
+			//Remove from model
+			userModel.removeUserReadedIssue(issue);
+		} 
+		catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+	}
 }
