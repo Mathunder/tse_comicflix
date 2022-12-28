@@ -40,7 +40,7 @@ public class ComicsInfosPanel extends JPanel {
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		try {
-			synopsis_text = comic.getSynopsis().replaceAll("\\<.*?\\>", "");
+			synopsis_text = "temporary text"; //comic.getSynopsis().replaceAll("\\<.*?\\>", "");
 		} catch (NullPointerException e) {
 			synopsis_text = "Description not found.";
 		}
