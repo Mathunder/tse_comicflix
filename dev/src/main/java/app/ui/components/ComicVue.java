@@ -2,6 +2,8 @@ package app.ui.components;
 
 import java.awt.GridLayout;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -19,7 +21,8 @@ public abstract class ComicVue extends JPanel implements PropertyChangeListener{
 	//Controller
 	protected DatabaseService databaseService;
 	protected ComicVineService comicsVineService;
-	
+	//Vue
+	protected List<ComicCoverPanel> ComicCoverPanels = new ArrayList<>();
 	
 	public ComicVue(UserModel um, ComicVineService cvS,DatabaseService dbS){
 		
@@ -43,6 +46,7 @@ public abstract class ComicVue extends JPanel implements PropertyChangeListener{
 	
 	public void removeComics() {
 		this.removeAll();
+		ComicCoverPanels.clear();
 	}
 	
 	public void refreshPanel() {

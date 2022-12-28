@@ -74,7 +74,7 @@ public class UserModel {
 		this.userReadingIssues.removeIf(n -> n.getId() == oldReadingIssue.getId());
 	}
 	
-	public List<Issue> getUserReadingIssue(){
+	public List<Issue> getUserReadingIssues(){
 		return userReadingIssues;
 	}
 	

@@ -31,16 +31,17 @@ public class ComicCoverPanel extends JPanel{
 	private BufferedImage resizedImageBg;
 	private DefaultButton button_fav;
 	private DefaultButton button_read;
-	private Issue issue;
-	private User user;
-	protected DatabaseService databaseService;
 	
-	public ComicCoverPanel(Issue issue, boolean isFavorite, String read_status, User user, DatabaseService dbS){
+	private Issue issue;
+	protected DatabaseService databaseService;
+	private User user;
+	
+	public ComicCoverPanel(Issue issue, DatabaseService dbS, User u){
 		
 		super();
 		this.issue=issue;
-		this.user = user;
 		this.databaseService = dbS;
+		this.user = u;
 		
 		//Load a test image, resize and paint of the panel background
 		try {
@@ -68,7 +69,6 @@ public class ComicCoverPanel extends JPanel{
 		if(titleLabel.getText() != "")
 			labelHeight -= 25;
 		
-		
 		//Put constraint on Label 
 		SpringLayout springLayout = new SpringLayout();
 		springLayout.putConstraint(SpringLayout.NORTH, titleLabel, labelHeight , SpringLayout.SOUTH, this);
@@ -79,12 +79,8 @@ public class ComicCoverPanel extends JPanel{
 		// Add the label to the panel
 		add(titleLabel);
 
-		if(user.getId() != 0)	{// Button favorite creation // \u2665 : unicode for full heart symbol
+		if(this.user.getId() != 0)	{// Button favorite creation // \u2665 : unicode for full heart symbol
 			button_fav = new DefaultButton(String.valueOf("\u2665"), CustomColor.Red, 24, true);
-			
-			//Change color if Comics already in user favorite
-			if(isFavorite)
-				button_fav.setColor(CustomColor.Green);
 			
 			button_fav.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
@@ -102,14 +98,6 @@ public class ComicCoverPanel extends JPanel{
 			
 			//Read button
 			button_read = new DefaultButton("Non lu", CustomColor.Red,16,true);
-			if(read_status == "reading") {
-				button_read.setText("En cours");
-				button_read.setColor(CustomColor.Orange);
-			}
-			else if (read_status == "readed") {
-				button_read.setText("Lu");
-				button_read.setColor(CustomColor.Green);
-			}
 			
 			button_read.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
@@ -129,8 +117,64 @@ public class ComicCoverPanel extends JPanel{
 		
 	}
 	
+	//Refresh buttons state according to the current state of the user list (favorites and reading)
+	public void refreshStateButtons(boolean state_fav, int state_read) {
+		if(state_fav)
+			button_fav.setColor(CustomColor.Green);
+		else
+			button_fav.setColor(CustomColor.Red);
+		switch (state_read) {
+			case 0:
+				button_read.setColor(CustomColor.Red);
+				button_read.setText("Non lu");
+				break;
+			case 1:
+				button_read.setColor(CustomColor.Orange);
+				button_read.setText("En cours");
+				break;
+			case 2:
+				button_read.setColor(CustomColor.Green);
+				button_read.setText("Lu");
+				break;
+			default:
+				button_read.setColor(CustomColor.LightGray);
+				button_read.setText("Error");
+		}
+	}
+	
+	//Refresh buttons state according to the current state of the user list (favorite only)
+	public void refreshStateButtons(boolean state_fav) {
+		if(state_fav)
+			button_fav.setColor(CustomColor.Green);
+		else
+			button_fav.setColor(CustomColor.Red);
+	}
+	
+	//Refresh buttons state according to the current state of the user list (reads only)
+	public void refreshStateButtons(int state_read) {
+		
+		switch (state_read) {
+			case 0:
+				button_read.setColor(CustomColor.Red);
+				button_read.setText("Non lu");
+				break;
+			case 1:
+				button_read.setColor(CustomColor.Orange);
+				button_read.setText("En cours");
+				break;
+			case 2:
+				button_read.setColor(CustomColor.Green);
+				button_read.setText("Lu");
+				break;
+			default:
+				button_read.setColor(CustomColor.LightGray);
+				button_read.setText("Error");
+		}
+	}
+	
+	
 	@Override
-	  protected void paintComponent(Graphics g) {
+	protected void paintComponent(Graphics g) {
 
 	    super.paintComponent(g);
 	    g.drawImage(resizedImageBg, 0, 0, null);
@@ -155,6 +199,7 @@ public class ComicCoverPanel extends JPanel{
 			databaseService.addNewUserFavorite(user, issue);
 		}
 	}
+	
 	
 	private void button_readActionPerformed(ActionEvent e) {
 		if(button_read.getColor() == CustomColor.Red) { //IF ISSUE NOT ALREADY READ OR READING OR READED
@@ -186,7 +231,8 @@ public class ComicCoverPanel extends JPanel{
 	    g2d.dispose();
 
 	    return dimg;
-	}  
+	} 
+	
 	
 	public String titleUpdate(String title) {
 		//If the title is too long, transformation into HTML and add of line break
