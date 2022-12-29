@@ -1,22 +1,32 @@
 package app.ui.components;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import app.entities.Comics;
+import app.dto.InfosResultDto;
+import app.services.ComicVineService;
 import app.ui.themes.CustomColor;
 
 // The goal of this class is to create a panel in which the informations of the selected comic will be displayed
 public class ComicsInfosPanel extends JPanel {
 	
 	private ComicCoverPanel comicCover;
+	private InfosResultDto infosResult;
+	private ComicVineService comicVineService = new ComicVineService();
 	
 	public ComicsInfosPanel(ComicCoverPanel comicCoverPanel) {
 		this.comicCover = comicCoverPanel;
 	}
 	
 	public void fetchInformations() {
-		
+		this.comicVineService.search_from_url(this.comicCover.getIssue().getApi_detail_url());
+		//String str = this.infosResult.getResults().getDescription();
+		//System.out.println(this.infosResult.getNumber_of_page_results());
 	}
 	
 	public void createInfosPanel() {
@@ -34,7 +44,7 @@ public class ComicsInfosPanel extends JPanel {
 		JScrollPane scroll_characters;
 		
 		JPanel box2 = new JPanel();
-		JLabel image = new JLabel(this.comicCover.getIssue().getImage().getOriginal_url());
+		JLabel image = new JLabel();
 		JTextArea issue_infos = new JTextArea("Informations about the issue");
 		
 		JScrollPane scrollPaneComicsInfos = new JScrollPane(this);
@@ -52,7 +62,7 @@ public class ComicsInfosPanel extends JPanel {
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		try {
-			synopsis_text = "temporary text"; //comic.getSynopsis().replaceAll("\\<.*?\\>", "");
+			synopsis_text = this.infosResult.getResults().getDescription(); //comic.getSynopsis().replaceAll("\\<.*?\\>", "");
 		} catch (NullPointerException e) {
 			synopsis_text = "Description not found.";
 		}
@@ -112,7 +122,19 @@ public class ComicsInfosPanel extends JPanel {
 		// Column 2 (content: image, info about the issue)
 		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));
 		box2.setBackground(CustomColor.WhiteCloud);
-	
+		
+		ImageIcon img;
+		try {
+			URL url_img = new URL(this.comicCover.getIssue().getImage().getMedium_url());
+			BufferedImage imageBrute = ImageIO.read(url_img);
+			Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+			img = new ImageIcon(imageResize);
+			image.setIcon(img);
+		} catch (IOException e) {
+			// The url is displayed in case the image cold not be loaded
+			img = new ImageIcon(this.comicCover.getIssue().getImage().getMedium_url());
+		}
+		image.setIcon(img);
 		box2.add(image);
 		
 		box2.add(Box.createRigidArea(new Dimension(0, 50)));

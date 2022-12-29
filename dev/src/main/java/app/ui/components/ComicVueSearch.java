@@ -53,7 +53,8 @@ public class ComicVueSearch extends ComicVue{
 					public void mouseClicked(MouseEvent e) {
 						ComicsInfosPanel infos = new ComicsInfosPanel(comicCover);
 						infos.createInfosPanel();
-						System.out.println(comicCover.getIssue().getApi_detail_url());
+						infos.fetchInformations();
+//						System.out.println(comicCover.getIssue().getApi_detail_url());
 						
 						//JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
 						

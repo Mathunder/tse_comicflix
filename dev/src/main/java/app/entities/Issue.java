@@ -3,7 +3,6 @@ package app.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import app.dto.ImageResultDto;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
