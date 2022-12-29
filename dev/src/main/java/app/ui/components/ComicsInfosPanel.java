@@ -17,16 +17,18 @@ public class ComicsInfosPanel extends JPanel {
 	
 	private ComicCoverPanel comicCover;
 	private InfosResultDto infosResult;
-	private ComicVineService comicVineService = new ComicVineService();
+	private ComicVineService comicVineService;
 	
 	public ComicsInfosPanel(ComicCoverPanel comicCoverPanel) {
 		this.comicCover = comicCoverPanel;
 	}
 	
 	public void fetchInformations() {
+		comicVineService = new ComicVineService();
 		this.comicVineService.search_from_url(this.comicCover.getIssue().getApi_detail_url());
 		//String str = this.infosResult.getResults().getDescription();
 		//System.out.println(this.infosResult.getNumber_of_page_results());
+		System.out.println("Research passed");
 	}
 	
 	public void createInfosPanel() {

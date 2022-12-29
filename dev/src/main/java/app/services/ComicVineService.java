@@ -15,6 +15,9 @@ import app.dto.SearchResultDto;
 import app.helpers.ComicVineSearchFilter;
 import app.helpers.ComicVineSearchStatus;
 import io.restassured.RestAssured;
+import io.restassured.http.Method;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import lombok.Data;
 
 /**
@@ -83,26 +86,32 @@ public class ComicVineService {
 		RestAssured.port = 443;
 		
 		CompletableFuture.runAsync(() -> {
-
+			
+			System.out.println("Beginning of the research...");
+			System.out.println("Step 1");
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("api_key", "f9073eee3658e2a4f39a9f531ad521b935ce87bc");
 			params.put("format", "json");
-			params.put("query", url);
 			String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
 
-	
+			System.out.println("Step 2");
 			ComicVineSearchStatus oldSearchStatus = this.getSearchStatus();
 			this.setSearchStatus(ComicVineSearchStatus.FETCHING);
 			this.pcs.firePropertyChange("searchStatus", oldSearchStatus, this.getSearchStatus());
 
+			System.out.println("Step 3");
 			//SearchResultDto prevSearchResult = this.getSearchResult();
-			this.infosResult = given().params(params).header("User-Agent", userAgent).expect().statusCode(200)
-					.body("status_code", equalTo(1)).when().get("/search").as(InfosResultDto.class);
-			System.out.println(given().log().uri());
+//			this.infosResult = given().params(params).header("User-Agent", userAgent).expect().statusCode(200)
+//					.body("status_code", equalTo(1)).when().get("/search").as(InfosResultDto.class);
+			RequestSpecification httpRequest = RestAssured.given().header("User-Agent", userAgent);
+			Response response = httpRequest.get("");
+			System.out.println("Response Body is =>  " + response.asPrettyString());
+			
+			System.out.println("print test :");
+			System.out.println(given().log());
 			//this.pcs.firePropertyChange("searchResults", prevSearchResult, searchResult);
 			
-
-			System.out.println("passed there");
+			System.out.println("Step 4");
 			//totalResults = this.infosResult.getNumber_of_total_results();
 			oldSearchStatus = this.getSearchStatus();
 			this.setSearchStatus(ComicVineSearchStatus.DONE);
