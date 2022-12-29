@@ -1,6 +1,10 @@
 package app.ui.components;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
+
+import javax.swing.JFrame;
 
 import app.dto.SearchResultDto;
 import app.helpers.ComicVineSearchStatus;
@@ -40,6 +44,27 @@ public class ComicVueSearch extends ComicVue{
 			
 				ComicCoverPanel comicCover = new ComicCoverPanel(result.getResults().get(i),isFavorite, userModel.getUser(), databaseService);
 				this.add(comicCover);
+				comicCover.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						ComicsInfosPanel infos = new ComicsInfosPanel();
+						infos.createComicsInfosPanel(comicCover);
+						
+						//JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						
+//						scrollPaneComicsInfos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+//						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+//						scrollPaneComicsInfos.getHorizontalScrollBar().setUnitIncrement(14);
+		
+						JFrame f = new JFrame(comicCover.getTitle());
+						//Image icon = Toolkit.getDefaultToolkit().getImage(clicked_comics.getImageUrl) ;
+						//f.setIconImage(icon);
+						f.setSize(1050,600);
+						f.add(infos);
+						f.setResizable(false);
+						f.setVisible(true);
+					}
+				});
 			}
 		}
 		else {

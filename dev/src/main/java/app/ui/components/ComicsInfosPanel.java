@@ -9,7 +9,7 @@ import app.ui.themes.CustomColor;
 // The goal of this class is to create a panel in which the informations of the selected comic will be displayed
 public class ComicsInfosPanel extends JPanel {
 	
-	public void createComicsInfosPanel(Comics comic) {
+	public void createComicsInfosPanel(ComicCoverPanel comicCover) {
 		
 		JPanel box1 = new JPanel();
 		JTextArea synopsis_title = new JTextArea("Synopsis");
@@ -24,8 +24,10 @@ public class ComicsInfosPanel extends JPanel {
 		JScrollPane scroll_characters;
 		
 		JPanel box2 = new JPanel();
-		JLabel image = new JLabel(comic.getImage());
+		JLabel image = new JLabel(comicCover.getImage());
 		JTextArea issue_infos = new JTextArea("Informations about the issue");
+		
+		JScrollPane scrollPaneComicsInfos = new JScrollPane(this);
 
 
 		
@@ -123,5 +125,10 @@ public class ComicsInfosPanel extends JPanel {
 		this.add(Box.createHorizontalGlue());
 		this.add(BorderLayout.WEST, box2);
 		this.setVisible(true);
+		
+		scrollPaneComicsInfos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+		scrollPaneComicsInfos.getHorizontalScrollBar().setUnitIncrement(14);
 	}
 }
