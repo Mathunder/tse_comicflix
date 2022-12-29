@@ -102,8 +102,12 @@ public class ComicCoverPanel extends JPanel{
 		
 	}
 	
+	public Issue getIssue() {
+		return this.issue;
+	}
+	
 	@Override
-	  protected void paintComponent(Graphics g) {
+	protected void paintComponent(Graphics g) {
 
 	    super.paintComponent(g);
 	    g.drawImage(resizedImageBg, 0, 0, null);

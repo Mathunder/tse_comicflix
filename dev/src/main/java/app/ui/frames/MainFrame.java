@@ -99,12 +99,6 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			scrollPaneVisuComics.getVerticalScrollBar().setUnitIncrement(14);
 			scrollPaneVisuComics.getHorizontalScrollBar().setUnitIncrement(14);
 			
-			//ComicsInfos Panel
-			ComicsInfosPanel visuComicInfos = new ComicsInfosPanel();
-			
-			//ScrollBar ComicsInfos Panel
-			JScrollPane scrollPaneComicsInfos = new JScrollPane(visuComicInfos);
-			
 			//Add Panels to Main Frame
 			mf.getContentPane().setLayout(null);
 			mf.getContentPane().add(loginInfo);

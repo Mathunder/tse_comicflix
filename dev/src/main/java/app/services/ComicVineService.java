@@ -19,10 +19,8 @@ import lombok.Data;
 
 /**
  * A class to handle sending requests to Comicvine API
- * 
- * @author RedRosh
- *
  */
+
 @Data
 public class ComicVineService {
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -37,6 +35,7 @@ public class ComicVineService {
 		RestAssured.baseURI = "https://comicvine.gamespot.com/api";
 		RestAssured.port = 443;
 	}
+	
 
 	public void search(String keyword, List<ComicVineSearchFilter> filters, int limit, int page) {
 		this.keyword = keyword;
@@ -77,5 +76,35 @@ public class ComicVineService {
 		this.pcs.addPropertyChangeListener(listener);
 	}
 	
+	// This method allows one to make a request to the API with a specific url
+	public void search_from_url(String url) {
+		RestAssured.baseURI = url;
+		RestAssured.port = 443;
+		
+		CompletableFuture.runAsync(() -> {
 
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("api_key", "f9073eee3658e2a4f39a9f531ad521b935ce87bc");
+			params.put("resources", url);
+			params.put("format", "json");
+			String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
+
+	
+			ComicVineSearchStatus oldSearchStatus = this.getSearchStatus();
+			this.setSearchStatus(ComicVineSearchStatus.FETCHING);
+			this.pcs.firePropertyChange("searchStatus", oldSearchStatus, this.getSearchStatus());
+
+			SearchResultDto prevSearchResult = this.getSearchResult();
+			this.searchResult = given().params(params).header("User-Agent", userAgent).expect().statusCode(200)
+					.body("status_code", equalTo(1)).when().get("/search").as(SearchResultDto.class);
+			this.pcs.firePropertyChange("searchResults", prevSearchResult, searchResult);
+
+			System.out.println("passed there");
+			totalResults = this.searchResult.getNumber_of_total_results();
+			oldSearchStatus = this.getSearchStatus();
+			this.setSearchStatus(ComicVineSearchStatus.DONE);
+			this.pcs.firePropertyChange("searchStatus", oldSearchStatus, this.getSearchStatus());
+			
+		});
+	}
 }

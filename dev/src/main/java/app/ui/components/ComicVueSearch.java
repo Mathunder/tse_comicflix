@@ -1,8 +1,12 @@
 package app.ui.components;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.JFrame;
 
@@ -44,10 +48,12 @@ public class ComicVueSearch extends ComicVue{
 			
 				ComicCoverPanel comicCover = new ComicCoverPanel(result.getResults().get(i),isFavorite, userModel.getUser(), databaseService);
 				this.add(comicCover);
+				// Adding a listener so the user can click on a comic and get its informations
 				comicCover.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
-						ComicsInfosPanel infos = new ComicsInfosPanel();
-						infos.createComicsInfosPanel(comicCover);
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCover);
+						infos.createInfosPanel();
+						System.out.println(comicCover.getIssue().getApi_detail_url());
 						
 						//JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
 						
@@ -56,9 +62,12 @@ public class ComicVueSearch extends ComicVue{
 //						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
 //						scrollPaneComicsInfos.getHorizontalScrollBar().setUnitIncrement(14);
 		
-						JFrame f = new JFrame(comicCover.getTitle());
-						//Image icon = Toolkit.getDefaultToolkit().getImage(clicked_comics.getImageUrl) ;
-						//f.setIconImage(icon);
+						JFrame f = new JFrame(comicCover.getIssue().getName());
+						try {
+							URL url_image = new URL(comicCover.getIssue().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
 						f.setSize(1050,600);
 						f.add(infos);
 						f.setResizable(false);
