@@ -8,6 +8,8 @@ import java.beans.PropertyChangeEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.JFrame;
+
+//import app.dto.InfosResultDto;
 import app.dto.SearchResultDto;
 import app.helpers.ComicVineSearchStatus;
 import app.models.UserModel;
@@ -30,7 +32,7 @@ public class ComicVueSearch extends ComicVue{
 			
 			boolean isFavorite = false;
 			
-			for(int i=0;i<result.getResults().size();i++) {	
+			for(int i = 0; i < result.getResults().size(); i++) {	
 				
 				isFavorite = false;
 				// IF AUTHENTICATED USER
@@ -51,8 +53,10 @@ public class ComicVueSearch extends ComicVue{
 					public void mouseClicked(MouseEvent e) {
 						ComicsInfosPanel infos = new ComicsInfosPanel(comicCover);
 						infos.createInfosPanel();
-						infos.fetchInformations();
-//						System.out.println(comicCover.getIssue().getApi_detail_url());
+						//infos.fetchInformations();
+						
+						
+						//						System.out.println(comicCover.getIssue().getApi_detail_url());
 						
 						//JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
 						
@@ -61,9 +65,9 @@ public class ComicVueSearch extends ComicVue{
 //						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
 //						scrollPaneComicsInfos.getHorizontalScrollBar().setUnitIncrement(14);
 		
-						JFrame f = new JFrame(comicCover.getIssue().getName());
+						JFrame f = new JFrame(comicCover.getResultsApi().getName());
 						try {
-							URL url_image = new URL(comicCover.getIssue().getImage().getIcon_url());
+							URL url_image = new URL(comicCover.getResultsApi().getImage().getIcon_url());
 							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
 							f.setIconImage(icon);
 						} catch (MalformedURLException e1) {}
@@ -71,6 +75,7 @@ public class ComicVueSearch extends ComicVue{
 						f.add(infos);
 						f.setResizable(false);
 						f.setVisible(true);
+						
 					}
 				});
 			}

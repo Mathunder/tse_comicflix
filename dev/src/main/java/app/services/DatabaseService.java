@@ -11,7 +11,7 @@ import java.util.ListIterator;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 import app.dto.ImageResultDto;
-import app.entities.Issue;
+import app.entities.ResultsAPI;
 import app.entities.User;
 import app.models.UserModel;
 
@@ -156,17 +156,17 @@ public class DatabaseService {
 	}
 	
 	// Issues table methods
-	public void addNewIssue(Issue issue) {
+	public void addNewIssue(ResultsAPI results_api) {
 		
-		if(issue.getIssue_number() == null) { //IF CHARACTER
-			issue.setIssue_number("0");
+		if(results_api.getIssue_number() == null) { //IF CHARACTER
+			results_api.setIssue_number("0");
 		}
 		
-		int issue_id = issue.getId();
-		int issue_number = Integer.parseInt(issue.getIssue_number());
-		String issue_name = issue.getName();
-		String api_detail_url = issue.getApi_detail_url();
-		String image_url = issue.getImage().getMedium_url();
+		int issue_id = results_api.getId();
+		int issue_number = Integer.parseInt(results_api.getIssue_number());
+		String issue_name = results_api.getName();
+		String api_detail_url = results_api.getApi_detail_url();
+		String image_url = results_api.getImage().getMedium_url();
 		
 		
 		// FIRST CHECK IF THE ENTRY DOESNT ALREADY EXIST
@@ -215,12 +215,12 @@ public class DatabaseService {
 	}
 
 	// Favorites table methods
-	public void addNewUserFavorite(User user, Issue issue) {
+	public void addNewUserFavorite(User user, ResultsAPI results_api) {
 		
 		//FIRST : CHECK IF TUPLE DOESN'T EXIST
 		boolean isTupleAlreadyExists = false;
 		int user_id = user.getId();
-		int issue_id = issue.getId();
+		int issue_id = results_api.getId();
 		
 		String sql = "SELECT * FROM favorites WHERE issue_id = ? AND user_id = ?";
 		
@@ -255,7 +255,7 @@ public class DatabaseService {
 				pstmt.executeUpdate();
 				
 				//Add issue in the model
-				userModel.addNewUserFavoriteIssue(issue);
+				userModel.addNewUserFavoriteIssue(results_api);
 			}
 			catch (Exception e) {
 				// TODO: handle exception
@@ -265,10 +265,10 @@ public class DatabaseService {
 		
 	}
 	
-	public void removeOneUserFavorite(User user, Issue issue) {
+	public void removeOneUserFavorite(User user, ResultsAPI results_api) {
 		String sql = "DELETE FROM favorites WHERE issue_id = ? AND user_id = ?";
 		int user_id = user.getId();
-		int issue_id = issue.getId();
+		int issue_id = results_api.getId();
 		
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
 			pstmt.setInt(1, issue_id);
@@ -276,7 +276,7 @@ public class DatabaseService {
 			pstmt.executeUpdate();
 			
 			//Remove from model
-			userModel.removeUserFavoriteIssue(issue);
+			userModel.removeUserFavoriteIssue(results_api);
 		} 
 		catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -285,9 +285,9 @@ public class DatabaseService {
 	}
 	
 	//USELELL IN MVC Design ?
-	private List<Issue> getUserFavorites(int user_id){
+	private List<ResultsAPI> getUserFavorites(int user_id){
 		
-		List<Issue> issues = new ArrayList<>();
+		List<ResultsAPI> issues = new ArrayList<>();
 		
 		// GET all issues associated with the user_id
 		String sql = "SELECT issues.* FROM issues INNER JOIN favorites ON favorites.issue_id = issues.issue_id WHERE favorites.user_id = " + String.valueOf(user_id);
@@ -299,7 +299,7 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				ResultsAPI i = new ResultsAPI("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
 				issues.add(i);
 			}
 			

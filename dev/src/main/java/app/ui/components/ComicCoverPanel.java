@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-import app.entities.Issue;
+import app.entities.ResultsAPI;
 import app.entities.User;
 import app.services.DatabaseService;
 import app.ui.themes.CustomColor;
@@ -25,20 +25,20 @@ public class ComicCoverPanel extends JPanel{
 	private BufferedImage imageBrute;
 	private BufferedImage resizedImageBg;
 	private DefaultButton button_fav;
-	private Issue issue;
+	private ResultsAPI results_api;
 	private User user;
 	protected DatabaseService databaseService;
 	
-	public ComicCoverPanel(Issue issue, boolean isFavorite, User user, DatabaseService dbS){
+	public ComicCoverPanel(ResultsAPI results_api, boolean isFavorite, User user, DatabaseService dbS){
 		
 		super();
-		this.issue=issue;
+		this.results_api = results_api;
 		this.user = user;
 		this.databaseService = dbS;
 		
 		//Load a test image, resize and paint of the panel background
 		try {
-			imageBrute = ImageIO.read(new URL(this.issue.getImage().getMedium_url()));
+			imageBrute = ImageIO.read(new URL(this.results_api.getImage().getMedium_url()));
 		} catch (IOException e) {
 			System.out.println("Problem load img");
 			e.printStackTrace();
@@ -49,7 +49,7 @@ public class ComicCoverPanel extends JPanel{
 		setPreferredSize(new Dimension(206,310));
 		
 		// Création du label titre
-		JLabel titleLabel = new JLabel(titleUpdate(issue.getName()));
+		JLabel titleLabel = new JLabel(titleUpdate(results_api.getName()));
 		titleLabel.setOpaque(true);
 		titleLabel.setFont(new Font("Tahoma", Font.PLAIN,20));
 		titleLabel.setBackground(CustomColor.DarkGray);
@@ -97,8 +97,8 @@ public class ComicCoverPanel extends JPanel{
 		
 	}
 	
-	public Issue getIssue() {
-		return this.issue;
+	public ResultsAPI getResultsApi() {
+		return this.results_api;
 	}
 	
 	@Override
@@ -113,18 +113,18 @@ public class ComicCoverPanel extends JPanel{
 		if(button_fav.getColor() == CustomColor.Green) {
 			button_fav.setColor(CustomColor.Red);
 			
-			//Delete issue favorite link in the database
-			databaseService.removeOneUserFavorite(user, issue);
+			//Delete results_api favorite link in the database
+			databaseService.removeOneUserFavorite(user, results_api);
 			
 		}
 		else {
 			button_fav.setColor(CustomColor.Green);
 			
 			//Add issues in the database
-			databaseService.addNewIssue(issue);
+			databaseService.addNewIssue(results_api);
 			
-			//Add link between user and favorite issue
-			databaseService.addNewUserFavorite(user, issue);
+			//Add link between user and favorite results_api
+			databaseService.addNewUserFavorite(user, results_api);
 		}
 	}
 	

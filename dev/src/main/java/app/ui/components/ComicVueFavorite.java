@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.entities.Issue;
+import app.entities.ResultsAPI;
 import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
@@ -12,7 +12,7 @@ import app.services.DatabaseService;
 @SuppressWarnings("serial")
 public class ComicVueFavorite extends ComicVue{
 
-	private List<Issue> userFavoriteIssues = new ArrayList<>();
+	private List<ResultsAPI> userFavoriteIssues = new ArrayList<>();
 	
 	public ComicVueFavorite(UserModel um, ComicVineService cvS,DatabaseService dbS){
 		super(um, cvS, dbS);

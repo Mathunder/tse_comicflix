@@ -8,7 +8,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import app.dto.InfosResultDto;
+//import app.dto.InfosResultDto;
 import app.services.ComicVineService;
 import app.ui.themes.CustomColor;
 
@@ -16,20 +16,18 @@ import app.ui.themes.CustomColor;
 public class ComicsInfosPanel extends JPanel {
 	
 	private ComicCoverPanel comicCover;
-	private InfosResultDto infosResult;
+//	private InfosResultDto infosResult;
 	private ComicVineService comicVineService;
 	
 	public ComicsInfosPanel(ComicCoverPanel comicCoverPanel) {
+		comicVineService = new ComicVineService();
+		//infosResult = new InfosResultDto();
 		this.comicCover = comicCoverPanel;
 	}
 	
-	public void fetchInformations() {
-		comicVineService = new ComicVineService();
-		this.comicVineService.search_from_url(this.comicCover.getIssue().getApi_detail_url());
-		//String str = this.infosResult.getResults().getDescription();
-		//System.out.println(this.infosResult.getNumber_of_page_results());
-		System.out.println("Research passed");
-	}
+//	public void fetchInformations() {
+//		this.comicVineService.search_from_url(this.comicCover.getResultsApi().getApi_detail_url());
+//	}
 	
 	public void createInfosPanel() {
 		
@@ -50,8 +48,6 @@ public class ComicsInfosPanel extends JPanel {
 		JTextArea issue_infos = new JTextArea("Informations about the issue");
 		
 		JScrollPane scrollPaneComicsInfos = new JScrollPane(this);
-
-
 		
 		// Column 1 (content: summary, creators, characters)
 		box1.setLayout(new BoxLayout(box1, BoxLayout.Y_AXIS));
@@ -64,7 +60,7 @@ public class ComicsInfosPanel extends JPanel {
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		try {
-			synopsis_text = this.infosResult.getResults().getDescription(); //comic.getSynopsis().replaceAll("\\<.*?\\>", "");
+			synopsis_text = this.comicCover.getResultsApi().getDescription().replaceAll("\\<.*?\\>", "");
 		} catch (NullPointerException e) {
 			synopsis_text = "Description not found.";
 		}
@@ -127,14 +123,14 @@ public class ComicsInfosPanel extends JPanel {
 		
 		ImageIcon img;
 		try {
-			URL url_img = new URL(this.comicCover.getIssue().getImage().getMedium_url());
+			URL url_img = new URL(this.comicCover.getResultsApi().getImage().getMedium_url());
 			BufferedImage imageBrute = ImageIO.read(url_img);
 			Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
 			img = new ImageIcon(imageResize);
 			image.setIcon(img);
 		} catch (IOException e) {
 			// The url is displayed in case the image cold not be loaded
-			img = new ImageIcon(this.comicCover.getIssue().getImage().getMedium_url());
+			img = new ImageIcon(this.comicCover.getResultsApi().getImage().getMedium_url());
 		}
 		image.setIcon(img);
 		box2.add(image);
