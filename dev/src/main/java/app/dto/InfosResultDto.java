@@ -1,9 +1,7 @@
 package app.dto;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import app.entities.InformationsAPI;
-import app.entities.Issue;
 import lombok.Data;
 
 /*

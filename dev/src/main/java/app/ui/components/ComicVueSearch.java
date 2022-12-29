@@ -7,9 +7,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.swing.JFrame;
-
 import app.dto.SearchResultDto;
 import app.helpers.ComicVineSearchStatus;
 import app.models.UserModel;
