@@ -19,7 +19,7 @@ import io.restassured.RestAssured;
 import lombok.Data;
 
 /**
- * A class to handle sending requests to Comicvine API
+ * A class to handle sending requests to Comicvine API.
  */
 
 @Data
@@ -78,27 +78,27 @@ public class ComicVineService {
 		this.pcs.addPropertyChangeListener(listener);
 	}
 	
+	/*
+	 * This method IS NOT asynchronous since it is computed very quickly, hence the asynchrony is not needed.
+	 */
 	public void search_from_url(String url) {
+		
+		// The base url is changed for the url we want
 		RestAssured.baseURI = url;
 		
-//		CompletableFuture.runAsync(() -> {
+		// The parameters are fewer since the url targets perfectly the result we want. Only the "api_key" and "format" remain.
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("api_key", "f9073eee3658e2a4f39a9f531ad521b935ce87bc");	
+		params.put("format", "json");
+		String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
 
-			Map<String, String> params = new HashMap<String, String>();
-			params.put("api_key", "f9073eee3658e2a4f39a9f531ad521b935ce87bc");	
-			params.put("format", "json");
-			String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
-	
-			ComicVineSearchStatus oldSearchStatus = this.getSearchStatus();
-			this.setSearchStatus(ComicVineSearchStatus.FETCHING);
-			this.pcs.firePropertyChange("searchStatus", oldSearchStatus, this.getSearchStatus());
+		/*
+		 * The part that makes the request; the verifications were removed since there is no possible error 
+		 * (if the api gives an url, then we suppose that this url points towards something that exists).
+		 */
+		this.infosResult = given().params(params).header("User-Agent", userAgent).when().get().as(InfosResultDto.class);
 
-			this.infosResult = given().params(params).header("User-Agent", userAgent).when().get().as(InfosResultDto.class);
-
-			oldSearchStatus = this.getSearchStatus();
-			this.setSearchStatus(ComicVineSearchStatus.DONE);
-			this.pcs.firePropertyChange("searchStatus", oldSearchStatus, this.getSearchStatus());
-			System.out.println("done");
-			RestAssured.baseURI = "https://comicvine.gamespot.com/api";
-//		});
+		// Since the baseURI has been modified, it is put back to its original value at the end of this method.
+		RestAssured.baseURI = "https://comicvine.gamespot.com/api";
 	}
 }
