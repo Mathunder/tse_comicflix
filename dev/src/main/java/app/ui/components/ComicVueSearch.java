@@ -94,7 +94,9 @@ public class ComicVueSearch extends ComicVue{
 			}
 		}
 		else if(evt.getPropertyName() == "userChange") {
-			updateButtonStates(0);
+			showResult();
+			if(userModel.getIsAuthenticated())
+				updateButtonStates(0);
 		}
 		else if(evt.getPropertyName() == "favoriteChange") {
 			if(evt.getNewValue() == "add")

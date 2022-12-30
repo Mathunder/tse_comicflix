@@ -71,9 +71,9 @@ public class ComicCoverPanel extends JPanel{
 		
 		//Put constraint on Label 
 		SpringLayout springLayout = new SpringLayout();
-		springLayout.putConstraint(SpringLayout.NORTH, titleLabel, labelHeight , SpringLayout.SOUTH, this);
+		springLayout.putConstraint(SpringLayout.NORTH, titleLabel, labelHeight, SpringLayout.SOUTH, titleLabel);
 		springLayout.putConstraint(SpringLayout.WEST, titleLabel, 0, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.SOUTH, titleLabel, 0, SpringLayout.SOUTH, this);
+		springLayout.putConstraint(SpringLayout.SOUTH, titleLabel, this.resizedImageBg.getHeight(), SpringLayout.NORTH, this);
 		springLayout.putConstraint(SpringLayout.EAST, titleLabel, 0, SpringLayout.EAST, this);
 		setLayout(springLayout);
 		// Add the label to the panel
@@ -89,9 +89,9 @@ public class ComicCoverPanel extends JPanel{
 			});
 			
 			//Put Constraints on fav button
-			springLayout.putConstraint(SpringLayout.NORTH, button_fav, labelHeight - 25, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.NORTH, button_fav, -25 , SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.WEST, button_fav, 0, SpringLayout.WEST, this);
-			springLayout.putConstraint(SpringLayout.SOUTH, button_fav, labelHeight, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.SOUTH, button_fav, 0, SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.EAST, button_fav, -140, SpringLayout.EAST, this);
 			// Add buttons to the panel
 			add(button_fav);
@@ -106,9 +106,9 @@ public class ComicCoverPanel extends JPanel{
 			});
 			
 			//Put Constraints on read button
-			springLayout.putConstraint(SpringLayout.NORTH, button_read, labelHeight - 25, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.NORTH, button_read, -25, SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.WEST, button_read, 70, SpringLayout.WEST, this);
-			springLayout.putConstraint(SpringLayout.SOUTH, button_read, labelHeight, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.SOUTH, button_read, 0, SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.EAST, button_read, -70, SpringLayout.EAST, this);
 			// Add button to the panel
 			add(button_read);
