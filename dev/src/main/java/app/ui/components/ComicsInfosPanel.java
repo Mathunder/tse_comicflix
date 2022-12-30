@@ -57,7 +57,16 @@ public class ComicsInfosPanel extends JPanel {
 		
 		JScrollPane scrollPaneComicsInfos = new JScrollPane(this);
 		
-		// Column 1 (content: summary, creators, characters)
+		
+		/* -------------------------------------------------- */
+		
+		
+		/*
+		 *  Column 1. Content: 
+		 *  1. Summary
+		 *  2. Creators
+		 *  3. Characters
+		 */
 		box1.setLayout(new BoxLayout(box1, BoxLayout.Y_AXIS));
 		box1.setBackground(CustomColor.WhiteCloud);
 		
@@ -92,6 +101,7 @@ public class ComicsInfosPanel extends JPanel {
 		creators_title.setEditable(false);
 		creators_title.setBackground(CustomColor.WhiteCloud);
 		box1.add(creators_title);
+		
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		try {
@@ -117,8 +127,9 @@ public class ComicsInfosPanel extends JPanel {
 		characters_title.setEditable(false);
 		characters_title.setBackground(CustomColor.WhiteCloud);
 		box1.add(characters_title);
-		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 		
+		box1.add(Box.createRigidArea(new Dimension(0, 10)));
+
 		try {
 			for (int i = 0; i < this.infosResult.getResults().getCharacter_credits().size(); i++) {
 				characters.setText(characters.getText() + this.infosResult.getResults().getCharacter_credits().get(i).getName() + '\n');
@@ -137,9 +148,15 @@ public class ComicsInfosPanel extends JPanel {
 		scroll_characters.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.Black));
 		box1.add(scroll_characters);
 		
-		// ---------------
 		
-		// Column 2 (content: image, info about the issue)
+		/* -------------------------------------------------- */
+
+		
+		/*
+		 *  Column 2. Content: 
+		 *  image
+		 *  informations about the issue/character
+		 */
 		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));
 		box2.setBackground(CustomColor.WhiteCloud);
 		
