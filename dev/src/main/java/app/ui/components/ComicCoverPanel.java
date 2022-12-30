@@ -54,6 +54,7 @@ public class ComicCoverPanel extends JPanel{
 		resizedImageBg = resizeBuffImage(imageBrute,206,310);
 		
 		setPreferredSize(new Dimension(206,310));
+		setBackground(CustomColor.WhiteCloud);
 		
 		// Création du label titre
 		JLabel titleLabel = new JLabel(titleUpdate(issue.getName()));
