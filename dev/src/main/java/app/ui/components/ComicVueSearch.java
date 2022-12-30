@@ -52,11 +52,9 @@ public class ComicVueSearch extends ComicVue{
 				comicCover.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 						ComicsInfosPanel infos = new ComicsInfosPanel(comicCover);
+
+						infos.fetchInformations();
 						infos.createInfosPanel();
-						//infos.fetchInformations();
-						
-						
-						//						System.out.println(comicCover.getIssue().getApi_detail_url());
 						
 						//JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
 						
@@ -65,7 +63,7 @@ public class ComicVueSearch extends ComicVue{
 //						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
 //						scrollPaneComicsInfos.getHorizontalScrollBar().setUnitIncrement(14);
 		
-						JFrame f = new JFrame(comicCover.getResultsApi().getName());
+						JFrame f = new JFrame(infos.getInfosResult().getResults().getVolume().getName() + ' ' + '(' + infos.getInfosResult().getResults().getIssue_number() + ')');
 						try {
 							URL url_image = new URL(comicCover.getResultsApi().getImage().getIcon_url());
 							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);

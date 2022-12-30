@@ -1,7 +1,7 @@
 package app.entities;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import app.dto.ImageResultDto;
 import lombok.Data;
@@ -11,14 +11,14 @@ import lombok.Data;
 public class ResultsAPI {
 	
 	// Fields specific to the issue type
-	private List<Character> character_credits;
+	private ArrayList<CharacterCredits> character_credits;
 	private String issue_number;
 	private Volume volume;
 	
 	// Fields that are specific to the character type
 	private String birth;
 	private String count_of_issue_apperances;
-	private List<Creators> creators;
+	private ArrayList<Creators> creators;
 	// This is a quick summary of the character's life
 	private String deck;
 	private int gender;

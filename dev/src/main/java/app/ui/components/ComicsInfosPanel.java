@@ -2,12 +2,15 @@ package app.ui.components;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import app.dto.InfosResultDto;
+import app.helpers.ComicVineSearchStatus;
 //import app.dto.InfosResultDto;
 import app.services.ComicVineService;
 import app.ui.themes.CustomColor;
@@ -16,17 +19,39 @@ import app.ui.themes.CustomColor;
 public class ComicsInfosPanel extends JPanel {
 	
 	private ComicCoverPanel comicCover;
-//	private InfosResultDto infosResult;
-	private ComicVineService comicVineService;
+	private ComicVineService cvs;
+	private InfosResultDto infosResult;
+
 	
 	public ComicsInfosPanel(ComicCoverPanel comicCoverPanel) {
-		comicVineService = new ComicVineService();
-		//infosResult = new InfosResultDto();
 		this.comicCover = comicCoverPanel;
+		this.infosResult = new InfosResultDto();
+		this.cvs = new ComicVineService();
 	}
 	
-//	public void fetchInformations() {
-//		this.comicVineService.search_from_url(this.comicCover.getResultsApi().getApi_detail_url());
+	public InfosResultDto getInfosResult() {
+		return this.infosResult;
+	}
+	
+	public void fetchInformations() {
+		System.out.println(this.comicCover.getResultsApi().getApi_detail_url());
+		this.cvs.search_from_url(this.comicCover.getResultsApi().getApi_detail_url());
+		this.infosResult = this.cvs.getInfosResult();
+		System.out.println(this.infosResult.getResults());
+	}
+	
+//	public void propertyChange(PropertyChangeEvent evt) {
+//		if(evt.getPropertyName() == "searchStatus") //From Controller/Model ComicVineService
+//		{
+//			if(evt.getNewValue() == ComicVineSearchStatus.FETCHING) {
+//				System.out.println("Loading");
+//			}
+//			else if(evt.getNewValue() == ComicVineSearchStatus.DONE) {
+//				System.out.println("Loaded");
+//				this.infosResult = cvs.getInfosResult();
+//				fetchInformations();
+//			}
+//		}
 //	}
 	
 	public void createInfosPanel() {
@@ -37,15 +62,15 @@ public class ComicsInfosPanel extends JPanel {
 		String synopsis_text;
 		JScrollPane scroll_synopsis_text;
 		JTextArea creators_title = new JTextArea("Creators");
-		JTextArea creators = new JTextArea("Creators");
+		JTextArea creators = new JTextArea();
 		JScrollPane scroll_creators;
 		JTextArea characters_title = new JTextArea("Characters");
-		JTextArea characters = new JTextArea("Characters");
+		JTextArea characters = new JTextArea();
 		JScrollPane scroll_characters;
 		
 		JPanel box2 = new JPanel();
 		JLabel image = new JLabel();
-		JTextArea issue_infos = new JTextArea("Informations about the issue");
+		JTextArea issue_infos = new JTextArea();
 		
 		JScrollPane scrollPaneComicsInfos = new JScrollPane(this);
 		
@@ -86,6 +111,13 @@ public class ComicsInfosPanel extends JPanel {
 		box1.add(creators_title);
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 		
+		try {
+			for (int i = 0; i < this.comicCover.getResultsApi().getCreators().size(); i++) {
+				characters.setText(this.comicCover.getResultsApi().getCreators().get(i).getName() + "\n");
+			}
+		} catch (NullPointerException e) {
+			creators.setText("Sorry, no creators were found.");
+		}
 		creators.setEditable(false);
 		creators.setLineWrap(true);
 		creators.setWrapStyleWord(true);
@@ -104,6 +136,13 @@ public class ComicsInfosPanel extends JPanel {
 		box1.add(characters_title);
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 		
+		try {
+			for (int i = 0; i < this.infosResult.getResults().getCharacter_credits().size(); i++) {
+				characters.setText(characters.getText() + this.infosResult.getResults().getCharacter_credits().get(i).getName() + '\n');
+			}
+		} catch (NullPointerException e) {
+			characters.setText("Sorry, no characters were found.");
+		}
 		characters.setEditable(false);
 		characters.setLineWrap(true);
 		characters.setWrapStyleWord(true);
