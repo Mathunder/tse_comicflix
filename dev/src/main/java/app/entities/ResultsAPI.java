@@ -1,10 +1,15 @@
 package app.entities;
 
 import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import app.dto.ImageResultDto;
 import lombok.Data;
+
+/*
+ * This class stores the informations about an issue or a character. 
+ * Whether the search is about an issue or a character, some fields (that are specific to each type) will be null,
+ * and other (that are common to both type) will be assigned values.
+ */
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

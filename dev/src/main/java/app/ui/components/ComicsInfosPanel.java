@@ -2,7 +2,6 @@ package app.ui.components;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.net.URL;
 
@@ -10,8 +9,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import app.dto.InfosResultDto;
-import app.helpers.ComicVineSearchStatus;
-//import app.dto.InfosResultDto;
 import app.services.ComicVineService;
 import app.ui.themes.CustomColor;
 

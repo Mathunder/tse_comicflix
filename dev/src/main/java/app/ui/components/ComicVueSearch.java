@@ -48,11 +48,12 @@ public class ComicVueSearch extends ComicVue{
 			
 				ComicCoverPanel comicCover = new ComicCoverPanel(result.getResults().get(i),isFavorite, userModel.getUser(), databaseService);
 				this.add(comicCover);
+				
 				// Adding a listener so the user can click on a comic and get its informations
 				comicCover.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
+						
 						ComicsInfosPanel infos = new ComicsInfosPanel(comicCover);
-
 						infos.fetchInformations();
 						infos.createInfosPanel();
 						
@@ -63,6 +64,7 @@ public class ComicVueSearch extends ComicVue{
 //						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
 //						scrollPaneComicsInfos.getHorizontalScrollBar().setUnitIncrement(14);
 		
+						// Creating the new frame that will display the informations the user wants.
 						JFrame f = new JFrame(infos.getInfosResult().getResults().getVolume().getName() + ' ' + '(' + infos.getInfosResult().getResults().getIssue_number() + ')');
 						try {
 							URL url_image = new URL(comicCover.getResultsApi().getImage().getIcon_url());
