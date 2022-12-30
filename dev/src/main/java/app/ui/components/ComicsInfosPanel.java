@@ -12,7 +12,9 @@ import app.dto.InfosResultDto;
 import app.services.ComicVineService;
 import app.ui.themes.CustomColor;
 
-// The goal of this class is to create a panel in which the informations of the selected comic will be displayed
+/*
+ *  The goal of this class is to create a panel in which the informations of the selected comic will be displayed.
+ */
 public class ComicsInfosPanel extends JPanel {
 	
 	private ComicCoverPanel comicCover;
@@ -40,7 +42,7 @@ public class ComicsInfosPanel extends JPanel {
 	public void createInfosPanel() {
 		
 		JPanel box1 = new JPanel();
-		JTextArea synopsis_title = new JTextArea("Synopsis");
+		JTextArea synopsis_title = new JTextArea("Summary");
 		JTextArea synopsis = new JTextArea();
 		String synopsis_text;
 		JScrollPane scroll_synopsis_text;
@@ -130,9 +132,15 @@ public class ComicsInfosPanel extends JPanel {
 		
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 
+		// The character_credits field can be null; this case is handled below in the try/catch.
 		try {
-			for (int i = 0; i < this.infosResult.getResults().getCharacter_credits().size(); i++) {
-				characters.setText(characters.getText() + this.infosResult.getResults().getCharacter_credits().get(i).getName() + '\n');
+			// Sometime the character_credits field is not null but empty; this case is handled below in the if/else.
+			if (!this.infosResult.getResults().getCharacter_credits().isEmpty()) {
+				for (int i = 0; i < this.infosResult.getResults().getCharacter_credits().size(); i++) {
+					characters.setText(characters.getText() + this.infosResult.getResults().getCharacter_credits().get(i).getName() + '\n');
+				}
+			} else {
+				characters.setText("Sorry, no characters were found.");
 			}
 		} catch (NullPointerException e) {
 			characters.setText("Sorry, no characters were found.");
