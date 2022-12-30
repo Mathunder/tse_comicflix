@@ -40,20 +40,6 @@ public class ComicsInfosPanel extends JPanel {
 		System.out.println(this.infosResult.getResults());
 	}
 	
-//	public void propertyChange(PropertyChangeEvent evt) {
-//		if(evt.getPropertyName() == "searchStatus") //From Controller/Model ComicVineService
-//		{
-//			if(evt.getNewValue() == ComicVineSearchStatus.FETCHING) {
-//				System.out.println("Loading");
-//			}
-//			else if(evt.getNewValue() == ComicVineSearchStatus.DONE) {
-//				System.out.println("Loaded");
-//				this.infosResult = cvs.getInfosResult();
-//				fetchInformations();
-//			}
-//		}
-//	}
-	
 	public void createInfosPanel() {
 		
 		JPanel box1 = new JPanel();
