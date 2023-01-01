@@ -69,7 +69,6 @@ public class ComicVineService {
 			oldSearchStatus = this.getSearchStatus();
 			this.setSearchStatus(ComicVineSearchStatus.DONE);
 			this.pcs.firePropertyChange("searchStatus", oldSearchStatus, this.getSearchStatus());
-			System.out.println(this.getSearchResult());
 
 		});
 	}
