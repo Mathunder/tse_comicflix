@@ -26,7 +26,7 @@ public class TestComicVineService extends TestCase {
 		
 		test.search(test.getKeyword(), filters, test.getLimit(), page);
 		
-		
+		//wait that the search function be changed into a non asynchronous method
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
@@ -35,7 +35,7 @@ public class TestComicVineService extends TestCase {
 		}
 		
 		
-		
+		//System.out.println(test.getSearchResult().getResults());
 		
 		//create the object that is expected after performing the method search()
 		ComicVineService expected = new ComicVineService();
@@ -45,9 +45,15 @@ public class TestComicVineService extends TestCase {
 		
 		
 		//Perform the test
-		//wait that the search function be changed into a non asynchronous method
 		
+		//on the searchStatus
 		assertEquals(Objects.equals(expected.getSearchStatus(), test.getSearchStatus()),true);
+		
+		//verifying that we have an array of result after querying the API
+		System.out.println(test.getSearchResult().getResults().get(0).getClass().toString());
+		for(int k = 0; k < test.getSearchResult().getResults().size(); k ++) {
+			assertEquals(test.getSearchResult().getResults().get(k).getClass().toString(), "class app.entities.Issue");
+		}
 		
 	}
 
