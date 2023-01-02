@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-//import app.entities.Issue;
+import app.entities.ResultsAPI;
 import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
@@ -44,7 +44,7 @@ public class ComicVueRead extends ComicVue{
 			if(itemRefreshCode == 1 || itemRefreshCode == 0) {
 				boolean isFavorite = false;
 				// Find if the issue displayed is favorite for the User
-				for(Issue favorite : userModel.getUserFavoriteIssues()) {
+				for(ResultsAPI favorite : userModel.getUserFavoriteIssues()) {
 					if(favorite.getId() == userModel.getUserReadingIssues().get(i).getId()) {
 						isFavorite=true;
 						break;
@@ -56,7 +56,7 @@ public class ComicVueRead extends ComicVue{
 			if(itemRefreshCode == 2 || itemRefreshCode == 0) {
 				int readState = 0;
 				// Find if the issue displayed is reading by the User
-				for(Issue reading : userModel.getUserReadingIssues()) {
+				for(ResultsAPI reading : userModel.getUserReadingIssues()) {
 					if(reading.getId() == userModel.getUserReadingIssues().get(i).getId()) {
 						readState = 1;
 						break;
@@ -64,7 +64,7 @@ public class ComicVueRead extends ComicVue{
 				}
 				
 				// Find if the issue displayed is readed by the User
-				for(Issue readed : userModel.getUserReadedIssues()) {
+				for(ResultsAPI readed : userModel.getUserReadedIssues()) {
 					if(readed.getId() == userModel.getUserReadingIssues().get(i).getId()) {
 						readState = 2;
 						break;
@@ -79,7 +79,7 @@ public class ComicVueRead extends ComicVue{
 			if(itemRefreshCode == 1 || itemRefreshCode == 0) {
 				boolean isFavorite = false;
 				// Find if the issue displayed is favorite for the User
-				for(Issue favorite : userModel.getUserFavoriteIssues()) {
+				for(ResultsAPI favorite : userModel.getUserFavoriteIssues()) {
 					if(favorite.getId() == userModel.getUserReadedIssues().get(j).getId()) {
 						isFavorite=true;
 						break;
@@ -92,7 +92,7 @@ public class ComicVueRead extends ComicVue{
 				int readState = 0;
 				
 				// Find if the issue displayed is readed by the User
-				for(Issue reading : userModel.getUserReadingIssues()) {
+				for(ResultsAPI reading : userModel.getUserReadingIssues()) {
 					if(reading.getId() == userModel.getUserReadedIssues().get(j).getId()) {
 						readState = 1;
 						break;
@@ -100,7 +100,7 @@ public class ComicVueRead extends ComicVue{
 				}
 				
 				// Find if the issue displayed is readed by the User
-				for(Issue readed : userModel.getUserReadedIssues()) {
+				for(ResultsAPI readed : userModel.getUserReadedIssues()) {
 					if(readed.getId() == userModel.getUserReadedIssues().get(j).getId()) {
 						readState = 2;
 						break;
