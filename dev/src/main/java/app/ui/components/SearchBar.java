@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 public class SearchBar extends PanelRound {
 	
 	
-	private JTextField searchTextField;
+	public JTextField searchTextField;
 	
 	//constructor
 	public SearchBar(){
@@ -46,12 +46,7 @@ public class SearchBar extends PanelRound {
 		
 		this.add(searchTextField);
         
-		searchTextField.addMouseListener(new MouseAdapter() {
-			  @Override
-			  public void mouseClicked(MouseEvent e) {
-				  searchTextField.setText("");
-			  }
-			});
+	
 		
 	}
 	

@@ -3,12 +3,11 @@ package app.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import app.dto.ImageResultDto;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Issue {
+public class VineCharacter {
 	private String aliases;
 	private String api_detail_url;
 	private int id;
@@ -17,12 +16,11 @@ public class Issue {
 	private ImageResultDto image;
 	private String deck;
 	private String description;
-	
-	public Issue() {}
-	
-	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url,
-			String deck, String description) {
-		this.aliases=aliases;
+
+
+	public VineCharacter(String aliases, String api_detail_url, int id, String issue_number, String name,
+			String image_url, String deck, String description) {
+		this.aliases = aliases;
 		this.api_detail_url = api_detail_url;
 		this.id = id;
 		this.issue_number = issue_number;
@@ -31,14 +29,4 @@ public class Issue {
 		this.deck = deck;
 		this.description = description;
 	}
-	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url) {
-		this.aliases=aliases;
-		this.api_detail_url = api_detail_url;
-		this.id = id;
-		this.issue_number = issue_number;
-		this.name = name;
-		this.image = new ImageResultDto(image_url);
-
-	}
-
 }
