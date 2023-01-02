@@ -1,6 +1,8 @@
 package app.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import app.dto.ImageResultDto;
@@ -17,7 +19,8 @@ public class Issue {
 	private ImageResultDto image;
 	private String deck;
 	private String description;
-	
+	private ArrayList<CharacterCredits> character_credits;
+	private Volume volume;
 	public Issue() {}
 	
 	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url,
@@ -30,7 +33,9 @@ public class Issue {
 		this.image = new ImageResultDto(image_url);
 		this.deck = deck;
 		this.description = description;
+
 	}
+	
 	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url) {
 		this.aliases=aliases;
 		this.api_detail_url = api_detail_url;

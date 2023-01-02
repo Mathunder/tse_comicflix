@@ -1,6 +1,5 @@
 package app.ui.components;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -11,22 +10,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 import javax.swing.JPanel;
-
 import app.dto.SearchResultDto;
-import app.entities.Comics;
 import app.helpers.ComicVineSearchFilter;
 import app.helpers.ComicVineSearchStatus;
 import app.services.ComicVineService;
 import app.ui.frames.MainFrame;
 import app.ui.themes.CustomColor;
 import javax.swing.SpringLayout;
-import javax.swing.JTextField;
-
 import java.awt.Color;
-import java.awt.FlowLayout;
 
 @SuppressWarnings("serial")
 public class SearchBarPanel extends JPanel implements PropertyChangeListener {
@@ -43,9 +35,9 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 		initButtonSearch();
 		SpringLayout springLayout = new SpringLayout();
 		springLayout.putConstraint(SpringLayout.NORTH, btnFilter, 85, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, btnFilter, 550, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.WEST, btnFilter, 350, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.SOUTH, btnFilter, -25, SpringLayout.SOUTH, this);
-		springLayout.putConstraint(SpringLayout.EAST, btnFilter, -550, SpringLayout.EAST, this);
+		springLayout.putConstraint(SpringLayout.EAST, btnFilter, -350, SpringLayout.EAST, this);
 		setLayout(springLayout);
 		this.add(btnFilter);
 
@@ -72,9 +64,9 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 			}
 		});
 		springLayout.putConstraint(SpringLayout.NORTH, searchRoundBar, 25, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, searchRoundBar, 400, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.WEST, searchRoundBar, 250, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.SOUTH, searchRoundBar, -50, SpringLayout.SOUTH, btnFilter);
-		springLayout.putConstraint(SpringLayout.EAST, searchRoundBar, -400, SpringLayout.EAST, this);
+		springLayout.putConstraint(SpringLayout.EAST, searchRoundBar, -250, SpringLayout.EAST, this);
 		add(searchRoundBar);
 		FilterComBox filterCombox = new FilterComBox(comicVineService);
 		DefaultButton btnFilter1 = new DefaultButton(" Search ", CustomColor.Red, 20, true);
@@ -99,15 +91,10 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 
 	// Action button search
 	private void btnFilterActionPerformed(ActionEvent evt) {
-
-		if (searchRoundBar.getSearchText() != "" && searchRoundBar.getSearchText() != "Search"
-				&& searchRoundBar.getSearchText() != "Loading...") {
-
-			List<ComicVineSearchFilter> filters = new ArrayList<>();
-//			filters.add(ComicVineSearchFilter.ISSUE);
-			filters.add(ComicVineSearchFilter.CHARACTER);
+		if (!searchRoundBar.getSearchText().trim().equals("") && !searchRoundBar.getSearchText().trim().equals("Search")
+				&& !searchRoundBar.getSearchText().trim().equals("Loading...")) {
 			String keyword = searchRoundBar.getSearchText().replaceAll(" ", "-");
-			this.comicVineService.search(keyword, filters, this.comicVineService.getLimit(), 0);
+			this.comicVineService.initialSearch(keyword);
 		}
 
 	}
@@ -130,7 +117,9 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 				this.searchRoundBar.setSearchText("Search");
 				this.btnFilter.setEnabled(true);
 			}
+
 		}
+
 	}
 
 }

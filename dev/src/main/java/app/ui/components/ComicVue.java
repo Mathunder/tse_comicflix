@@ -8,7 +8,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import app.dto.SearchResultDto;
 import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
@@ -23,6 +22,7 @@ public abstract class ComicVue extends JPanel implements PropertyChangeListener{
 	protected ComicVineService comicsVineService;
 	//Vue
 	protected List<ComicCoverPanel> ComicCoverPanels = new ArrayList<>();
+	
 	
 	public ComicVue(UserModel um, ComicVineService cvS,DatabaseService dbS){
 		
@@ -46,7 +46,6 @@ public abstract class ComicVue extends JPanel implements PropertyChangeListener{
 	
 	public void removeComics() {
 		this.removeAll();
-		ComicCoverPanels.clear();
 	}
 	
 	public void refreshPanel() {
