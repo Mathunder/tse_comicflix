@@ -44,7 +44,7 @@ public class ResultsAPI {
 	// This is a quick summary of the character's life
 	private String deck;
 	private int gender;
-	private Publisher publisher;
+	private Publisher publisher; 
 	private String real_name;
 	
 	// Fields that are common to the issue and character type
