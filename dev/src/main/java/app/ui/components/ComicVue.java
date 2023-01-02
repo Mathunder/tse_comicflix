@@ -2,11 +2,12 @@ package app.ui.components;
 
 import java.awt.GridLayout;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import app.dto.SearchResultDto;
 import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
@@ -19,6 +20,8 @@ public abstract class ComicVue extends JPanel implements PropertyChangeListener{
 	//Controller
 	protected DatabaseService databaseService;
 	protected ComicVineService comicsVineService;
+	//Vue
+	protected List<ComicCoverPanel> ComicCoverPanels = new ArrayList<>();
 	
 	
 	public ComicVue(UserModel um, ComicVineService cvS,DatabaseService dbS){
