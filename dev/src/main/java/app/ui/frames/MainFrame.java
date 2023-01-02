@@ -26,9 +26,11 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		static JPanel searchBarPanel;
 		public static ComicVueSearch visuSearchComics;
 		private static ComicVueFavorite visuFavoriteComics;
+		private static ComicVueRead visuReadComics;
 		static LeftBarButton discoverBtn;
 		static LeftBarButton recommandBtn;
-		static LeftBarButton myLibrary;
+		static LeftBarButton myFavorites;
+		static LeftBarButton myReads;
 		static JLabel lbl_title;
 		static JLabel lbl_username;
 		private DefaultButton btnUserLogin;
@@ -74,7 +76,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			
 			//LeftBar Panel
 			sideLeftBar = new JPanel();
-			sideLeftBar.setBounds(0, 150, 200, 450);
+			sideLeftBar.setBounds(0, 150, 200, 425);
 			sideLeftBar.setBackground(CustomColor.Red);
 			sideLeftBar.setLayout(new GridLayout(0, 1, 0, 0));
 			
@@ -90,6 +92,9 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 						
 			//FavoriteComics Panels
 			visuFavoriteComics = new ComicVueFavorite(userModel, comicVineService, dataBaseService);
+			
+			//ReadsComics Panel
+			visuReadComics = new ComicVueRead(userModel, comicVineService, dataBaseService);
 			
 			//ScrollBar VisuComics Panel
 			scrollPaneVisuComics = new JScrollPane(visuSearchComics);
@@ -127,15 +132,22 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			});
 			sideLeftBar.add(recommandBtn);
 			
-			//Button MyLibrary
-			myLibrary = new LeftBarButton("Mes favoris",CustomColor.Red,20,true);
-			myLibrary.addActionListener(new ActionListener() {
+			//Button Favorites
+			myFavorites = new LeftBarButton("Mes favoris",CustomColor.Red,20,true);
+			myFavorites.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
 	            	myLibraryBtnActionPerformed(evt);
 	            }
 			});
-			sideLeftBar.add(myLibrary);
+			sideLeftBar.add(myFavorites);
 			
+			myReads = new LeftBarButton("Mes lectures", CustomColor.Red,20,true);
+			myReads.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					myReadsBtnActionPerformed(evt);
+				}
+			});
+			sideLeftBar.add(myReads);
 			
 			//Label Title
 			lbl_title = new JLabel("Comics Library");
@@ -194,37 +206,38 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    }  
 		
 		private void setFocusOnDiscoverPanel() {
-			discoverBtn.setBackground(CustomColor.DarkRed);
-	    	recommandBtn.setBackground(CustomColor.Red);
-	    	myLibrary.setBackground(CustomColor.Red);
+
 	    	discoverBtn.setBorderColorOnFocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
-	    	myLibrary.setBorderColorOnUnfocus();
+	    	myFavorites.setBorderColorOnUnfocus();
+	    	myReads.setBorderColorOnUnfocus();
 	    	scrollPaneVisuComics.setViewportView(visuSearchComics);
 		}
 	    
 	    private void recommandBtnActionPerformed(ActionEvent evt) {  
 
-	    	recommandBtn.setBackground(CustomColor.DarkRed);
-	    	discoverBtn.setBackground(CustomColor.Red);
-	    	myLibrary.setBackground(CustomColor.Red);
 	    	discoverBtn.setBorderColorOnUnfocus();
 	    	recommandBtn.setBorderColorOnFocus();
-	    	myLibrary.setBorderColorOnUnfocus();
-	    	
+	    	myFavorites.setBorderColorOnUnfocus();
+	    	myReads.setBorderColorOnUnfocus();
+	    	scrollPaneVisuComics.setViewportView(null);
 	    }  
 	    
 	    private void myLibraryBtnActionPerformed(ActionEvent evt) {   
-
-	    	myLibrary.setBackground(CustomColor.DarkRed);
-	    	discoverBtn.setBackground(CustomColor.Red);
-	    	recommandBtn.setBackground(CustomColor.Red);
 	    	discoverBtn.setBorderColorOnUnfocus();
 	    	recommandBtn.setBorderColorOnUnfocus();
-	    	myLibrary.setBorderColorOnFocus();
-	    	scrollPaneVisuComics.setViewportView(visuFavoriteComics);
-	    	    	
+	    	myFavorites.setBorderColorOnFocus();
+	    	myReads.setBorderColorOnUnfocus();
+	    	scrollPaneVisuComics.setViewportView(visuFavoriteComics);	    	
 	    } 
+	    
+	    private void myReadsBtnActionPerformed(ActionEvent evt) {
+	    	discoverBtn.setBorderColorOnUnfocus();
+	    	recommandBtn.setBorderColorOnUnfocus();
+	    	myFavorites.setBorderColorOnUnfocus();
+	    	myReads.setBorderColorOnFocus();
+	    	scrollPaneVisuComics.setViewportView(visuReadComics);
+	    }
 	    
 	    private void loginBtnActionPerformed(ActionEvent evt) {
 	    	
@@ -234,7 +247,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		    	loginFrame.setVisible(true);
 	    	}
 	    	else { 
-	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>());
+	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	    	}
 	    	
 	    }
@@ -256,22 +269,17 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	if(userModel.getIsAuthenticated()) {
 	    		btnUserLogin.setText("Logout");
 	    		recommandBtn.setVisible(true);
-	    		myLibrary.setVisible(true);
+	    		myFavorites.setVisible(true);
+	    		myReads.setVisible(true);
 	    				
 	    	}
 	    	else {
 	    		btnUserLogin.setText("Login");
 	    		recommandBtn.setVisible(false);
-	    		myLibrary.setVisible(false);
+	    		myFavorites.setVisible(false);
+	    		myReads.setVisible(false);
 	    		
-		    	discoverBtn.setBackground(CustomColor.DarkRed);
-		    	recommandBtn.setBackground(CustomColor.Red);
-		    	myLibrary.setBackground(CustomColor.Red);
-		    	discoverBtn.setBorderColorOnFocus();
-		    	recommandBtn.setBorderColorOnUnfocus();
-		    	myLibrary.setBorderColorOnUnfocus();
-		    	scrollPaneVisuComics.setViewportView(visuSearchComics);
-	    		
+	    		setFocusOnDiscoverPanel();
 	    	}
 	    }
 	    
