@@ -1,11 +1,9 @@
 package app.ui.components;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,9 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -25,6 +21,7 @@ import app.entities.User;
 import app.services.DatabaseService;
 import app.ui.themes.CustomColor;
 
+@SuppressWarnings("serial")
 public class ComicCoverPanel extends JPanel{
 	
 	private BufferedImage imageBrute;
@@ -37,7 +34,6 @@ public class ComicCoverPanel extends JPanel{
 	private User user;
 	
 	public ComicCoverPanel(Issue issue, DatabaseService dbS, User u){
-		
 		super();
 		this.issue=issue;
 		this.databaseService = dbS;
@@ -120,10 +116,11 @@ public class ComicCoverPanel extends JPanel{
 	
 	//Refresh buttons state according to the current state of the user list (favorites and reading)
 	public void refreshStateButtons(boolean state_fav, int state_read) {
-		if(state_fav)
+		if(state_fav && button_fav != null)
 			button_fav.setColor(CustomColor.Green);
 		else
 			button_fav.setColor(CustomColor.Red);
+		if(button_read ==  null) return;
 		switch (state_read) {
 			case 0:
 				button_read.setColor(CustomColor.Red);
@@ -145,6 +142,7 @@ public class ComicCoverPanel extends JPanel{
 	
 	//Refresh buttons state according to the current state of the user list (favorite only)
 	public void refreshStateButtons(boolean state_fav) {
+		if(button_fav == null) return ;
 		if(state_fav)
 			button_fav.setColor(CustomColor.Green);
 		else
@@ -153,7 +151,7 @@ public class ComicCoverPanel extends JPanel{
 	
 	//Refresh buttons state according to the current state of the user list (reads only)
 	public void refreshStateButtons(int state_read) {
-		
+		if(button_read == null) return;
 		switch (state_read) {
 			case 0:
 				button_read.setColor(CustomColor.Red);
