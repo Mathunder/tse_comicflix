@@ -1,9 +1,11 @@
 package app.ui.components;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +13,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -25,16 +30,18 @@ public class ComicCoverPanel extends JPanel{
 	private BufferedImage imageBrute;
 	private BufferedImage resizedImageBg;
 	private DefaultButton button_fav;
-	private ResultsAPI results_api;
-	private User user;
-	protected DatabaseService databaseService;
+	private DefaultButton button_read;
 	
-	public ComicCoverPanel(ResultsAPI results_api, boolean isFavorite, User user, DatabaseService dbS){
+	private ResultsAPI results_api;
+	protected DatabaseService databaseService;
+	private User user;
+	
+	public ComicCoverPanel(ResultsAPI results_api, DatabaseService dbS, User u){
 		
 		super();
-		this.results_api = results_api;
-		this.user = user;
+		this.results_api=results_api;
 		this.databaseService = dbS;
+		this.user = u;
 		
 		//Load a test image, resize and paint of the panel background
 		try {
@@ -47,6 +54,7 @@ public class ComicCoverPanel extends JPanel{
 		resizedImageBg = resizeBuffImage(imageBrute,206,310);
 		
 		setPreferredSize(new Dimension(206,310));
+		setBackground(CustomColor.WhiteCloud);
 		
 		// Création du label titre
 		JLabel titleLabel = new JLabel(titleUpdate(results_api.getName()));
@@ -62,23 +70,18 @@ public class ComicCoverPanel extends JPanel{
 		if(titleLabel.getText() != "")
 			labelHeight -= 25;
 		
-		
 		//Put constraint on Label 
 		SpringLayout springLayout = new SpringLayout();
-		springLayout.putConstraint(SpringLayout.NORTH, titleLabel, labelHeight , SpringLayout.SOUTH, this);
+		springLayout.putConstraint(SpringLayout.NORTH, titleLabel, labelHeight, SpringLayout.SOUTH, titleLabel);
 		springLayout.putConstraint(SpringLayout.WEST, titleLabel, 0, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.SOUTH, titleLabel, 0, SpringLayout.SOUTH, this);
+		springLayout.putConstraint(SpringLayout.SOUTH, titleLabel, this.resizedImageBg.getHeight(), SpringLayout.NORTH, this);
 		springLayout.putConstraint(SpringLayout.EAST, titleLabel, 0, SpringLayout.EAST, this);
 		setLayout(springLayout);
 		// Add the label to the panel
 		add(titleLabel);
 
-		if(user.getId() != 0)	{// Button favorite creation // \u2665 : unicode for full heart symbol
+		if(this.user.getId() != 0)	{// Button favorite creation // \u2665 : unicode for full heart symbol
 			button_fav = new DefaultButton(String.valueOf("\u2665"), CustomColor.Red, 24, true);
-			
-			//Change color if Comics already in user favorite
-			if(isFavorite)
-				button_fav.setColor(CustomColor.Green);
 			
 			button_fav.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
@@ -87,19 +90,89 @@ public class ComicCoverPanel extends JPanel{
 			});
 			
 			//Put Constraints on fav button
-			springLayout.putConstraint(SpringLayout.NORTH, button_fav, labelHeight - 25, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.NORTH, button_fav, -25 , SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.WEST, button_fav, 0, SpringLayout.WEST, this);
-			springLayout.putConstraint(SpringLayout.SOUTH, button_fav, labelHeight, SpringLayout.SOUTH, this);
+			springLayout.putConstraint(SpringLayout.SOUTH, button_fav, 0, SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.EAST, button_fav, -140, SpringLayout.EAST, this);
 			// Add buttons to the panel
 			add(button_fav);
+			
+			//Read button
+			button_read = new DefaultButton("Non lu", CustomColor.Red,16,true);
+			
+			button_read.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					button_readActionPerformed(evt);
+				}
+			});
+			
+			//Put Constraints on read button
+			springLayout.putConstraint(SpringLayout.NORTH, button_read, -25, SpringLayout.NORTH, titleLabel);
+			springLayout.putConstraint(SpringLayout.WEST, button_read, 70, SpringLayout.WEST, this);
+			springLayout.putConstraint(SpringLayout.SOUTH, button_read, 0, SpringLayout.NORTH, titleLabel);
+			springLayout.putConstraint(SpringLayout.EAST, button_read, -70, SpringLayout.EAST, this);
+			// Add button to the panel
+			add(button_read);
+			
 		}
 		
 	}
 	
-	public ResultsAPI getResultsApi() {
-		return this.results_api;
+	//Refresh buttons state according to the current state of the user list (favorites and reading)
+	public void refreshStateButtons(boolean state_fav, int state_read) {
+		if(state_fav)
+			button_fav.setColor(CustomColor.Green);
+		else
+			button_fav.setColor(CustomColor.Red);
+		switch (state_read) {
+			case 0:
+				button_read.setColor(CustomColor.Red);
+				button_read.setText("Non lu");
+				break;
+			case 1:
+				button_read.setColor(CustomColor.Orange);
+				button_read.setText("En cours");
+				break;
+			case 2:
+				button_read.setColor(CustomColor.Green);
+				button_read.setText("Lu");
+				break;
+			default:
+				button_read.setColor(CustomColor.LightGray);
+				button_read.setText("Error");
+		}
 	}
+	
+	//Refresh buttons state according to the current state of the user list (favorite only)
+	public void refreshStateButtons(boolean state_fav) {
+		if(state_fav)
+			button_fav.setColor(CustomColor.Green);
+		else
+			button_fav.setColor(CustomColor.Red);
+	}
+	
+	//Refresh buttons state according to the current state of the user list (reads only)
+	public void refreshStateButtons(int state_read) {
+		
+		switch (state_read) {
+			case 0:
+				button_read.setColor(CustomColor.Red);
+				button_read.setText("Non lu");
+				break;
+			case 1:
+				button_read.setColor(CustomColor.Orange);
+				button_read.setText("En cours");
+				break;
+			case 2:
+				button_read.setColor(CustomColor.Green);
+				button_read.setText("Lu");
+				break;
+			default:
+				button_read.setColor(CustomColor.LightGray);
+				button_read.setText("Error");
+		}
+	}
+	
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -113,7 +186,7 @@ public class ComicCoverPanel extends JPanel{
 		if(button_fav.getColor() == CustomColor.Green) {
 			button_fav.setColor(CustomColor.Red);
 			
-			//Delete results_api favorite link in the database
+			//Delete issue favorite link in the database
 			databaseService.removeOneUserFavorite(user, results_api);
 			
 		}
@@ -123,8 +196,30 @@ public class ComicCoverPanel extends JPanel{
 			//Add issues in the database
 			databaseService.addNewIssue(results_api);
 			
-			//Add link between user and favorite results_api
+			//Add link between user and favorite issue
 			databaseService.addNewUserFavorite(user, results_api);
+		}
+	}
+	
+	
+	private void button_readActionPerformed(ActionEvent e) {
+		if(button_read.getColor() == CustomColor.Red) { //IF ISSUE NOT ALREADY READ OR READING OR READED
+			button_read.setColor(CustomColor.Orange);
+			button_read.setText("En cours");
+			//Add issue to reading
+			databaseService.addNewUserReading(user, results_api);
+		}
+		else if(button_read.getColor() == CustomColor.Orange) { //IF ISSUE IS READING
+			button_read.setColor(CustomColor.Green);
+			button_read.setText("Lu");
+			//Add issue to readed
+			databaseService.addNewUserReaded(user, results_api);
+		}
+		else if(button_read.getColor() == CustomColor.Green) { //IF ISSUE IS READED
+			button_read.setColor(CustomColor.Red);
+			button_read.setText("Pas lu");
+			//Remove issue from read
+			databaseService.removeUserRead(user, results_api);
 		}
 	}
 	
@@ -137,7 +232,8 @@ public class ComicCoverPanel extends JPanel{
 	    g2d.dispose();
 
 	    return dimg;
-	}  
+	} 
+	
 	
 	public String titleUpdate(String title) {
 		//If the title is too long, transformation into HTML and add of line break
