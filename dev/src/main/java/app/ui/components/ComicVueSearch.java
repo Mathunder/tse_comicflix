@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import app.dto.SearchResultDto;
 import app.entities.ResultsAPI;
 import app.helpers.ComicVineSearchStatus;
 import app.models.UserModel;
