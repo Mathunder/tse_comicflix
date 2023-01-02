@@ -31,5 +31,14 @@ public class Issue {
 		this.deck = deck;
 		this.description = description;
 	}
+	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url) {
+		this.aliases=aliases;
+		this.api_detail_url = api_detail_url;
+		this.id = id;
+		this.issue_number = issue_number;
+		this.name = name;
+		this.image = new ImageResultDto(image_url);
+
+	}
 
 }
