@@ -75,7 +75,6 @@ public class ComicsInfosPanel extends JPanel {
 		box1.setBackground(CustomColor.WhiteCloud);
 		
 		synopsis_title.setEditable(false);
-		System.out.println(synopsis_title.getFont().getName() + synopsis_title.getFont().getSize());
 		synopsis_title.setFont(title_font);
 		synopsis_title.setBackground(CustomColor.WhiteCloud);
 		box1.add(synopsis_title);
