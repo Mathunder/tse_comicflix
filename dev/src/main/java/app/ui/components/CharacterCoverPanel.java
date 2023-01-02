@@ -35,6 +35,7 @@ public class CharacterCoverPanel extends JPanel {
 		
 		this.character=character;
 		this.databaseService = dbS;
+		this.setToolTipText(returnToolTipText(character));
 		
 		
 		//Load a test image, resize and paint of the panel background
@@ -51,7 +52,7 @@ public class CharacterCoverPanel extends JPanel {
 		setPreferredSize(new Dimension(206,310));
 		
 		// Création du label titre
-		JLabel titleLabel = new JLabel(titleUpdate(character.getName()));
+		JLabel titleLabel = new JLabel(titleUpdate(character.getName(), 13));
 		titleLabel.setOpaque(true);
 		titleLabel.setFont(new Font("Tahoma", Font.PLAIN,20));
 		titleLabel.setBackground(CustomColor.DarkGray);
@@ -107,16 +108,16 @@ public class CharacterCoverPanel extends JPanel {
 	} 
 	
 	
-	public String titleUpdate(String title) {
+	public String titleUpdate(String title, int n) {
 		//If the title is too long, transformation into HTML and add of line break
 		String titleDisplayed = new String("<html>");
 		if(title == null) { return ""; 
 		}
-		if(title.length()>13) {
+		if(title.length()>n) {
 
 			for (int j=0;j<title.length();j++) {
 				titleDisplayed = titleDisplayed.concat(String.valueOf(title.charAt(j)));
-				if(j != 0 && (j % 13 == 0)) {
+				if(j != 0 && (j % n == 0)) {
 					for (int k=j+1;k<title.length();k++) {
 						if(title.charAt(k) == ' ' || title.charAt(k) == '-') {
 							titleDisplayed = titleDisplayed.concat("<br>");
@@ -145,5 +146,33 @@ public class CharacterCoverPanel extends JPanel {
 	        ++index;
 	    }
 	    return count;
+	}
+	
+	private String returnToolTipText (VineCharacter character) {
+		//Return the string which is going to be printed in the ToolTip
+		// Print those API features : deck > description > aliases > name
+		
+		String deck = titleUpdate(character.getDeck(), 30);
+		if (deck.length() > 15) {
+			return deck;
+		}
+		String description = titleUpdate(character.getDescription(), 30);
+		if (description.length() > 15){
+			if (description.length() > 450) {
+				return description.substring(0, 450);
+			}
+			else {
+				return description;
+			}
+		}
+		String aliases = titleUpdate(character.getAliases(), 30);
+		if (aliases.length()>15) {
+			return aliases;
+		}
+		else {
+			return titleUpdate(character.getName(), 30);
+			
+		}
+		
 	}
 }
