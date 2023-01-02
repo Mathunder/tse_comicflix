@@ -274,4 +274,8 @@ public class ComicCoverPanel extends JPanel{
 	    }
 	    return count;
 	}
+
+	public ResultsAPI getResultsApi() {
+		return this.results_api;
+	}
 }
