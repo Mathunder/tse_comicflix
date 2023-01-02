@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.entities.Issue;
+//import app.entities.Issue;
 import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
