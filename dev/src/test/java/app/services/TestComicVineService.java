@@ -49,11 +49,18 @@ public class TestComicVineService extends TestCase {
 		//on the searchStatus
 		assertEquals(Objects.equals(expected.getSearchStatus(), test.getSearchStatus()),true);
 		
+<<<<<<< HEAD
 		
 		//verifying that we have an array of issues after querying the API. Verify all the elements of the array
 //		for(int k = 0; k < test.getSearchResult().getResults().size(); k ++) {
 //			assertEquals(test.getSearchResult().getResults().get(k).getClass().toString(), "class app.entities.Issue");
 //		}
+=======
+		//verifying that we have an array of issues after querying the API. Verify all the elements of the array
+		for(int k = 0; k < test.getSearchResult().getResults().size(); k ++) {
+			assertEquals(test.getSearchResult().getResults().get(k).getClass().toString(), "class app.entities.Issue");
+		}
+>>>>>>> 3039b7595997a42ea6455d86de46e0026a7fb07a
 		
 	}
 
