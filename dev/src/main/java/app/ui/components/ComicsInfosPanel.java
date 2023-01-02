@@ -52,6 +52,8 @@ public class ComicsInfosPanel extends JPanel {
 		JTextArea characters_title = new JTextArea("Characters");
 		JTextArea characters = new JTextArea();
 		JScrollPane scroll_characters;
+		Font title_font = new Font("Dialog", Font.BOLD, 16);
+
 		
 		JPanel box2 = new JPanel();
 		JLabel image = new JLabel();
@@ -73,6 +75,8 @@ public class ComicsInfosPanel extends JPanel {
 		box1.setBackground(CustomColor.WhiteCloud);
 		
 		synopsis_title.setEditable(false);
+		System.out.println(synopsis_title.getFont().getName() + synopsis_title.getFont().getSize());
+		synopsis_title.setFont(title_font);
 		synopsis_title.setBackground(CustomColor.WhiteCloud);
 		box1.add(synopsis_title);
 		
@@ -81,7 +85,7 @@ public class ComicsInfosPanel extends JPanel {
 		try {
 			synopsis_text = this.comicCover.getResultsApi().getDescription().replaceAll("\\<.*?\\>", "");
 		} catch (NullPointerException e) {
-			synopsis_text = "Description not found.";
+			synopsis_text = "Sorry, no description was found.";
 		}
 		synopsis.setText(synopsis_text);
 		synopsis.setEditable(false);
@@ -95,12 +99,13 @@ public class ComicsInfosPanel extends JPanel {
 		scroll_synopsis_text.setPreferredSize(new Dimension(700, 500));
 		scroll_synopsis_text.setMaximumSize(new Dimension(700, 700));
 		scroll_synopsis_text.getVerticalScrollBar().setUnitIncrement(5);
-		scroll_synopsis_text.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.Black));
+		scroll_synopsis_text.setBorder(null);
 		box1.add(scroll_synopsis_text);
 
 		box1.add(Box.createRigidArea(new Dimension(0, 50)));
 		
 		creators_title.setEditable(false);
+		creators_title.setFont(title_font);
 		creators_title.setBackground(CustomColor.WhiteCloud);
 		box1.add(creators_title);
 		
@@ -121,12 +126,13 @@ public class ComicsInfosPanel extends JPanel {
 		scroll_creators = new JScrollPane(creators);
 		scroll_creators.setPreferredSize(new Dimension(700, 300));
 		scroll_creators.setMaximumSize(new Dimension(700, 700));
-		scroll_creators.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.Black));
+		scroll_creators.setBorder(null);
 		box1.add(scroll_creators);
 		
 		box1.add(Box.createRigidArea(new Dimension(0, 50)));
 		
 		characters_title.setEditable(false);
+		characters_title.setFont(title_font);
 		characters_title.setBackground(CustomColor.WhiteCloud);
 		box1.add(characters_title);
 		
@@ -153,7 +159,7 @@ public class ComicsInfosPanel extends JPanel {
 		scroll_characters = new JScrollPane(characters);
 		scroll_characters.setPreferredSize(new Dimension(700, 400));
 		scroll_characters.setMaximumSize(new Dimension(700, 700));
-		scroll_characters.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.Black));
+		scroll_characters.setBorder(null);
 		box1.add(scroll_characters);
 		
 		
@@ -187,10 +193,17 @@ public class ComicsInfosPanel extends JPanel {
 		
 		// matching the size of the block to the size of the image
 		issue_infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
+		issue_infos.setText(
+				"Name : " + this.comicCover.getResultsApi().getName() + '\n' + 
+				"Volume : " + this.comicCover.getResultsApi().getVolume().getName() + '\n' +
+				"Issue number : " + this.comicCover.getResultsApi().getIssue_number() + '\n' +
+				"Cover date : " + this.comicCover.getResultsApi().getCover_date() + '\n'
+				);
 		issue_infos.setEditable(false);
 		issue_infos.setLineWrap(true);
 		issue_infos.setBackground(CustomColor.WhiteCloud);
-		issue_infos.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.Black));
+		issue_infos.setBorder(BorderFactory.createEmptyBorder(10, 6, 10, 10));
+		issue_infos.setBorder(null);
 		box2.add(issue_infos);
 		
 		this.setBackground(CustomColor.WhiteCloud);

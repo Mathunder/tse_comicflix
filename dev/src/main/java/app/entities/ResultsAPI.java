@@ -54,6 +54,7 @@ public class ResultsAPI {
 	private String aliases;
 	private String api_detail_url;
 	private ImageResultDto image;
+	private String cover_date;
 	
 	
 	public ResultsAPI() {}
