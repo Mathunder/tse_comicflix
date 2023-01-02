@@ -17,12 +17,14 @@ public class ResultDto {
 	private ImageResultDto image;
 	// this prop will determine if the result is an issue or a character
 	private String resource_type;
+	private String deck;
+	private String description;
 	
 	public Issue convertToIssue() {
-		return new Issue(aliases,  api_detail_url,  id,  issue_number,  name,  this.image.getMedium_url());
+		return new Issue(aliases,  api_detail_url,  id,  issue_number,  name,  this.image.getMedium_url(), deck, description);
 	}
 	
 	public VineCharacter convertToCharacter() {
-		return new VineCharacter(aliases,  api_detail_url,  id,  issue_number,  name,  this.image.getMedium_url());
+		return new VineCharacter(aliases,  api_detail_url,  id,  issue_number,  name,  this.image.getMedium_url(), deck, description);
 	}
 }
