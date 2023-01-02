@@ -33,10 +33,8 @@ public class ComicsInfosPanel extends JPanel {
 	}
 	
 	public void fetchInformations() {
-		System.out.println(this.comicCover.getResultsApi().getApi_detail_url());
 		this.cvs.search_from_url(this.comicCover.getResultsApi().getApi_detail_url());
 		this.infosResult = this.cvs.getInfosResult();
-		System.out.println(this.infosResult.getResults());
 	}
 	
 	public void createInfosPanel() {
