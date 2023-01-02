@@ -47,19 +47,16 @@ public class ComicsInfosPanel extends JPanel {
 		String synopsis_text;
 		JScrollPane scroll_synopsis_text;
 		JTextArea creators_title = new JTextArea("Creators");
-		JTextArea creators = new JTextArea("Creators");
+		JTextArea creators = new JTextArea();
 		JScrollPane scroll_creators;
 		JTextArea characters_title = new JTextArea("Characters");
-		JTextArea characters = new JTextArea("Characters");
+		JTextArea characters = new JTextArea();
 		JScrollPane scroll_characters;
 		
 		JPanel box2 = new JPanel();
 		JLabel image = new JLabel();
-		JTextArea issue_infos = new JTextArea("Informations about the issue");
+		JTextArea issue_infos = new JTextArea();
 
-
-		
-		// Column 1 (content: summary, creators, characters)
 		Font title_font = new Font("Dialog", Font.BOLD, 16);		
 		JScrollPane scrollPaneComicsInfos = new JScrollPane(this);
 		
@@ -106,50 +103,11 @@ public class ComicsInfosPanel extends JPanel {
 		box1.add(Box.createRigidArea(new Dimension(0, 50)));
 		
 		creators_title.setEditable(false);
-		creators_title.setBackground(CustomColor.WhiteCloud);
-		box1.add(creators_title);
-		box1.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		creators.setEditable(false);
-		creators.setLineWrap(true);
-		creators.setWrapStyleWord(true);
-		creators.setBackground(CustomColor.WhiteCloud);
-		creators.setBorder(BorderFactory.createEmptyBorder(10, 6, 10, 10));
-		scroll_creators = new JScrollPane(creators);
-		scroll_creators.setPreferredSize(new Dimension(700, 300));
-		scroll_creators.setMaximumSize(new Dimension(700, 700));
-		scroll_creators.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.Black));
-		box1.add(scroll_creators);
-		
-		box1.add(Box.createRigidArea(new Dimension(0, 50)));
-		
-		characters_title.setEditable(false);
-		characters_title.setBackground(CustomColor.WhiteCloud);
-		box1.add(characters_title);
-		box1.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		characters.setEditable(false);
-		characters.setLineWrap(true);
-		characters.setWrapStyleWord(true);
-		characters.setBackground(CustomColor.WhiteCloud);
-		characters.setBorder(BorderFactory.createEmptyBorder(10, 6, 10, 10));
-		scroll_characters = new JScrollPane(characters);
-		scroll_characters.setPreferredSize(new Dimension(700, 400));
-		scroll_characters.setMaximumSize(new Dimension(700, 700));
-		scroll_characters.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.Black));
-		box1.add(scroll_characters);
 		creators_title.setFont(title_font);
 		creators_title.setBackground(CustomColor.WhiteCloud);
 		box1.add(creators_title);
-		
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		// Column 2 (content: image, info about the issue)
-		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));
-		box2.setBackground(CustomColor.WhiteCloud);
-	
-		box2.add(image);
-		
+
 		try {
 			for (int i = 0; i < this.result.getCreators().size(); i++) {
 				characters.setText(this.result.getCreators().get(i).getName() + "\n");
@@ -236,11 +194,52 @@ public class ComicsInfosPanel extends JPanel {
 		issue_infos.setLineWrap(true);
 		issue_infos.setBackground(CustomColor.WhiteCloud);
 		issue_infos.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.Black));
+		// The following lines handle the case where the comic infos are null or are equal to "null"
+		String name;
+		String volume;
+		String issue_number;
+		String cover_date;
+		try {
+			if (this.result.getName() != "null") {
+				name = this.result.getName();
+			} else {
+				name = "";
+			}
+		} catch (NullPointerException e) {
+			name = "";
+		}
+		try {
+			if (this.result.getVolume().getName() != "null") {
+				volume = this.result.getVolume().getName();
+			} else {
+				volume = "";
+			}
+		} catch (NullPointerException e) {
+			volume = "";
+		}
+		try {
+			if (this.result.getIssue_number() != "null") {
+				issue_number = this.result.getIssue_number();
+			} else {
+				issue_number = "";
+			}
+		} catch (NullPointerException e) {
+			issue_number = "";
+		}
+		try {
+			if (this.result.getCover_date() != "null") {
+				cover_date = this.result.getCover_date();
+			} else {
+				cover_date = "";
+			}
+		} catch (NullPointerException e) {
+			cover_date = "";
+		}
 		issue_infos.setText(
-				"Name : " + this.result.getName() + '\n' + 
-				"Volume : " + this.result.getVolume().getName() + '\n' +
-				"Issue number : " + this.result.getIssue_number() + '\n' +
-				"Cover date : " + this.result.getCover_date() + '\n'
+				"Name : " + name + '\n' + 
+				"Volume : " + volume + '\n' +
+				"Issue number : " + issue_number + '\n' +
+				"Cover date : " + cover_date + '\n'
 				);
 		issue_infos.setEditable(false);
 		issue_infos.setLineWrap(true);
