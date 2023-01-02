@@ -7,13 +7,13 @@ import app.ui.frames.MainFrame;
 
 public class Main {
 	public static void main(String[] args) throws InterruptedException {
-		//Models
+		// Models
 		UserModel userModel = new UserModel();
-		
-		//Controller
+
+		// Controller
 		ComicVineService comicVineService = new ComicVineService();
 		DatabaseService databaseService = new DatabaseService(userModel);
-		
+
 		new MainFrame(userModel, comicVineService, databaseService);
 
 	}

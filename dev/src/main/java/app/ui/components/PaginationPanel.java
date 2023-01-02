@@ -27,18 +27,18 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 	private DefaultButton nextPageButton;
 	private JLabel pageNumberLabel;
 	protected ComicVineService comicVineService;
-	private int currentPageNumber = 1;
 
 	public PaginationPanel(ComicVineService comicVineService) {
 		comicVineService.addPropertyChangeListener(this);
 		this.comicVineService = comicVineService;
+		// Styles
 		this.setBorder(BorderFactory.createEmptyBorder());
 		this.setBackground(CustomColor.WhiteCloud);
 		this.setBounds(200, 120, 850, 30);
 		this.setLayout(null);
 
 		// * Page Number
-		pageNumberLabel = new JLabel("0");
+		pageNumberLabel = new JLabel("0/sure");
 		pageNumberLabel.setFont(new Font("Roboto", Font.BOLD, 22));
 
 		pageNumberLabel.setBounds(420, 0, 100, 30);
@@ -50,10 +50,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 		prevPageButton.setVisible(false);
 		prevPageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<ComicVineSearchFilter> filters = new ArrayList<>();
-				filters.add(ComicVineSearchFilter.CHARACTER);
-				comicVineService.search(comicVineService.getKeyword(), filters, comicVineService.getLimit(),
-						 --currentPageNumber);
+				comicVineService.previousSearch();
 			}
 		});
 		// * Next Page
@@ -62,55 +59,42 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 		nextPageButton.setVisible(false);
 		nextPageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<ComicVineSearchFilter> filters = new ArrayList<>();
-				filters.add(ComicVineSearchFilter.CHARACTER);
-				comicVineService.search(comicVineService.getKeyword(), filters, comicVineService.getLimit(),
-						 ++currentPageNumber);
+				comicVineService.nextSearch();
+
 			}
 		});
 		// * Add Components
 		this.add(pageNumberLabel);
 		this.add(prevPageButton);
 		this.add(nextPageButton);
-		this.setVisible(false);
+		this.setVisible(true);
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-
-		if (evt.getPropertyName() == "searchResults" && evt.getNewValue() != null) {
-
-		}
-
-		if (evt.getPropertyName() == "searchStatus") {
-			this.setVisible(true);
-			int currentOffset = comicVineService.getOffset();
-			int totalResults = comicVineService.getTotalResults();
-
-//			System.out.println(currentOffset);
-//			System.out.println(totalResults);
-			this.pageNumberLabel.setText(Integer.toString(currentPageNumber));
-			if (evt.getNewValue() == ComicVineSearchStatus.FETCHING) {
 		
-
-			} else if (evt.getNewValue() == ComicVineSearchStatus.DONE) {
-				if(totalResults != -1) {
-					if (currentOffset - comicVineService.getLimit() + 1 <= 0) {
-						this.prevPageButton.setVisible(false);
-					} else {
-						this.prevPageButton.setVisible(true);
-					}
-					if (currentOffset + comicVineService.getLimit() + 1 >= totalResults) {
-						this.nextPageButton.setVisible(false);
-					} else {
-						this.nextPageButton.setVisible(true);
-					
-				}
-	}
+		if (evt.getPropertyName() == "currentPageChanged" || evt.getPropertyName() == "totalNumberOfPagesChanged") {
+			
+			
+			this.pageNumberLabel.setText(Integer.toString((int)comicVineService.getCurrentPage()) + " / "
+					+ Integer.toString((int)comicVineService.getTotalNumberOfPages()));
+			if (this.comicVineService.getCurrentPage() + 1 > this.comicVineService.getTotalNumberOfPages()) {
+				this.nextPageButton.setVisible(false);
+			} else {
+				this.nextPageButton.setVisible(true);
 
 			}
-			this.revalidate();
+			
+			if (this.comicVineService.getCurrentPage() - 1 >= 1) {
+				this.prevPageButton.setVisible(true);
+			} else {
+				this.prevPageButton.setVisible(false);
+
+			}
+			this.setVisible(true);
 			this.repaint();
+			this.revalidate();
+			
 		}
 	}
 
