@@ -19,8 +19,10 @@ public class TestUserModel extends TestCase {
 		List<Issue> userFavoriteIssues = new ArrayList<>();
 		User u = new User(0, "a7x", "Hugo", "Keenan"); //user we want to add
 		boolean isAuthenticated = false;
+		List<Issue> userReadingIss = new ArrayList<>(); 
+		List<Issue> userReadedIss = new ArrayList<>();
 		
-		test.setUser(isAuthenticated, u, userFavoriteIssues);
+		test.setUser(isAuthenticated, u, userFavoriteIssues, userReadingIss, userReadedIss);
 		
 		
 		String aliases = null;
@@ -57,8 +59,10 @@ public class TestUserModel extends TestCase {
 		List<Issue> userFavoriteIssues = new ArrayList<>();
 		User u = new User(0, "a7x", "Hugo", "Keenan"); //user we want to add
 		boolean isAuthenticated = false;
+		List<Issue> userReadingIss = new ArrayList<>(); 
+		List<Issue> userReadedIss = new ArrayList<>();
 		
-		test.setUser(isAuthenticated, u, userFavoriteIssues);
+		test.setUser(isAuthenticated, u, userFavoriteIssues, userReadingIss, userReadedIss);
 		
 		
 		String aliases = null;

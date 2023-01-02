@@ -49,8 +49,7 @@ public class TestComicVineService extends TestCase {
 		//on the searchStatus
 		assertEquals(Objects.equals(expected.getSearchStatus(), test.getSearchStatus()),true);
 		
-		//verifying that we have an array of result after querying the API
-		System.out.println(test.getSearchResult().getResults().get(0).getClass().toString());
+		//verifying that we have an array of issues after querying the API. Verify all the elements of the array
 		for(int k = 0; k < test.getSearchResult().getResults().size(); k ++) {
 			assertEquals(test.getSearchResult().getResults().get(k).getClass().toString(), "class app.entities.Issue");
 		}
