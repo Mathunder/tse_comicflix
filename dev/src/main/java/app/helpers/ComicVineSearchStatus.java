@@ -9,8 +9,6 @@ public enum ComicVineSearchStatus {
 		this.statusValue=statusValue;
 	}
 
-	
-
 	public String getStatusValue() {
 		return statusValue;
 	}

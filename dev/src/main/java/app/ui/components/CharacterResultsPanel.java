@@ -1,8 +1,17 @@
 package app.ui.components;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
+import javax.swing.JFrame;
+
+import app.dto.ResultDto;
 import app.entities.VineCharacter;
 import app.models.UserModel;
 import app.services.ComicVineService;
@@ -10,7 +19,7 @@ import app.services.DatabaseService;
 
 @SuppressWarnings("serial")
 public class CharacterResultsPanel extends ResultsPanel {
-	private List<VineCharacter> characters;
+	private List<ResultDto> characters;
 	private ComicVineService comicVineService;
 
 	private DatabaseService databaseService;
@@ -31,15 +40,39 @@ public class CharacterResultsPanel extends ResultsPanel {
 			for (int i = 0; i < characters.size(); i++) {
 
 				try {
-					CharacterCoverPanel characterCoverPanel = new CharacterCoverPanel(characters.get(i),
+					ResultDto character = characters.get(i);
+					CharacterCoverPanel characterCover = new CharacterCoverPanel(characters.get(i).convertToCharacter(),
 							databaseService);
-					this.resultsList.add(characterCoverPanel);
+					characterCover.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+
+							ComicsInfosPanel infos = new ComicsInfosPanel(character);
+							infos.fetchInformations();
+							infos.createInfosPanel();
+							// Creating the new frame that will display the informations the user wants.
+							JFrame f = new JFrame(infos.getInfosResult().getResults().getName() + ' ' + '('
+									+ infos.getInfosResult().getResults().getIssue_number() + ')');
+							try {
+
+								URL url_image = new URL(infos.getInfosResult().getResults().getImage().getIcon_url());
+								Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+								f.setIconImage(icon);
+							} catch (MalformedURLException e1) {
+							}
+							f.setSize(1050, 600);
+							f.add(infos);
+							f.setResizable(false);
+							f.setVisible(true);
+
+						}
+					});
+
+					this.resultsList.add(characterCover);
 
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 
 			}
 		} else {

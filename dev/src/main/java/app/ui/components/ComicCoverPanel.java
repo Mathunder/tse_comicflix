@@ -11,11 +11,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
+import app.dto.ResultDto;
 import app.entities.Issue;
 import app.entities.User;
 import app.services.DatabaseService;
@@ -35,7 +35,7 @@ public class ComicCoverPanel extends JPanel{
 	
 	public ComicCoverPanel(Issue issue, DatabaseService dbS, User u){
 		super();
-		this.issue=issue;
+		this.issue = issue;
 		this.databaseService = dbS;
 		this.user = u;
 		
@@ -271,5 +271,9 @@ public class ComicCoverPanel extends JPanel{
 	        ++index;
 	    }
 	    return count;
+	}
+
+	public Issue getIssue() {
+		return this.issue;
 	}
 }

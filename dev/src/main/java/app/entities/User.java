@@ -1,8 +1,5 @@
 package app.entities;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.List;
 import lombok.Data;
 
 @Data
