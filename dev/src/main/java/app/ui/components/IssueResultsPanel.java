@@ -1,9 +1,18 @@
 package app.ui.components;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
+
+import app.dto.ResultDto;
 import app.entities.Issue;
 import app.helpers.ComicVineSearchStatus;
 import app.models.UserModel;
@@ -15,7 +24,7 @@ public class IssueResultsPanel extends ResultsPanel {
 	private ComicVineService comicVineService;
 	private UserModel userModel;
 	private DatabaseService databaseService;
-	private List<Issue> issues;
+	private List<ResultDto> issues;
 	private List<ComicCoverPanel> comicCoverPanels = new ArrayList<>();
 
 	public IssueResultsPanel(String resultType, UserModel userModel, ComicVineService comicVineService,
@@ -34,11 +43,36 @@ public class IssueResultsPanel extends ResultsPanel {
 			this.setVisible(true);
 			// Show ResultAPIIssues
 			for (int i = 0; i < issues.size(); i++) {
-				ComicCoverPanel comicCover = new ComicCoverPanel(issues.get(i), databaseService, userModel.getUser());
+				ResultDto issue = issues.get(i);
+				ComicCoverPanel comicCover = new ComicCoverPanel(issue.convertToIssue(), databaseService, userModel.getUser());
 				comicCoverPanels.add(comicCover);
+				// Adding the mouse listener to enable the click on a search result
+				comicCover.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+
+						ComicsInfosPanel infos = new ComicsInfosPanel(issue);
+						infos.fetchInformations();
+						infos.createInfosPanel();
+						// Creating the new frame that will display the informations the user wants.
+						JFrame f = new JFrame( infos.getInfosResult().getResults().getName() + ' ' + '('
+								+ infos.getInfosResult().getResults().getIssue_number() + ')');
+						try {
+
+							URL url_image = new URL( infos.getInfosResult().getResults().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {
+						}
+						f.setSize(1050, 600);
+						f.add(infos);
+						f.setResizable(false);
+						f.setVisible(true);
+
+					}
+				});
 				this.resultsList.add(comicCover);
 			}
-		}else {
+		} else {
 			this.setVisible(false);
 		}
 
@@ -88,8 +122,8 @@ public class IssueResultsPanel extends ResultsPanel {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "searchStatus" || evt.getPropertyName() == "clearSearchResults"
-				|| evt.getPropertyName() == "searchResultsChanged" ) {
-			
+				|| evt.getPropertyName() == "searchResultsChanged") {
+
 			this.issues = this.comicVineService.getIssueResults();
 			showResult();
 		} else if (evt.getPropertyName() == "userChange") {
@@ -111,7 +145,6 @@ public class IssueResultsPanel extends ResultsPanel {
 				System.out.println("remove read");
 			updateButtonStates(2);
 		}
-		
 
 	}
 
