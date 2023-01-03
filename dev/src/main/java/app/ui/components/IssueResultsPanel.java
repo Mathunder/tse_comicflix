@@ -54,15 +54,14 @@ public class IssueResultsPanel extends ResultsPanel {
 						infos.fetchInformations();
 						infos.createInfosPanel();
 						// Creating the new frame that will display the informations the user wants.
-						JFrame f = new JFrame( infos.getInfosResult().getResults().getName() + ' ' + '('
-								+ infos.getInfosResult().getResults().getIssue_number() + ')');
+						JFrame f = new JFrame(infos.getResult().getVolume().getName() + ' ' + '('
+								+ infos.getResult().getIssue_number() + ')');
 						try {
 
-							URL url_image = new URL( infos.getInfosResult().getResults().getImage().getIcon_url());
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
 							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
 							f.setIconImage(icon);
-						} catch (MalformedURLException e1) {
-						}
+						} catch (MalformedURLException e1) {}
 						f.setSize(1050, 600);
 						f.add(infos);
 						f.setResizable(false);

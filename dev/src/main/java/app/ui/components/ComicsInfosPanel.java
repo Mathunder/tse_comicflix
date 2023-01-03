@@ -22,20 +22,24 @@ public class ComicsInfosPanel extends JPanel {
 	
 	private ResultDto result;
 	private ComicVineService cvs;
-	private ResponseDto infosResult;
+	private ResponseDto response;
 	
 	public ComicsInfosPanel(ResultDto result) {
 		this.result = result;
 		this.cvs = new ComicVineService();
 	}
 	
-	public ResponseDto getInfosResult() {
-		return this.infosResult;
+	public ResponseDto getResponse() {
+		return this.response;
+	}
+	
+	public ResultDto getResult() {
+		return this.result;
 	}
 	
 	public void fetchInformations() {
 		this.cvs.search_from_url(this.result.getApi_detail_url()); 
-		infosResult = this.cvs.getInfosResult();
+		this.response = this.cvs.getInfosResult();
 		this.result = this.cvs.getInfosResult().getResults();
 	}
 	
@@ -190,50 +194,22 @@ public class ComicsInfosPanel extends JPanel {
 		
 		// matching the size of the block to the size of the image
 		issue_infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
-		issue_infos.setEditable(false);
-		issue_infos.setLineWrap(true);
-		issue_infos.setBackground(CustomColor.WhiteCloud);
-		issue_infos.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.Black));
 		// The following lines handle the case where the comic infos are null or are equal to "null"
-		String name;
-		String volume;
-		String issue_number;
-		String cover_date;
-		try {
-			if (this.result.getName() != "null") {
-				name = this.result.getName();
-			} else {
-				name = "";
-			}
-		} catch (NullPointerException e) {
-			name = "";
+		String name = "Not found.";
+		String volume = "Not found.";
+		String issue_number = "Not found";
+		String cover_date = "Not found.";
+		if (this.result.getName() != null) {
+			name = this.result.getName();
 		}
-		try {
-			if (this.result.getVolume().getName() != "null") {
-				volume = this.result.getVolume().getName();
-			} else {
-				volume = "";
-			}
-		} catch (NullPointerException e) {
-			volume = "";
+		if (this.result.getVolume().getName() != null) {
+			volume = this.result.getVolume().getName();
 		}
-		try {
-			if (this.result.getIssue_number() != "null") {
-				issue_number = this.result.getIssue_number();
-			} else {
-				issue_number = "";
-			}
-		} catch (NullPointerException e) {
-			issue_number = "";
+		if (this.result.getIssue_number() != null) {
+			issue_number = this.result.getIssue_number();
 		}
-		try {
-			if (this.result.getCover_date() != "null") {
-				cover_date = this.result.getCover_date();
-			} else {
-				cover_date = "";
-			}
-		} catch (NullPointerException e) {
-			cover_date = "";
+		if (this.result.getCover_date() != "null") {
+			cover_date = this.result.getCover_date();
 		}
 		issue_infos.setText(
 				"Name : " + name + '\n' + 
@@ -242,7 +218,6 @@ public class ComicsInfosPanel extends JPanel {
 				"Cover date : " + cover_date + '\n'
 				);
 		issue_infos.setEditable(false);
-		issue_infos.setLineWrap(true);
 		issue_infos.setBackground(CustomColor.WhiteCloud);
 		issue_infos.setBorder(BorderFactory.createEmptyBorder(10, 6, 10, 10));
 		issue_infos.setBorder(null);

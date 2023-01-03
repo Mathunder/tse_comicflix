@@ -13,7 +13,7 @@ public class SearchResultDto {
 	private int number_of_total_results;
 	private List<ResultDto> results;
 	
-	public SearchResultDto(){}
+	public SearchResultDto() {}
 	
 	public SearchResultDto(List<ResultDto> issues) {
 		this.limit = 16;
