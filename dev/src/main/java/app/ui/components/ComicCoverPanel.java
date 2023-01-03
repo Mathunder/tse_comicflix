@@ -279,10 +279,12 @@ public class ComicCoverPanel extends JPanel{
 		// Print those API features : deck > description > aliases > name
 		
 		String deck = titleUpdate(issue.getDeck(), 30);
+		System.out.println("deck" + deck);
 		if (deck.length() > 15) {
 			return deck;
 		}
 		String description = titleUpdate(issue.getDescription(), 30);
+		System.out.println("description"+description);
 		if (description.length() > 15){
 			if (description.length() > 450) {
 				return description.substring(0, 450);
@@ -292,6 +294,7 @@ public class ComicCoverPanel extends JPanel{
 			}
 		}
 		String aliases = titleUpdate(issue.getAliases(), 30);
+		System.out.println("alias"+aliases);
 		if (aliases.length()>15) {
 			return aliases;
 		}
