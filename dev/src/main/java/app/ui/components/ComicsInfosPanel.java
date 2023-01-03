@@ -199,18 +199,18 @@ public class ComicsInfosPanel extends JPanel {
 		String volume = "Not found.";
 		String issue_number = "Not found";
 		String cover_date = "Not found.";
-		if (this.result.getName() != null) {
+		try {
 			name = this.result.getName();
-		}
-		if (this.result.getVolume().getName() != null) {
+		} catch (NullPointerException e) {}
+		try {
 			volume = this.result.getVolume().getName();
-		}
-		if (this.result.getIssue_number() != null) {
+		} catch (NullPointerException e) {}
+		try {
 			issue_number = this.result.getIssue_number();
-		}
-		if (this.result.getCover_date() != "null") {
+		} catch (NullPointerException e) {}
+		try {
 			cover_date = this.result.getCover_date();
-		}
+		} catch (NullPointerException e) {}
 		issue_infos.setText(
 				"Name : " + name + '\n' + 
 				"Volume : " + volume + '\n' +

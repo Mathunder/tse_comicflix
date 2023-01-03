@@ -50,8 +50,12 @@ public class CharacterResultsPanel extends ResultsPanel {
 							infos.fetchInformations();
 							infos.createInfosPanel();
 							// Creating the new frame that will display the informations the user wants.
-							JFrame f = new JFrame(infos.getResult().getVolume().getName() + ' ' + '('
-									+ infos.getResult().getIssue_number() + ')');
+							String frame_name = "";
+							try {
+								frame_name = infos.getResult().getName();
+							} catch (NullPointerException e1) {}
+							
+							JFrame f = new JFrame(frame_name);
 							try {
 
 								URL url_image = new URL(infos.getResult().getImage().getIcon_url());
