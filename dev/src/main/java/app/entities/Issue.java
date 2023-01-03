@@ -21,6 +21,7 @@ public class Issue {
 	private String description;
 	private ArrayList<CharacterCredits> character_credits;
 	private Volume volume;
+	
 	public Issue() {}
 	
 	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url,
