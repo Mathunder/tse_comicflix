@@ -10,6 +10,9 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -116,11 +119,11 @@ public class ComicCoverPanel extends JPanel{
 	
 	//Refresh buttons state according to the current state of the user list (favorites and reading)
 	public void refreshStateButtons(boolean state_fav, int state_read) {
-		if(state_fav && button_fav != null)
+		if(state_fav)
 			button_fav.setColor(CustomColor.Green);
 		else
 			button_fav.setColor(CustomColor.Red);
-		if(button_read ==  null) return;
+		
 		switch (state_read) {
 			case 0:
 				button_read.setColor(CustomColor.Red);
@@ -142,16 +145,17 @@ public class ComicCoverPanel extends JPanel{
 	
 	//Refresh buttons state according to the current state of the user list (favorite only)
 	public void refreshStateButtons(boolean state_fav) {
-		if(button_fav == null) return ;
+		
 		if(state_fav)
 			button_fav.setColor(CustomColor.Green);
 		else
 			button_fav.setColor(CustomColor.Red);
+
 	}
 	
 	//Refresh buttons state according to the current state of the user list (reads only)
 	public void refreshStateButtons(int state_read) {
-		if(button_read == null) return;
+		
 		switch (state_read) {
 			case 0:
 				button_read.setColor(CustomColor.Red);

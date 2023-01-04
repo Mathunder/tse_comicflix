@@ -120,9 +120,9 @@ public class ComicVueRead extends ComicVue{
 		}
 		else if(evt.getPropertyName() == "favoriteChange"){
 			if(evt.getNewValue() == "add")
-				System.out.println("Add one new favorite");
+				System.out.println("Add one new favorite (VueRead)");
 			else if(evt.getNewValue() == "remove")
-				System.out.println("Remove one favorite");
+				System.out.println("Remove one favorite (VueRead)");
 			
 			updateButtonStates(1);
 		}

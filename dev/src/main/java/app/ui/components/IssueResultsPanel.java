@@ -24,7 +24,7 @@ public class IssueResultsPanel extends ResultsPanel {
 	private ComicVineService comicVineService;
 	private UserModel userModel;
 	private DatabaseService databaseService;
-	private List<ResultDto> issues;
+	private List<ResultDto> issues = new ArrayList<>();
 	private List<ComicCoverPanel> comicCoverPanels = new ArrayList<>();
 
 	public IssueResultsPanel(String resultType, UserModel userModel, ComicVineService comicVineService,
@@ -38,6 +38,7 @@ public class IssueResultsPanel extends ResultsPanel {
 
 	public void showResult() {
 		this.resultsList.removeAll();
+		this.comicCoverPanels.clear();
 
 		if (issues.size() != 0) {
 			this.setVisible(true);
@@ -129,6 +130,9 @@ public class IssueResultsPanel extends ResultsPanel {
 
 			this.issues = this.comicVineService.getIssueResults();
 			showResult();
+			if(userModel.getIsAuthenticated()) {
+				updateButtonStates(0);
+			}
 		} else if (evt.getPropertyName() == "userChange") {
 			showResult();
 			if (userModel.getIsAuthenticated()) {
@@ -136,16 +140,16 @@ public class IssueResultsPanel extends ResultsPanel {
 			}
 		} else if (evt.getPropertyName() == "favoriteChange") {
 			if (evt.getNewValue() == "add")
-				System.out.println("Add one new favorite");
+				System.out.println("Add one new favorite (Vue search)");
 			else if (evt.getNewValue() == "remove") {
-				System.out.println("Remove one favorite");
+				System.out.println("Remove one favorite (Vue search)");
 				updateButtonStates(1);
 			}
 		} else if (evt.getPropertyName() == "readChange") {
 			if (evt.getNewValue() == "add")
-				System.out.println("Add new read (change state)");
+				System.out.println("Add new read (change state) (Vue search)");
 			else if (evt.getNewValue() == "remove")
-				System.out.println("remove read");
+				System.out.println("remove read (Vue search)");
 			updateButtonStates(2);
 		}
 

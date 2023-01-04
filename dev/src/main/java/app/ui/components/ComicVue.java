@@ -46,6 +46,7 @@ public abstract class ComicVue extends JPanel implements PropertyChangeListener{
 	
 	public void removeComics() {
 		this.removeAll();
+		ComicCoverPanels.clear();
 	}
 	
 	public void refreshPanel() {
