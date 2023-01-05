@@ -58,20 +58,15 @@ public class ComicCoverPanel extends JPanel{
 		
 		// Creation of the label title
 		String str = "";
-		System.out.println(issue);
 		if (issue.getName() == null) {
-			System.out.println("ok");
 			try {
-				
 				str = issue.getVolume().getName() + " (" + issue.getIssue_number() + ")";
 			} catch (NullPointerException e) {
-				System.out.println("ko");
 				str = "";
 			}
 		} else {
 			str = issue.getName();
 		}
-		System.out.println("str : " + str);
 		JLabel titleLabel = new JLabel(titleUpdate(str, 13));
 		titleLabel.setOpaque(true);
 		titleLabel.setFont(new Font("Tahoma", Font.PLAIN,20));
