@@ -206,4 +206,7 @@ public class ComicVineService {
 		// Since the baseURI has been modified, it is put back to its original value at the end of this method.
 		RestAssured.baseURI = "https://comicvine.gamespot.com/api";
 	}
+	
+	
+	
 }
