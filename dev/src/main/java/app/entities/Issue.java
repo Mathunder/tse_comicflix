@@ -25,7 +25,7 @@ public class Issue {
 	public Issue() {}
 	
 	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url,
-			String deck, String description) {
+			String deck, String description, Volume volume) {
 		this.aliases=aliases;
 		this.api_detail_url = api_detail_url;
 		this.id = id;
@@ -34,7 +34,7 @@ public class Issue {
 		this.image = new ImageResultDto(image_url);
 		this.deck = deck;
 		this.description = description;
-
+		this.volume = volume;
 	}
 	
 	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url) {
