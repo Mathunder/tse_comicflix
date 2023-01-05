@@ -209,10 +209,4 @@ public class ComicVineService {
 	
 	
 	
-	
-	public static void main(String[] args) {
-		
-		ComicVineService test = new ComicVineService();
-		
-	}
 }
