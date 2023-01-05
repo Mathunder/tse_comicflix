@@ -72,7 +72,8 @@ public class ComicsInfosPanel extends JPanel {
 		JTextArea cover_date = new JTextArea();
 
 
-		Font title_font = new Font("Dialog", Font.BOLD, 16);		
+		Font title_font = new Font("Dialog", Font.BOLD, 16);
+		Font field_title_font = new Font("Dialog", Font.BOLD, 12);
 		JScrollPane scrollPaneComicsInfos = new JScrollPane(this);
 		
 		
@@ -217,12 +218,16 @@ public class ComicsInfosPanel extends JPanel {
 		infos.add(other_data);
 		
 		field_title_name.setText("Name :");
+		field_title_name.setFont(field_title_font);
 		field_title_name.setBackground(null);
 		field_title_volume.setText("Volume :");
+		field_title_volume.setFont(field_title_font);
 		field_title_volume.setBackground(null);
 		field_title_issue_number.setText("Issue number :");
+		field_title_issue_number.setFont(field_title_font);
 		field_title_issue_number.setBackground(null);
 		field_title_cover_date.setText("Cover date :");
+		field_title_cover_date.setFont(field_title_font);
 		field_title_cover_date.setBackground(null);
 		name.setText("Not found");
 		name.setBackground(null);
