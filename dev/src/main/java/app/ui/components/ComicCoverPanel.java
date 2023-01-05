@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -31,6 +33,10 @@ public class ComicCoverPanel extends JPanel{
 	private BufferedImage resizedImageBg;
 	private DefaultButton button_fav;
 	private DefaultButton button_read;
+	private DefaultButton button_collection;
+	private DefaultComboBox collectionBox;
+	private SpringLayout springLayout;
+	private JLabel titleLabel;
 	
 	private Issue issue;
 	protected DatabaseService databaseService;
@@ -56,7 +62,7 @@ public class ComicCoverPanel extends JPanel{
 		setBackground(CustomColor.WhiteCloud);
 		
 		// Création du label titre
-		JLabel titleLabel = new JLabel(titleUpdate(issue.getName()));
+		titleLabel = new JLabel(titleUpdate(issue.getName()));
 		titleLabel.setOpaque(true);
 		titleLabel.setFont(new Font("Tahoma", Font.PLAIN,20));
 		titleLabel.setBackground(CustomColor.DarkGray);
@@ -70,7 +76,7 @@ public class ComicCoverPanel extends JPanel{
 			labelHeight -= 25;
 		
 		//Put constraint on Label 
-		SpringLayout springLayout = new SpringLayout();
+		springLayout = new SpringLayout();
 		springLayout.putConstraint(SpringLayout.NORTH, titleLabel, labelHeight, SpringLayout.SOUTH, titleLabel);
 		springLayout.putConstraint(SpringLayout.WEST, titleLabel, 0, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.SOUTH, titleLabel, this.resizedImageBg.getHeight(), SpringLayout.NORTH, this);
@@ -113,6 +119,24 @@ public class ComicCoverPanel extends JPanel{
 			// Add button to the panel
 			add(button_read);
 			
+			// ComboBox collection
+			List<String> collectionChoices = new ArrayList<>();
+			collectionChoices = databaseService.getAllCollectionNamesFromUser(user.getId());
+			collectionChoices.add(0,"All");
+			
+			collectionBox = new DefaultComboBox(collectionChoices);
+			collectionBox.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent evt) {
+	            	comboBox_collectionActionPerformed(evt);
+	            }
+			});
+			//Put Constraints on fav button
+			springLayout.putConstraint(SpringLayout.NORTH, collectionBox, -25 , SpringLayout.NORTH, titleLabel);
+			springLayout.putConstraint(SpringLayout.WEST, collectionBox, 140, SpringLayout.WEST, this);
+			springLayout.putConstraint(SpringLayout.SOUTH, collectionBox, 0, SpringLayout.NORTH, titleLabel);
+			springLayout.putConstraint(SpringLayout.EAST, collectionBox, 0, SpringLayout.EAST, this);
+			
+			add(collectionBox);
 		}
 		
 	}
@@ -223,6 +247,15 @@ public class ComicCoverPanel extends JPanel{
 			//Remove issue from read
 			databaseService.removeUserRead(user, issue);
 		}
+	}
+	
+	public void comboBox_collectionActionPerformed(ActionEvent e) {
+		System.out.println("Selected item");
+		System.out.println(collectionBox.getSelectedItem());
+		if(collectionBox.getSelectedIndex() != 0) {
+			System.out.println("Need to add this to db");
+		}
+		
 	}
 	
 	private static BufferedImage resizeBuffImage(BufferedImage img, int newW, int newH) { 
