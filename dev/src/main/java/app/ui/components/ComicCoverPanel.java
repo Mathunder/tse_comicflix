@@ -33,7 +33,6 @@ public class ComicCoverPanel extends JPanel{
 	private BufferedImage resizedImageBg;
 	private DefaultButton button_fav;
 	private DefaultButton button_read;
-	private DefaultButton button_collection;
 	private DefaultComboBox collectionBox;
 	private SpringLayout springLayout;
 	private JLabel titleLabel;
@@ -199,6 +198,10 @@ public class ComicCoverPanel extends JPanel{
 		}
 	}
 	
+	public void refreshStateComboBox(String selectedItem) {
+		collectionBox.setSelectedItem(selectedItem);
+	}
+	
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -250,12 +253,10 @@ public class ComicCoverPanel extends JPanel{
 	}
 	
 	public void comboBox_collectionActionPerformed(ActionEvent e) {
-		System.out.println("Selected item");
-		System.out.println(collectionBox.getSelectedItem());
+
 		if(collectionBox.getSelectedIndex() != 0) {
-			System.out.println("Need to add this to db");
-		}
-		
+			databaseService.addNewIssueInUserCollection(collectionBox.getSelectedItem().toString(), user, issue);
+		}	
 	}
 	
 	private static BufferedImage resizeBuffImage(BufferedImage img, int newW, int newH) { 

@@ -522,7 +522,7 @@ public class DatabaseService {
 		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
 		if(!isTupleAlreadyExists) {
 			
-			sql = "INSERT INTO collection(issue_id,user_id,collection_id) VALUES(?,?,?)";
+			sql = "INSERT INTO collections(issue_id,user_id,collection_id) VALUES(?,?,?)";
 			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
 				pstmt.setInt(1, issue_id);
 				pstmt.setInt(2, user_id);

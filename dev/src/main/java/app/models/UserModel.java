@@ -123,18 +123,28 @@ public class UserModel {
 	}
 	
 	public void addNewIssueInUserCollection(String cName, Issue iss) {
-		for(int i=0; i<userCollections.size();i++) {
-			if(userCollections.get(i).getName() == cName) {
+		List<Collection> oldUserCollection = userCollections;
+		
+		for(int i=0; i<userCollections.size();i++) {			
+			if(userCollections.get(i).getName().equals(cName)) {
+				System.out.println("Adding new issue in the collection : " + cName);
 				userCollections.get(i).addIssuesInCollection(iss);
 			}
 		}
+		
+		this.pcs.firePropertyChange("collectionChange",oldUserCollection, "add");
 	}
 	
 	public void removeIssueInUserCollection(String cName, Issue iss) {
+		List<Collection> oldUserCollection = userCollections;
+		
 		for(int i=0; i<userCollections.size();i++) {
-			if(userCollections.get(i).getName() == cName) {
+			if(userCollections.get(i).getName().equals(cName)) {
+				System.out.println("Removing issue in the collection : " + cName);
 				userCollections.get(i).removeIssuesInCollection(iss);
 			}
 		}
+		
+		this.pcs.firePropertyChange("collectionChange",oldUserCollection, "remove");
 	}
 }

@@ -66,6 +66,25 @@ public class ComicVueFavorite extends ComicVue{
 				}
 				ComicCoverPanels.get(i).refreshStateButtons(readState);
 			}
+			if(itemRefreshCode == 3 || itemRefreshCode == 0) {
+				String selectedItem = "All";
+				Boolean findCorrespondance = false;
+				for(int j=0; j<userModel.getUserCollections().size();j++) {
+					if (!findCorrespondance) {
+						for(Issue issue_col: userModel.getUserCollections().get(j).getIssues()) {
+							if(issue_col.getId() == userModel.getUserFavoriteIssues().get(i).getId()) {
+								selectedItem = userModel.getUserCollections().get(j).getName();
+								findCorrespondance = true;
+								break;
+							}
+						}
+					}
+					else 
+						break;
+				}
+
+				ComicCoverPanels.get(i).refreshStateComboBox(selectedItem);
+			}
 		}
 		
 	}
@@ -92,6 +111,13 @@ public class ComicVueFavorite extends ComicVue{
 			else if(evt.getNewValue() == "remove")
 				System.out.println("remove read");
 			updateButtonStates(2);
+		}
+		else if(evt.getPropertyName() == "collectionChange") {
+			if(evt.getNewValue() == "add")
+				System.out.println("Collection change [add] (VueFavorite)");
+			else if(evt.getNewValue() == "remove")
+				System.out.println("Collection change [remove] (VueFavorite)");
+			updateButtonStates(3);
 		}
 	}
 
