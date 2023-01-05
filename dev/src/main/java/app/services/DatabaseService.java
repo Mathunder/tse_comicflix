@@ -299,7 +299,8 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"),
+						rs.getString("issue_name"), rs.getString("image_url"), rs.getString("deck"), rs.getString("description"));
 				issues.add(i);
 			}
 			
@@ -324,7 +325,8 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"),
+						rs.getString("issue_name"), rs.getString("image_url"), rs.getString("deck"), rs.getString("description"));
 				issues_reading.add(i);
 			}
 			
@@ -349,7 +351,8 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"),
+						rs.getString("issue_name"), rs.getString("image_url"), rs.getString("deck"), rs.getString("description"));
 				issues_readed.add(i);
 			}
 			
