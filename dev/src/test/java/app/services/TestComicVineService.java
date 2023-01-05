@@ -24,7 +24,7 @@ public class TestComicVineService extends TestCase {
 		
 		int page = 1;
 		
-		//test.search(test.getKeyword(), filters, test.getLimit(), page);
+		
 		
 		//wait that the search function be changed into a non asynchronous method
 		try {
@@ -35,19 +35,22 @@ public class TestComicVineService extends TestCase {
 		}
 		
 		
-		//System.out.println(test.getSearchResult().getResults());
-		
 		//create the object that is expected after performing the method search()
 		ComicVineService expected = new ComicVineService();
 		
-		//expected.setSearchStatus(ComicVineSearchStatus.DONE);
+		expected.setSearchStatus(ComicVineSearchStatus.DONE);
 		
 		
 		
-		//Perform the test
+		//PERFORM THE TEST
 		
 		//on the searchStatus
 		assertEquals(Objects.equals(expected.getSearchStatus(), test.getSearchStatus()),true);
+		
+		
+		//on the search function:
+		//String url = 
+		//test.search_from_url(url);
 		
 		
 		//verifying that we have an array of issues after querying the API. Verify all the elements of the array
