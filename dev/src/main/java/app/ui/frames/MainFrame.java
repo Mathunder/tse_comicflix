@@ -247,7 +247,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		    	loginFrame.setVisible(true);
 	    	}
 	    	else { 
-	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	    	}
 	    	
 	    }

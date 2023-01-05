@@ -11,6 +11,7 @@ import java.util.ListIterator;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 import app.dto.ImageResultDto;
+import app.entities.Collection;
 import app.entities.Issue;
 import app.entities.User;
 import app.models.UserModel;
@@ -141,17 +142,17 @@ public class DatabaseService {
 				if(rs.getInt("user_id") != 0)
 					isAuthenticated = true;
 				
-				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")));
+				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
 			}
 			else
 			{
-				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			}
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		}	
 	}
 	
@@ -447,5 +448,162 @@ public class DatabaseService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 		}
+	}
+
+	//Collections 
+	private int getCollectionIdFromName(String cName) {
+		String sql = "SELECT collection_id FROM collection_names WHERE name = ?";
+		
+		try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setString(1, cName);
+			ResultSet rs = pstmt.executeQuery();
+			if(!rs.next())
+				return 0;
+			else
+				return rs.getInt("collection_id");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	private void createNewCollection(String cName) {
+		String sql = "INSERT INTO collection_names(name) VALUES(?)";
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setString(1, cName);
+			pstmt.executeUpdate();
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+	public void addNewIssueInUserCollection(String cName, User user, Issue issue) {
+		//FIRST : CHECK IF COLLECTION EXIST
+		int collection_id = 0;
+		collection_id = getCollectionIdFromName(cName);
+		if(collection_id == 0) {
+			//Collection doesnt exist
+			//Add new collection
+			createNewCollection(cName);
+			collection_id = getCollectionIdFromName(cName);
+		}
+		
+		//NEXT CHECK IF TUPLES ALREADY EXIST
+		boolean isTupleAlreadyExists = false;
+		int user_id = user.getId();
+		int issue_id = issue.getId();
+		
+		String sql = "SELECT * FROM collections WHERE issue_id = ? AND user_id = ? AND collection_id = ?";
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, issue_id);
+			pstmt.setInt(2, user_id);
+			pstmt.setInt(3, collection_id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(!rs.next()) {
+				//tuple doesn't exist yet
+				isTupleAlreadyExists = false;
+			}
+			else {
+				// tuple already exists
+				isTupleAlreadyExists = true;
+				System.out.println("Collection tuple already exist for this user"); 
+			}
+			
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
+		if(!isTupleAlreadyExists) {
+			
+			sql = "INSERT INTO collection(issue_id,user_id,collection_id) VALUES(?,?,?)";
+			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+				pstmt.setInt(1, issue_id);
+				pstmt.setInt(2, user_id);
+				pstmt.setInt(3, collection_id);
+				pstmt.executeUpdate();
+				
+				//Add issue in the model collection
+				userModel.addNewIssueInUserCollection(cName, issue);
+			}
+			catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public List<String> getAllCollectionNamesFromUser(int user_id) {
+		String sql = "SELECT DISTINCT(collection_names.name) FROM collection_names INNER JOIN collections on collections.collection_id = collection_names.collection_id AND collections.user_id = ?";
+		List<String> collection_names = new ArrayList<>();
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, user_id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next())
+			{
+				// Build the collection name
+				collection_names.add(new String(rs.getString("name")));
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		return collection_names;
+	}
+	
+	private Collection getAllIssuesFromUserCollection(int user_id, String cName){
+		List<Issue> issues = new ArrayList<>();
+		
+		Collection collection = new Collection(cName,issues);
+		
+		int collection_id = getCollectionIdFromName(cName);
+		
+		String sql = "SELECT issues.* FROM issues INNER JOIN collections ON collections.issue_id = issues.issue_id WHERE collections.collection_id = ?  AND collections.user_id = ?";
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setInt(1, collection_id);
+			pstmt.setInt(2, user_id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next())
+			{
+				// Build the issue
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				issues.add(i);
+			}
+			
+			collection.setIssues(issues);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+		return collection;
+	}
+	
+	private List<Collection> getAllUserCollection(int user_id){
+
+		List<Collection> user_collections = new ArrayList<>();
+		
+		List<String> collection_names = getAllCollectionNamesFromUser(user_id);
+		
+		for(String colName : collection_names) {
+			user_collections.add(getAllIssuesFromUserCollection(user_id, colName));
+		}
+		
+		return user_collections;
 	}
 }
