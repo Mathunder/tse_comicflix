@@ -1,9 +1,18 @@
 package app.ui.components;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
+
+import app.dto.ResultDto;
 import app.entities.Issue;
 import app.helpers.ComicVineSearchStatus;
 import app.models.UserModel;
@@ -15,7 +24,7 @@ public class IssueResultsPanel extends ResultsPanel {
 	private ComicVineService comicVineService;
 	private UserModel userModel;
 	private DatabaseService databaseService;
-	private List<Issue> issues;
+	private List<ResultDto> issues = new ArrayList<>();
 	private List<ComicCoverPanel> comicCoverPanels = new ArrayList<>();
 
 	public IssueResultsPanel(String resultType, UserModel userModel, ComicVineService comicVineService,
@@ -29,16 +38,45 @@ public class IssueResultsPanel extends ResultsPanel {
 
 	public void showResult() {
 		this.resultsList.removeAll();
+		this.comicCoverPanels.clear();
 
 		if (issues.size() != 0) {
 			this.setVisible(true);
 			// Show ResultAPIIssues
 			for (int i = 0; i < issues.size(); i++) {
-				ComicCoverPanel comicCover = new ComicCoverPanel(issues.get(i), databaseService, userModel.getUser());
+				ResultDto issue = issues.get(i);
+				ComicCoverPanel comicCover = new ComicCoverPanel(issue.convertToIssue(), databaseService, userModel.getUser());
 				comicCoverPanels.add(comicCover);
+				// Adding the mouse listener to enable the click on a search result
+				comicCover.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+
+						ComicsInfosPanel infos = new ComicsInfosPanel(issue);
+						infos.fetchInformations();
+						infos.createInfosPanel();
+						// Creating the new frame that will display the informations the user wants.
+						String frame_name = "";
+						try {
+							frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+						} catch (NullPointerException e1) {}
+						
+						JFrame f = new JFrame(frame_name);
+						try {
+
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
+						f.setSize(1050, 600);
+						f.add(infos);
+						f.setResizable(false);
+						f.setVisible(true);
+
+					}
+				});
 				this.resultsList.add(comicCover);
 			}
-		}else {
+		} else {
 			this.setVisible(false);
 		}
 
@@ -88,10 +126,13 @@ public class IssueResultsPanel extends ResultsPanel {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "searchStatus" || evt.getPropertyName() == "clearSearchResults"
-				|| evt.getPropertyName() == "searchResultsChanged" ) {
-			
+				|| evt.getPropertyName() == "searchResultsChanged") {
+
 			this.issues = this.comicVineService.getIssueResults();
 			showResult();
+			if(userModel.getIsAuthenticated()) {
+				updateButtonStates(0);
+			}
 		} else if (evt.getPropertyName() == "userChange") {
 			showResult();
 			if (userModel.getIsAuthenticated()) {
@@ -99,19 +140,18 @@ public class IssueResultsPanel extends ResultsPanel {
 			}
 		} else if (evt.getPropertyName() == "favoriteChange") {
 			if (evt.getNewValue() == "add")
-				System.out.println("Add one new favorite");
+				System.out.println("Add one new favorite (Vue search)");
 			else if (evt.getNewValue() == "remove") {
-				System.out.println("Remove one favorite");
+				System.out.println("Remove one favorite (Vue search)");
 				updateButtonStates(1);
 			}
 		} else if (evt.getPropertyName() == "readChange") {
 			if (evt.getNewValue() == "add")
-				System.out.println("Add new read (change state)");
+				System.out.println("Add new read (change state) (Vue search)");
 			else if (evt.getNewValue() == "remove")
-				System.out.println("remove read");
+				System.out.println("remove read (Vue search)");
 			updateButtonStates(2);
 		}
-		
 
 	}
 

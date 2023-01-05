@@ -1,9 +1,7 @@
-package app.dto;
+package app.dto;	
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import app.entities.Issue;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -15,7 +13,7 @@ public class SearchResultDto {
 	private int number_of_total_results;
 	private List<ResultDto> results;
 	
-	public SearchResultDto(){}
+	public SearchResultDto() {}
 	
 	public SearchResultDto(List<ResultDto> issues) {
 		this.limit = 16;

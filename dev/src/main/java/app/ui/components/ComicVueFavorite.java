@@ -67,6 +67,7 @@ public class ComicVueFavorite extends ComicVue{
 				ComicCoverPanels.get(i).refreshStateButtons(readState);
 			}
 		}
+		
 	}
 
 	@Override
@@ -78,9 +79,9 @@ public class ComicVueFavorite extends ComicVue{
 		}
 		else if(evt.getPropertyName() == "favoriteChange"){
 			if(evt.getNewValue() == "add")
-				System.out.println("Add one new favorite");
+				System.out.println("Add one new favorite (VueFavorite)");
 			else if(evt.getNewValue() == "remove")
-				System.out.println("Remove one favorite");
+				System.out.println("Remove one favorite (VueFavorite)");
 			
 			showResult();
 			updateButtonStates(0);

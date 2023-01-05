@@ -42,9 +42,9 @@ public class UserModel {
 	
 	public void addNewUserFavoriteIssue(Issue newFavIssue) {
 		List<Issue> oldUserFavoriteIssues = userFavoriteIssues;
-		
+
 		this.userFavoriteIssues.add(newFavIssue);
-	
+
 		this.pcs.firePropertyChange("favoriteChange", oldUserFavoriteIssues, "add");
 	}
 	
