@@ -240,8 +240,10 @@ public class ComicsInfosPanel extends JPanel {
 		// The following lines handle the case where the comic informations are null
 		if (this.result.getName() != null)
 			name.setText(this.result.getName());
-		if (this.result.getVolume().getName() != null)
-			volume.setText(this.result.getVolume().getName());
+		if (this.result.getVolume() != null) {
+			if (this.result.getVolume().getName() != null)
+				volume.setText(this.result.getVolume().getName());
+		}
 		if (this.result.getIssue_number() != null)
 			issue_number.setText(this.result.getIssue_number());
 		if (this.result.getCover_date() != null)
