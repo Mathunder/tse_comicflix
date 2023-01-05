@@ -479,6 +479,46 @@ public class DatabaseService {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean checkIfIssueInUserCollection(String cName, User user, Issue issue) {
+			
+			int collection_id = 0;
+			collection_id = getCollectionIdFromName(cName);
+			if(collection_id == 0) {
+				//Collection doesnt exist
+				//Add new collection
+				createNewCollection(cName);
+				collection_id = getCollectionIdFromName(cName);
+			}
+
+			int user_id = user.getId();
+			int issue_id = issue.getId();
+			
+			String sql = "SELECT * FROM collections WHERE issue_id = ? AND user_id = ? AND collection_id = ?";
+			
+			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+				pstmt.setInt(1, issue_id);
+				pstmt.setInt(2, user_id);
+				pstmt.setInt(3, collection_id);
+				ResultSet rs = pstmt.executeQuery();
+				
+				if(!rs.next()) {
+					//tuple doesn't exist yet
+					return false;
+				}
+				else {
+					// tuple already exists			
+					System.out.println("Collection tuple already exist for this user"); 
+					return true;
+				}
+				
+			}
+			catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				return false;
+			}
+	}
 	public void addNewIssueInUserCollection(String cName, User user, Issue issue) {
 		//FIRST : CHECK IF COLLECTION EXIST
 		int collection_id = 0;
@@ -490,39 +530,13 @@ public class DatabaseService {
 			collection_id = getCollectionIdFromName(cName);
 		}
 		
-		//NEXT CHECK IF TUPLES ALREADY EXIST
-		boolean isTupleAlreadyExists = false;
 		int user_id = user.getId();
 		int issue_id = issue.getId();
-		
-		String sql = "SELECT * FROM collections WHERE issue_id = ? AND user_id = ? AND collection_id = ?";
-		
-		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
-			pstmt.setInt(1, issue_id);
-			pstmt.setInt(2, user_id);
-			pstmt.setInt(3, collection_id);
-			ResultSet rs = pstmt.executeQuery();
 			
-			if(!rs.next()) {
-				//tuple doesn't exist yet
-				isTupleAlreadyExists = false;
-			}
-			else {
-				// tuple already exists
-				isTupleAlreadyExists = true;
-				System.out.println("Collection tuple already exist for this user"); 
-			}
-			
-		}
-		catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		
 		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
-		if(!isTupleAlreadyExists) {
+		if(!checkIfIssueInUserCollection(cName, user, issue)) {
 			
-			sql = "INSERT INTO collections(issue_id,user_id,collection_id) VALUES(?,?,?)";
+			String sql = "INSERT INTO collections(issue_id,user_id,collection_id) VALUES(?,?,?)";
 			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
 				pstmt.setInt(1, issue_id);
 				pstmt.setInt(2, user_id);
@@ -539,6 +553,24 @@ public class DatabaseService {
 		}
 	}
 	
+	public void removeIssueFromUserCollection(String cName, User user, Issue issue) {
+		String sql = "DELETE FROM collections WHERE user_id = ? AND issue_id = ?";
+		int user_id = user.getId();
+		int issue_id = issue.getId();
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, issue_id);
+			pstmt.executeUpdate();
+			
+			//Remove from model
+			userModel.removeIssueInUserCollection(cName, issue);
+		} 
+		catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+	}
 	public List<String> getAllCollectionNamesFromUser(int user_id) {
 		String sql = "SELECT DISTINCT(collection_names.name) FROM collection_names INNER JOIN collections on collections.collection_id = collection_names.collection_id AND collections.user_id = ?";
 		List<String> collection_names = new ArrayList<>();

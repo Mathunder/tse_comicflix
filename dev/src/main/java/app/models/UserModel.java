@@ -113,7 +113,7 @@ public class UserModel {
 	public void removeUserCollection(Collection col) {
 		List<Collection> oldUserCollection = userCollections;
 		
-		this.userCollections.removeIf(n -> n.getName() == col.getName());
+		this.userCollections.removeIf(n -> n.getName().equals(col.getName()));
 		
 		this.pcs.firePropertyChange("collectionChange", oldUserCollection, "remove");
 	}
@@ -127,7 +127,7 @@ public class UserModel {
 		
 		for(int i=0; i<userCollections.size();i++) {			
 			if(userCollections.get(i).getName().equals(cName)) {
-				System.out.println("Adding new issue in the collection : " + cName);
+				System.out.println("UM : Adding new issue in the collection : " + cName);
 				userCollections.get(i).addIssuesInCollection(iss);
 			}
 		}

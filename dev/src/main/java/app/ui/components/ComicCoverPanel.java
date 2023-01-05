@@ -5,8 +5,11 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -41,11 +44,14 @@ public class ComicCoverPanel extends JPanel{
 	protected DatabaseService databaseService;
 	private User user;
 	
+	private boolean needUpdate;
+	
 	public ComicCoverPanel(Issue issue, DatabaseService dbS, User u){
 		super();
 		this.issue = issue;
 		this.databaseService = dbS;
 		this.user = u;
+		this.needUpdate = false;
 		
 		//Load a test image, resize and paint of the panel background
 		try {
@@ -124,11 +130,15 @@ public class ComicCoverPanel extends JPanel{
 			collectionChoices.add(0,"All");
 			
 			collectionBox = new DefaultComboBox(collectionChoices);
-			collectionBox.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent evt) {
-	            	comboBox_collectionActionPerformed(evt);
-	            }
+			
+			collectionBox.addItemListener(new ItemListener() {	
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					// TODO Auto-generated method stub
+					collectionBoxActionPerformed(e);
+				}
 			});
+			
 			//Put Constraints on fav button
 			springLayout.putConstraint(SpringLayout.NORTH, collectionBox, -25 , SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.WEST, collectionBox, 140, SpringLayout.WEST, this);
@@ -199,6 +209,7 @@ public class ComicCoverPanel extends JPanel{
 	}
 	
 	public void refreshStateComboBox(String selectedItem) {
+		System.out.println("REFRESH UI");
 		collectionBox.setSelectedItem(selectedItem);
 	}
 	
@@ -230,7 +241,6 @@ public class ComicCoverPanel extends JPanel{
 		}
 	}
 	
-	
 	private void button_readActionPerformed(ActionEvent e) {
 		if(button_read.getColor() == CustomColor.Red) { //IF ISSUE NOT ALREADY READ OR READING OR READED
 			button_read.setColor(CustomColor.Orange);
@@ -252,11 +262,40 @@ public class ComicCoverPanel extends JPanel{
 		}
 	}
 	
-	public void comboBox_collectionActionPerformed(ActionEvent e) {
+	static private String selectedString(ItemSelectable is) {
+	    Object selected[] = is.getSelectedObjects();
+	    return ((selected.length == 0) ? "null" : (String) selected[0]);
+	  }
+	
+	public void collectionBoxActionPerformed(ItemEvent e) {
+				
+		int state = e.getStateChange();
+		
+		if(state == ItemEvent.DESELECTED) {
+			
+			ItemSelectable is = e.getItemSelectable();
+			if(!databaseService.checkIfIssueInUserCollection(selectedString(is).toString(), user, issue)) {
+				if(!needUpdate) {
+					needUpdate = true;
+					if(!e.getItem().toString().equals("All")) {
+						String str_selected = selectedString(is).toString();
+						databaseService.removeIssueFromUserCollection(e.getItem().toString(), user, issue);
 
-		if(collectionBox.getSelectedIndex() != 0) {
-			databaseService.addNewIssueInUserCollection(collectionBox.getSelectedItem().toString(), user, issue);
-		}	
+						if (!str_selected.equals("All")){
+							databaseService.addNewIssueInUserCollection(str_selected, user, issue);
+						}
+					}
+					else
+					{
+						databaseService.addNewIssueInUserCollection(selectedString(is).toString(), user, issue);
+					}
+				}
+				else
+					needUpdate = false;
+			}
+			else
+				needUpdate = false;		
+		}
 	}
 	
 	private static BufferedImage resizeBuffImage(BufferedImage img, int newW, int newH) { 
