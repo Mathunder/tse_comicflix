@@ -533,7 +533,7 @@ public class DatabaseService {
 			}
 			else {
 				// tuple already exists			
-				System.out.println("Collection name already exist for this user"); 
+				System.out.println("COLLECTION NAME ALREADY EXIST FOR THIS USER !"); 
 				return true;
 			}
 			
@@ -570,7 +570,6 @@ public class DatabaseService {
 				}
 				else {
 					// tuple already exists			
-					System.out.println("Collection tuple already exist for this user"); 
 					return true;
 				}
 				

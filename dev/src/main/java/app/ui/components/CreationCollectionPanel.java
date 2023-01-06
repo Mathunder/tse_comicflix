@@ -152,22 +152,22 @@ public class CreationCollectionPanel extends JPanel implements PropertyChangeLis
 		//If name not already exist and name != empty
 		if(!databaseService.checkIfCollectionNameExist(collectionName, userModel.getUser().getId()) && !collectionName.equals("")) {
 			//call database to add collection 
-			System.out.println("NEW COLLLECTION ADDED");
+			System.out.println("NEW COLLLECTION " + collectionName + " ADDED !");
 			lbl_error.setVisible(false);
 			databaseService.createNewCollection(collectionName, userModel.getUser());
 		}
 		else
 			lbl_error.setVisible(true);
-	
 	}
 	
 	public void btn_removeCollectionActionPerformed(ActionEvent evt) {
-		System.out.println("SELECTED : " + collectionBox.getSelectedItem().toString());
 		String deleteCollectionName = collectionBox.getSelectedItem().toString();
 		
 		//Call database to remove collection
-		if(databaseService.checkIfCollectionNameExist(deleteCollectionName, userModel.getUser().getId()))
+		if(databaseService.checkIfCollectionNameExist(deleteCollectionName, userModel.getUser().getId())) {
 			databaseService.removeCollection(deleteCollectionName, userModel.getUser());
+			System.out.println("COLLECTION " + deleteCollectionName + " REMOVED !");
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

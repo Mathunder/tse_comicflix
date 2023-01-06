@@ -221,7 +221,6 @@ public class ComicCoverPanel extends JPanel{
 	}
 	
 	public void updateComboBoxList() {
-		System.out.println("UPDATE COMBO LIST");
 		List<String> colNames = databaseService.getAllCollectionNamesFromUser(user.getId());
 		colNames.add(0,"All");
 		model = new DefaultComboBoxModel<>(colNames.toArray());
