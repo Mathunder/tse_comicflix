@@ -92,6 +92,10 @@ public class ComicVueRead extends ComicVue{
 
 				ComicCoverPanels.get(i).refreshStateComboBox(selectedItem);
 			}
+			if(itemRefreshCode == 4 || itemRefreshCode == 0) {
+				ComicCoverPanels.get(i).updateComboBoxList();
+				updateButtonStates(3);
+			}
 		}
 		
 		for(int j=0; j<userModel.getUserReadedIssues().size();j++) {	
@@ -146,6 +150,10 @@ public class ComicVueRead extends ComicVue{
 
 				ComicCoverPanels.get(i+j).refreshStateComboBox(selectedItem);
 			}
+			if(itemRefreshCode == 4 || itemRefreshCode == 0) {
+				ComicCoverPanels.get(i+j).updateComboBoxList();
+				updateButtonStates(3);
+			}
 		}
 	}
 
@@ -179,6 +187,9 @@ public class ComicVueRead extends ComicVue{
 			else if(evt.getNewValue() == "remove")
 				System.out.println("Collection change [remove] (VueRead)");
 			updateButtonStates(3);
+		}
+		else if(evt.getPropertyName() == "collectionListChange") {
+			updateButtonStates(4);
 		}
 	}
 }

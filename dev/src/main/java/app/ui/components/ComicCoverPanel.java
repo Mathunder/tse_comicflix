@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,12 +47,19 @@ public class ComicCoverPanel extends JPanel{
 	
 	private boolean needUpdate;
 	
+	@SuppressWarnings("rawtypes")
+	private DefaultComboBoxModel model;
+	
 	public ComicCoverPanel(Issue issue, DatabaseService dbS, User u){
 		super();
 		this.issue = issue;
 		this.databaseService = dbS;
 		this.user = u;
 		this.needUpdate = false;
+		
+		// ComboBox collection
+		String[] options = {"All"};
+	    model = new DefaultComboBoxModel(options);
 		
 		//Load a test image, resize and paint of the panel background
 		try {
@@ -125,11 +133,11 @@ public class ComicCoverPanel extends JPanel{
 			add(button_read);
 			
 			// ComboBox collection
-			List<String> collectionChoices = new ArrayList<>();
-			collectionChoices = databaseService.getAllCollectionNamesFromUser(user.getId());
-			collectionChoices.add(0,"All");
-			
-			collectionBox = new DefaultComboBox(collectionChoices);
+			collectionBox = new DefaultComboBox(new ArrayList<>());
+			List<String> colNames = databaseService.getAllCollectionNamesFromUser(user.getId());
+			colNames.add(0,"All");
+			model = new DefaultComboBoxModel<>(colNames.toArray());
+			collectionBox.setModel(model);
 			
 			collectionBox.addItemListener(new ItemListener() {	
 				@Override
@@ -209,10 +217,16 @@ public class ComicCoverPanel extends JPanel{
 	}
 	
 	public void refreshStateComboBox(String selectedItem) {
-		System.out.println("REFRESH UI");
 		collectionBox.setSelectedItem(selectedItem);
 	}
 	
+	public void updateComboBoxList() {
+		System.out.println("UPDATE COMBO LIST");
+		List<String> colNames = databaseService.getAllCollectionNamesFromUser(user.getId());
+		colNames.add(0,"All");
+		model = new DefaultComboBoxModel<>(colNames.toArray());
+		collectionBox.setModel(model);
+	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -277,8 +291,9 @@ public class ComicCoverPanel extends JPanel{
 			if(!databaseService.checkIfIssueInUserCollection(selectedString(is).toString(), user, issue)) {
 				if(!needUpdate) {
 					needUpdate = true;
+					String str_selected = selectedString(is).toString();
 					if(!e.getItem().toString().equals("All")) {
-						String str_selected = selectedString(is).toString();
+						
 						databaseService.removeIssueFromUserCollection(e.getItem().toString(), user, issue);
 
 						if (!str_selected.equals("All")){
@@ -287,7 +302,9 @@ public class ComicCoverPanel extends JPanel{
 					}
 					else
 					{
-						databaseService.addNewIssueInUserCollection(selectedString(is).toString(), user, issue);
+						if (!str_selected.equals("All")){
+							databaseService.addNewIssueInUserCollection(str_selected, user, issue);
+						}
 					}
 				}
 				else

@@ -19,11 +19,9 @@ public class DefaultComboBox extends JComboBox {
 		
 		this.setUI(new BasicComboBoxUI());
 		this.setBackground(CustomColor.Gray);
-		this.setForeground(CustomColor.WhiteCloud);
+		this.setForeground(CustomColor.Black);
 		this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.LightGray));
 		this.setEditable(false);
 		this.setFont(new Font("Tahoma", Font.PLAIN,12));
-		this.setFocusable(false);
-		
 	}
 }

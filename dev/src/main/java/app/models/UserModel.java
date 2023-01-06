@@ -31,7 +31,6 @@ public class UserModel {
 		userReadingIssues = userReadingIss;
 		userReadedIssues = userReadedIss;
 		userCollections = userCols;
-		
 		this.pcs.firePropertyChange("userChange", previousUser, user);
 	}
 	
@@ -106,7 +105,8 @@ public class UserModel {
 		
 		this.userCollections.add(col);
 		
-		this.pcs.firePropertyChange("collectionChange",oldUserCollection, "add");
+		this.pcs.firePropertyChange("collectionListChange",oldUserCollection, "add");
+		this.pcs.firePropertyChange("collectionChange",oldUserCollection,"add");
 		
 	}
 	
@@ -115,7 +115,8 @@ public class UserModel {
 		
 		this.userCollections.removeIf(n -> n.getName().equals(col.getName()));
 		
-		this.pcs.firePropertyChange("collectionChange", oldUserCollection, "remove");
+		this.pcs.firePropertyChange("collectionListChange", oldUserCollection, "remove");
+		this.pcs.firePropertyChange("collectionChange",oldUserCollection,"remove");
 	}
 	
 	public List<Collection> getUserCollections(){
@@ -146,5 +147,13 @@ public class UserModel {
 		}
 		
 		this.pcs.firePropertyChange("collectionChange",oldUserCollection, "remove");
+	}
+	
+	public List<Issue> getAllCollectionnedIssues() {
+		List<Issue> resultIssueList = new ArrayList<>();
+		for(Collection collection: userCollections) {
+			resultIssueList.addAll(collection.getIssues());
+		}
+		return resultIssueList;
 	}
 }

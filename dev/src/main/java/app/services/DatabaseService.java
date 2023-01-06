@@ -451,11 +451,12 @@ public class DatabaseService {
 	}
 
 	//Collections 
-	private int getCollectionIdFromName(String cName) {
-		String sql = "SELECT collection_id FROM collection_names WHERE name = ?";
+	private int getCollectionIdFromName(String cName, int user_id) {
+		String sql = "SELECT collection_id FROM collection_names WHERE name = ? and user_id = ?";
 		
 		try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
 			pstmt.setString(1, cName);
+			pstmt.setInt(2, user_id);
 			ResultSet rs = pstmt.executeQuery();
 			if(!rs.next())
 				return 0;
@@ -468,11 +469,15 @@ public class DatabaseService {
 		}
 	}
 	
-	private void createNewCollection(String cName) {
-		String sql = "INSERT INTO collection_names(name) VALUES(?)";
+	public void createNewCollection(String cName, User user) {
+		String sql = "INSERT INTO collection_names(name,user_id) VALUES(?,?)";
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
 			pstmt.setString(1, cName);
+			pstmt.setInt(2, user.getId());
 			pstmt.executeUpdate();
+			
+			Collection col = new Collection(cName, new ArrayList<>());
+			userModel.addNewUserCollection(col);
 		}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -480,15 +485,72 @@ public class DatabaseService {
 		}
 	}
 	
+	public void removeCollection(String cName, User user) {
+		//get collection id
+		int collectionId = getCollectionIdFromName(cName, user.getId());
+		
+		//delete in collections every occurence of collection_id before remove the collection (FOREIGN KEY CONSTRAINT)
+		String sql = "DELETE FROM collections WHERE collection_id = ?";
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, collectionId);
+			pstmt.executeUpdate();
+		} 
+		catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+		
+		//THEN DELETE IN collection_names
+		sql = "DELETE FROM collection_names WHERE name = ?";
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setString(1, cName);
+			pstmt.executeUpdate();
+			
+			//Remove from model
+			Collection colToRemove = new Collection(cName, new ArrayList<>());
+			userModel.removeUserCollection(colToRemove);
+			
+		} 
+		catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+	}
+	
+	public boolean checkIfCollectionNameExist(String cName, int user_id) {
+		String sql = "SELECT * FROM collection_names WHERE name = ? and user_id = ?";
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setString(1, cName);
+			pstmt.setInt(2, user_id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(!rs.next()) {
+				//tuple doesn't exist yet
+				return false;
+			}
+			else {
+				// tuple already exists			
+				System.out.println("Collection name already exist for this user"); 
+				return true;
+			}
+			
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public boolean checkIfIssueInUserCollection(String cName, User user, Issue issue) {
 			
 			int collection_id = 0;
-			collection_id = getCollectionIdFromName(cName);
+			collection_id = getCollectionIdFromName(cName, user.getId());
 			if(collection_id == 0) {
-				//Collection doesnt exist
-				//Add new collection
-				createNewCollection(cName);
-				collection_id = getCollectionIdFromName(cName);
+				return false;
 			}
 
 			int user_id = user.getId();
@@ -522,12 +584,13 @@ public class DatabaseService {
 	public void addNewIssueInUserCollection(String cName, User user, Issue issue) {
 		//FIRST : CHECK IF COLLECTION EXIST
 		int collection_id = 0;
-		collection_id = getCollectionIdFromName(cName);
+		collection_id = getCollectionIdFromName(cName, user.getId());
 		if(collection_id == 0) {
 			//Collection doesnt exist
-			//Add new collection
-			createNewCollection(cName);
-			collection_id = getCollectionIdFromName(cName);
+			if(!cName.equals("All")) {
+				createNewCollection(cName,user);
+				collection_id = getCollectionIdFromName(cName, user.getId());
+			}
 		}
 		
 		int user_id = user.getId();
@@ -572,7 +635,7 @@ public class DatabaseService {
 		}
 	}
 	public List<String> getAllCollectionNamesFromUser(int user_id) {
-		String sql = "SELECT DISTINCT(collection_names.name) FROM collection_names INNER JOIN collections on collections.collection_id = collection_names.collection_id AND collections.user_id = ?";
+		String sql = "SELECT DISTINCT(name) FROM collection_names WHERE user_id = ?";
 		List<String> collection_names = new ArrayList<>();
 		
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -597,7 +660,7 @@ public class DatabaseService {
 		
 		Collection collection = new Collection(cName,issues);
 		
-		int collection_id = getCollectionIdFromName(cName);
+		int collection_id = getCollectionIdFromName(cName, user_id);
 		
 		String sql = "SELECT issues.* FROM issues INNER JOIN collections ON collections.issue_id = issues.issue_id WHERE collections.collection_id = ?  AND collections.user_id = ?";
 		

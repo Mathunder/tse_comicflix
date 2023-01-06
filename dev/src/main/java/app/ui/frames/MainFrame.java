@@ -24,13 +24,16 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		static JPanel loginInfo;
 		static JPanel sideLeftBar;
 		static JPanel searchBarPanel;
+		static JPanel creationCollection;
 		public static ComicVueSearch visuSearchComics;
 		private static ComicVueFavorite visuFavoriteComics;
 		private static ComicVueRead visuReadComics;
-		static LeftBarButton discoverBtn;
-		static LeftBarButton recommandBtn;
-		static LeftBarButton myFavorites;
-		static LeftBarButton myReads;
+		private static ComicVueCollection visuCollectionComics;
+		static LeftBarButton btn_discover;
+		static LeftBarButton btn_myRecommandation;
+		static LeftBarButton btn_myFavorites;
+		static LeftBarButton btn_myReads;
+		static LeftBarButton btn_myCollections;
 		static JLabel lbl_title;
 		static JLabel lbl_username;
 		private DefaultButton btnUserLogin;
@@ -84,6 +87,11 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			searchBarPanel = new SearchBarPanel(comicVineService);
 			searchBarPanel.setBounds(200, 0, 850, 150);
 			
+			//CreationCollection Panel
+			creationCollection = new CreationCollectionPanel(userModel, dataBaseService);
+			creationCollection.setBounds(200, 0, 850, 150);
+			
+			
 			//Pagination Panel
 			paginationPanel= new PaginationPanel(comicVineService);
 
@@ -95,6 +103,9 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			
 			//ReadsComics Panel
 			visuReadComics = new ComicVueRead(userModel, comicVineService, dataBaseService);
+			
+			//CollectionComics Panel
+			visuCollectionComics = new ComicVueCollection(userModel, comicVineService, dataBaseService);
 			
 			//ScrollBar VisuComics Panel
 			scrollPaneVisuComics = new JScrollPane(visuSearchComics);
@@ -111,43 +122,52 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			mf.getContentPane().add(searchBarPanel);
 			mf.getContentPane().add(paginationPanel);
 			mf.getContentPane().add(scrollPaneVisuComics);
+			mf.getContentPane().add(creationCollection);
 			
 			//Button Discover
-			discoverBtn = new LeftBarButton("Découvrir",CustomColor.CrimsonRed,20,true);
-			discoverBtn.setBorderColorOnFocus();
-			discoverBtn.addActionListener(new ActionListener() {
+			btn_discover = new LeftBarButton("Découvrir",CustomColor.CrimsonRed,20,true);
+			btn_discover.setBorderColorOnFocus();
+			btn_discover.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
 	            	discoverBtnActionPerformed(evt);
 	            }
 			});
 			
-			sideLeftBar.add(discoverBtn);
+			sideLeftBar.add(btn_discover);
 			
 			//Button Recommendation
-			recommandBtn = new LeftBarButton("Recommandation",CustomColor.Red,20,true);
-			recommandBtn.addActionListener(new ActionListener() {
+			btn_myRecommandation = new LeftBarButton("Recommandation",CustomColor.Red,20,true);
+			btn_myRecommandation.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
 	            	recommandBtnActionPerformed(evt);
 	            }
 			});
-			sideLeftBar.add(recommandBtn);
+			sideLeftBar.add(btn_myRecommandation);
 			
 			//Button Favorites
-			myFavorites = new LeftBarButton("Mes favoris",CustomColor.Red,20,true);
-			myFavorites.addActionListener(new ActionListener() {
+			btn_myFavorites = new LeftBarButton("Mes favoris",CustomColor.Red,20,true);
+			btn_myFavorites.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
 	            	myLibraryBtnActionPerformed(evt);
 	            }
 			});
-			sideLeftBar.add(myFavorites);
+			sideLeftBar.add(btn_myFavorites);
 			
-			myReads = new LeftBarButton("Mes lectures", CustomColor.Red,20,true);
-			myReads.addActionListener(new ActionListener() {
+			btn_myReads = new LeftBarButton("Mes lectures", CustomColor.Red,20,true);
+			btn_myReads.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					myReadsBtnActionPerformed(evt);
 				}
 			});
-			sideLeftBar.add(myReads);
+			sideLeftBar.add(btn_myReads);
+			
+			btn_myCollections = new LeftBarButton("Mes collections", CustomColor.Red,20,true);
+			btn_myCollections.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					myCollectionsBtnActionPerformed(evt);
+				}
+			});
+			sideLeftBar.add(btn_myCollections);
 			
 			//Label Title
 			lbl_title = new JLabel("Comics Library");
@@ -207,36 +227,64 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		
 		private void setFocusOnDiscoverPanel() {
 
-	    	discoverBtn.setBorderColorOnFocus();
-	    	recommandBtn.setBorderColorOnUnfocus();
-	    	myFavorites.setBorderColorOnUnfocus();
-	    	myReads.setBorderColorOnUnfocus();
+	    	btn_discover.setBorderColorOnFocus();
+	    	btn_myRecommandation.setBorderColorOnUnfocus();
+	    	btn_myFavorites.setBorderColorOnUnfocus();
+	    	btn_myReads.setBorderColorOnUnfocus();
+	    	btn_myCollections.setBorderColorOnUnfocus();
 	    	scrollPaneVisuComics.setViewportView(visuSearchComics);
+	    	searchBarPanel.setVisible(true);
+	    	paginationPanel.setVisible(true);
+	    	creationCollection.setVisible(false);
 		}
 	    
 	    private void recommandBtnActionPerformed(ActionEvent evt) {  
 
-	    	discoverBtn.setBorderColorOnUnfocus();
-	    	recommandBtn.setBorderColorOnFocus();
-	    	myFavorites.setBorderColorOnUnfocus();
-	    	myReads.setBorderColorOnUnfocus();
+	    	btn_discover.setBorderColorOnUnfocus();
+	    	btn_myRecommandation.setBorderColorOnFocus();
+	    	btn_myFavorites.setBorderColorOnUnfocus();
+	    	btn_myReads.setBorderColorOnUnfocus();
+	    	btn_myCollections.setBorderColorOnUnfocus();
 	    	scrollPaneVisuComics.setViewportView(null);
+	    	searchBarPanel.setVisible(true);
+	    	paginationPanel.setVisible(true);
+	    	creationCollection.setVisible(false);
 	    }  
 	    
 	    private void myLibraryBtnActionPerformed(ActionEvent evt) {   
-	    	discoverBtn.setBorderColorOnUnfocus();
-	    	recommandBtn.setBorderColorOnUnfocus();
-	    	myFavorites.setBorderColorOnFocus();
-	    	myReads.setBorderColorOnUnfocus();
-	    	scrollPaneVisuComics.setViewportView(visuFavoriteComics);	    	
+	    	btn_discover.setBorderColorOnUnfocus();
+	    	btn_myRecommandation.setBorderColorOnUnfocus();
+	    	btn_myFavorites.setBorderColorOnFocus();
+	    	btn_myReads.setBorderColorOnUnfocus();
+	    	btn_myCollections.setBorderColorOnUnfocus();
+	    	scrollPaneVisuComics.setViewportView(visuFavoriteComics);	
+	    	searchBarPanel.setVisible(true);
+	    	paginationPanel.setVisible(true);
+	    	creationCollection.setVisible(false);
 	    } 
 	    
 	    private void myReadsBtnActionPerformed(ActionEvent evt) {
-	    	discoverBtn.setBorderColorOnUnfocus();
-	    	recommandBtn.setBorderColorOnUnfocus();
-	    	myFavorites.setBorderColorOnUnfocus();
-	    	myReads.setBorderColorOnFocus();
+	    	btn_discover.setBorderColorOnUnfocus();
+	    	btn_myRecommandation.setBorderColorOnUnfocus();
+	    	btn_myFavorites.setBorderColorOnUnfocus();
+	    	btn_myReads.setBorderColorOnFocus();
+	    	btn_myCollections.setBorderColorOnUnfocus();
 	    	scrollPaneVisuComics.setViewportView(visuReadComics);
+	    	searchBarPanel.setVisible(true);
+	    	paginationPanel.setVisible(true);
+	    	creationCollection.setVisible(false);
+	    }
+	    
+	    private void myCollectionsBtnActionPerformed(ActionEvent evt) {
+	    	btn_discover.setBorderColorOnUnfocus();
+	    	btn_myRecommandation.setBorderColorOnUnfocus();
+	    	btn_myFavorites.setBorderColorOnUnfocus();
+	    	btn_myReads.setBorderColorOnUnfocus();
+	    	btn_myCollections.setBorderColorOnFocus();
+	    	scrollPaneVisuComics.setViewportView(visuCollectionComics);
+	    	searchBarPanel.setVisible(false);
+	    	paginationPanel.setVisible(false);
+	    	creationCollection.setVisible(true);
 	    }
 	    
 	    private void loginBtnActionPerformed(ActionEvent evt) {
@@ -268,16 +316,18 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	
 	    	if(userModel.getIsAuthenticated()) {
 	    		btnUserLogin.setText("Logout");
-	    		recommandBtn.setVisible(true);
-	    		myFavorites.setVisible(true);
-	    		myReads.setVisible(true);
+	    		btn_myRecommandation.setVisible(true);
+	    		btn_myFavorites.setVisible(true);
+	    		btn_myReads.setVisible(true);
+	    		btn_myCollections.setVisible(true);
 	    				
 	    	}
 	    	else {
 	    		btnUserLogin.setText("Login");
-	    		recommandBtn.setVisible(false);
-	    		myFavorites.setVisible(false);
-	    		myReads.setVisible(false);
+	    		btn_myRecommandation.setVisible(false);
+	    		btn_myFavorites.setVisible(false);
+	    		btn_myReads.setVisible(false);
+	    		btn_myCollections.setVisible(false);
 	    		
 	    		setFocusOnDiscoverPanel();
 	    	}
