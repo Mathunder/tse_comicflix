@@ -110,16 +110,16 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnCancel, 130, SpringLayout.WEST, contentPane);
 		contentPane.add(btnCancel);
 		
-		DefaultButton btnCreate = new DefaultButton("Create", CustomColor.CrimsonRed, 14, true);
+		DefaultButton btnCreate = new DefaultButton("Create Account", CustomColor.CrimsonRed, 14, true);
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCreateActionPerformed(e); 				
 			}
 		});
 		sl_contentPane.putConstraint(SpringLayout.NORTH, btnCreate, 0, SpringLayout.NORTH, btnLogin);
-		sl_contentPane.putConstraint(SpringLayout.WEST, btnCreate, 30, SpringLayout.EAST, btnCancel);
+		sl_contentPane.putConstraint(SpringLayout.WEST, btnCreate, 20, SpringLayout.EAST, btnCancel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnCreate, 0, SpringLayout.SOUTH, btnLogin);
-		sl_contentPane.putConstraint(SpringLayout.EAST, btnCreate, -30, SpringLayout.WEST, btnLogin);
+		sl_contentPane.putConstraint(SpringLayout.EAST, btnCreate, -20, SpringLayout.WEST, btnLogin);
 		contentPane.add(btnCreate);
 		
 		passwordField = new JPasswordField();
@@ -130,7 +130,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
 		contentPane.add(passwordField);
 		
-		lblErrorLogin = new JLabel("Invalid username or password !");
+		lblErrorLogin = new JLabel("Invalid username or password ! ");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorLogin, 8, SpringLayout.SOUTH, lblPassword);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblErrorLogin, 111, SpringLayout.WEST, contentPane);
 		lblErrorLogin.setFont(new Font("Tahoma", Font.ITALIC, 14));

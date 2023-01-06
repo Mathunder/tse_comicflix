@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Console;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,8 +31,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 	private JTextField txtField_username;
 	private JPasswordField passwordField;
 	private JPasswordField confirmPasswordField;
-	private JLabel lblErrorLogin;
-	private boolean isCredientialCorrect = false;
+	private JLabel lblErrorCreate;
 	//Model
 	protected UserModel userModel; 
 	//Controller
@@ -50,7 +50,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		setTitle("Create Account");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 375);
+		setBounds(100, 100, 450, 400);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(249, 246, 241));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -147,10 +147,19 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, confirmPasswordField, 0, SpringLayout.EAST, passwordField);
 		contentPane.add(confirmPasswordField);
 		
+		lblErrorCreate = new JLabel("");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorCreate, 0, SpringLayout.SOUTH, lblConfirmPassword);
+		sl_contentPane.putConstraint(SpringLayout.HORIZONTAL_CENTER, lblErrorCreate, 225, SpringLayout.WEST, contentPane);
+		lblErrorCreate.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		lblErrorCreate.setForeground(Color.RED);
+		lblErrorCreate.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblErrorCreate.setVisible(false);
+		contentPane.add(lblErrorCreate);
+		
 		DefaultButton btnCreate = new DefaultButton("Create", CustomColor.Red, 14, true);
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnLoginActionPerformed(e);
+				btnCreateActionPerformed(e);
 			}
 		});
 		
@@ -177,10 +186,40 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		dispose();
 	}
 	
-	private void btnLoginActionPerformed(ActionEvent e) {
+	private void btnCreateActionPerformed(ActionEvent e) {
+		
+		if ( !txtField_firstName.getText().isEmpty() && !txtField_lastName.getText().isEmpty() 
+				&& !txtField_username.getText().isEmpty() && !String.valueOf(passwordField.getPassword()).isEmpty()
+				&& !String.valueOf(confirmPasswordField.getPassword()).isEmpty())
+		{
+			if (String.valueOf(passwordField.getPassword()).contentEquals(String.valueOf(confirmPasswordField.getPassword())))
+			{
+				if (databaseService.verifUsername(txtField_username.getText()))
+				{
+					databaseService.addNewUserAccount(txtField_firstName.getText(), txtField_lastName.getText(), 
+							txtField_username.getText(), String.valueOf(passwordField.getPassword()) );
+					dispose();
+				}
+				else
+				{
+					lblErrorCreate.setText("Username already exist ");
+					lblErrorCreate.setVisible(true);
+				}
+			}
+			else
+			{
+				lblErrorCreate.setText("Passwords are not the same ");
+				lblErrorCreate.setVisible(true);
+			}
+				
+		}
+		else
+		{
+			lblErrorCreate.setText("A field is empty ");
+			lblErrorCreate.setVisible(true);
+		}
 		
 	}
-	
 	
 	public void propertyChange(PropertyChangeEvent evt) {
     }
