@@ -54,7 +54,7 @@ public class ComicCoverPanel extends JPanel{
 		super();
 		this.issue = issue;
 		this.databaseService = dbS;
-		this.user = u
+		this.user = u;
 		
 		this.needUpdate = false;
 		

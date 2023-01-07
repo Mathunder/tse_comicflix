@@ -166,24 +166,24 @@ public class DatabaseService {
 			
 			if(rs.next())
 			{
-<<<<<<< HEAD
+
 				if(encoder.matches(password, rs.getString("password")))
 				{
 					if(rs.getInt("user_id") != 0)
 						isAuthenticated = true;
 					
-					userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")));
+					userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
 				}
 				else
 				{
-					userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+					userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 				}
-=======
+
 				if(rs.getInt("user_id") != 0)
 					isAuthenticated = true;
 				
 				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
->>>>>>> refs/heads/PRI5-23-Collections
+
 			}
 			else
 			{
