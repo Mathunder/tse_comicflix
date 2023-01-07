@@ -167,6 +167,8 @@ public class DatabaseService {
 		String issue_name = issue.getName();
 		String api_detail_url = issue.getApi_detail_url();
 		String image_url = issue.getImage().getMedium_url();
+		String deck = issue.getDeck();
+		String description = issue.getDescription();
 		
 		
 		// FIRST CHECK IF THE ENTRY DOESNT ALREADY EXIST
@@ -196,7 +198,7 @@ public class DatabaseService {
 		
 		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
 		if(!isTupleAlreadyExists) {
-			sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url) VALUES(?,?,?,?,?)";
+			sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url, deck, description) VALUES(?,?,?,?,?,?,?)";
 			
 			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 				pstmt.setInt(1, issue_id);
@@ -204,6 +206,8 @@ public class DatabaseService {
 				pstmt.setString(3, issue_name);
 				pstmt.setString(4, api_detail_url);
 				pstmt.setString(5, image_url);
+				pstmt.setString(6, deck);
+				pstmt.setString(7, description);
 				pstmt.executeUpdate();
 							
 			} catch (SQLException e) {
