@@ -2,8 +2,6 @@ package app.ui.components;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.lang.reflect.Constructor;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
@@ -26,10 +24,11 @@ public class DefaultButton extends JButton {
 		this.isBordered = isbordered;
 		
 		
-		this.setBorderPainted(true);
+		this.setBorderPainted(false);
 		this.setFocusPainted(false);
 		if(this.isBordered) {
 			this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CustomColor.LightGray));
+			this.setBorderPainted(true);
 		}
 		
 		this.setFont(new Font("Tahoma", Font.PLAIN,this.fontSize));
@@ -37,6 +36,15 @@ public class DefaultButton extends JButton {
 		this.setForeground(Color.white);
 		this.setVisible(true);
 		
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+		this.setBackground(this.color);
 	}
 
 }

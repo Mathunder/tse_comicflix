@@ -1,46 +1,52 @@
 package app.ui.frames;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import java.awt.GridLayout;
-import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.SpringLayout;
 import java.awt.Toolkit;
 
-import app.entities.User;
+import app.models.UserModel;
 import app.services.DatabaseService;
 import app.ui.components.DefaultButton;
-import app.ui.events.InterfaceMainFrame;
 import app.ui.themes.CustomColor;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
-public class LoginForm extends JFrame {
+public class LoginForm extends JFrame implements PropertyChangeListener {
 
 	private JPanel contentPane;
 	private JTextField txtField_username;
 	private JPasswordField passwordField;
-
-	private InterfaceMainFrame mainInterface;
-	private DatabaseService database;
 	private JLabel lblErrorLogin;
+	private boolean isCredientialCorrect = false;
+	//Model
+	protected UserModel userModel; 
+	//Controller
+	protected DatabaseService databaseService;
+	
+	
 	/**
 	 * Create the frame.
 	 */
-	public LoginForm(InterfaceMainFrame mi) {
-		mainInterface = mi;
-		database = new DatabaseService();
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\axant\\Documents\\_AxStore\\2-TELECOM\\FISE 2\\S7\\PROJET INFORMATIQUE\\GitLab_repo\\Info5\\dev\\src\\main\\resources\\icon.png"));
-		setTitle("Login Form");
+	public LoginForm(UserModel um, DatabaseService dbS) {
+		this.userModel = um;
+		this.databaseService = dbS;
+		this.userModel.addPropertyChangeListener(this);
+		
+		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
+		setTitle("Login");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -88,8 +94,8 @@ public class LoginForm extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.NORTH, btnLogin, 151, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnLogin, -60, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, txtField_username, -106, SpringLayout.NORTH, btnLogin);
-		sl_contentPane.putConstraint(SpringLayout.WEST, btnLogin, 230, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, btnLogin, -79, SpringLayout.EAST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.WEST, btnLogin, -130, SpringLayout.EAST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, btnLogin, -25, SpringLayout.EAST, contentPane);
 		contentPane.add(btnLogin);
 		
 		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Gray, 14, true);
@@ -99,10 +105,22 @@ public class LoginForm extends JFrame {
 			}
 		});
 		sl_contentPane.putConstraint(SpringLayout.NORTH, btnCancel, 0, SpringLayout.NORTH, btnLogin);
-		sl_contentPane.putConstraint(SpringLayout.WEST, btnCancel, 66, SpringLayout.WEST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.WEST, btnCancel, 25, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnCancel, -60, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, btnCancel, -50, SpringLayout.WEST, btnLogin);
+		sl_contentPane.putConstraint(SpringLayout.EAST, btnCancel, 130, SpringLayout.WEST, contentPane);
 		contentPane.add(btnCancel);
+		
+		DefaultButton btnCreate = new DefaultButton("Create Account", CustomColor.CrimsonRed, 14, true);
+		btnCreate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnCreateActionPerformed(e); 				
+			}
+		});
+		sl_contentPane.putConstraint(SpringLayout.NORTH, btnCreate, 0, SpringLayout.NORTH, btnLogin);
+		sl_contentPane.putConstraint(SpringLayout.WEST, btnCreate, 20, SpringLayout.EAST, btnCancel);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnCreate, 0, SpringLayout.SOUTH, btnLogin);
+		sl_contentPane.putConstraint(SpringLayout.EAST, btnCreate, -20, SpringLayout.WEST, btnLogin);
+		contentPane.add(btnCreate);
 		
 		passwordField = new JPasswordField();
 		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -112,7 +130,7 @@ public class LoginForm extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
 		contentPane.add(passwordField);
 		
-		lblErrorLogin = new JLabel("Invalid username or password !");
+		lblErrorLogin = new JLabel("Invalid username or password ! ");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorLogin, 8, SpringLayout.SOUTH, lblPassword);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblErrorLogin, 111, SpringLayout.WEST, contentPane);
 		lblErrorLogin.setFont(new Font("Tahoma", Font.ITALIC, 14));
@@ -125,18 +143,20 @@ public class LoginForm extends JFrame {
 		dispose();
 	}
 	
+	private void btnCreateActionPerformed(ActionEvent e) {
+		JFrame CreateAccount = new CreateAccount(userModel, databaseService);
+		CreateAccount.setVisible(true);
+	}
+	
 	private void btnLoginActionPerformed(ActionEvent e) {
 		
 		String usr_name = new String(txtField_username.getText());
 		String usr_password = new String(passwordField.getPassword());
-		System.out.println(usr_name);
-		System.out.println(usr_password);	
 		
 		//CHECK CREDENTIAL AND GET USER INFO
-		User newUser = database.getUserFromUsername(usr_name,usr_password);
+		databaseService.loginUserFromUsername(usr_name, usr_password);
 		
-		if(newUser != null) {
-			mainInterface.updateLoginInfo(newUser);
+		if(isCredientialCorrect) {	
 			lblErrorLogin.setVisible(false);
 			dispose();
 		}
@@ -144,4 +164,15 @@ public class LoginForm extends JFrame {
 			lblErrorLogin.setVisible(true);
 		
 	}
+	
+	private void checkCredential() {
+		if(userModel.getIsAuthenticated())
+			isCredientialCorrect = true;
+		else
+			isCredientialCorrect = false;
+	}
+	
+	public void propertyChange(PropertyChangeEvent evt) {
+    	checkCredential();
+    }
 }

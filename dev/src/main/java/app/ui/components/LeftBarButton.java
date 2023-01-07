@@ -21,10 +21,12 @@ public class LeftBarButton extends JButton{
 	}
 	
 	public void setBorderColorOnFocus() {
+		this.setBackground(CustomColor.DarkRed);
 		this.setBorder(BorderFactory.createMatteBorder(-1, 4, -1, -1, Color.white));
 	}
 	
 	public void setBorderColorOnUnfocus() {
+		this.setBackground(CustomColor.Red);
 		this.setBorder(BorderFactory.createMatteBorder(-1, 4, -1, -1, CustomColor.DarkGray));
 	}
 }

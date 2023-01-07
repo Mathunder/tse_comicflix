@@ -12,6 +12,8 @@ public class CustomColor {
 	public static final Color Gray = new Color(0xBEBDB8,false);
 	public static final Color DarkGray = new Color(0x83847F,false);
 	public static final Color Black = new Color(0x0C120C,false);
+	public static final Color Green = new Color(0x2ECC71,false);
+	public static final Color Orange = new Color(0xF39C12,false);
 	
 	CustomColor() {};
 
