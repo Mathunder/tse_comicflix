@@ -7,10 +7,10 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import app.dto.ResponseDto;
 import app.dto.ResultDto;
-import app.dto.SearchResultDto;
 import app.services.ComicVineService;
 import app.ui.themes.CustomColor;
 
@@ -59,9 +59,21 @@ public class ComicsInfosPanel extends JPanel {
 		
 		JPanel box2 = new JPanel();
 		JLabel image = new JLabel();
-		JTextArea issue_infos = new JTextArea();
+		JTextArea infos = new JTextArea();
+		JPanel field_title = new JPanel();
+		JPanel other_data = new JPanel();
+		JTextArea field_title_name = new JTextArea();
+		JTextArea field_title_volume = new JTextArea();
+		JTextArea field_title_issue_number = new JTextArea();
+		JTextArea field_title_cover_date = new JTextArea();
+		JTextArea name = new JTextArea();
+		JTextArea volume = new JTextArea();
+		JTextArea issue_number = new JTextArea();
+		JTextArea cover_date = new JTextArea();
 
-		Font title_font = new Font("Dialog", Font.BOLD, 16);		
+
+		Font title_font = new Font("Dialog", Font.BOLD, 16);
+		Font field_title_font = new Font("Dialog", Font.BOLD, 12);
 		JScrollPane scrollPaneComicsInfos = new JScrollPane(this);
 		
 		
@@ -193,35 +205,58 @@ public class ComicsInfosPanel extends JPanel {
 		image.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		// matching the size of the block to the size of the image
-		issue_infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
-		// The following lines handle the case where the comic infos are null or are equal to "null"
-		String name = "Not found.";
-		String volume = "Not found.";
-		String issue_number = "Not found";
-		String cover_date = "Not found.";
-		try {
-			name = this.result.getName();
-		} catch (NullPointerException e) {}
-		try {
-			volume = this.result.getVolume().getName();
-		} catch (NullPointerException e) {}
-		try {
-			issue_number = this.result.getIssue_number();
-		} catch (NullPointerException e) {}
-		try {
-			cover_date = this.result.getCover_date();
-		} catch (NullPointerException e) {}
-		issue_infos.setText(
-				"Name : " + name + '\n' + 
-				"Volume : " + volume + '\n' +
-				"Issue number : " + issue_number + '\n' +
-				"Cover date : " + cover_date + '\n'
-				);
-		issue_infos.setEditable(false);
-		issue_infos.setBackground(CustomColor.WhiteCloud);
-		issue_infos.setBorder(BorderFactory.createEmptyBorder(10, 6, 10, 10));
-		issue_infos.setBorder(null);
-		box2.add(issue_infos);
+		infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
+		infos.setLayout(new BoxLayout(infos, BoxLayout.X_AXIS));
+		field_title.setLayout(new BoxLayout(field_title, BoxLayout.Y_AXIS));
+		infos.setOpaque(true);
+		field_title.setOpaque(true);
+		field_title.setBackground(CustomColor.WhiteCloud);
+		other_data.setLayout(new BoxLayout(other_data, BoxLayout.Y_AXIS));
+		other_data.setOpaque(true);
+		other_data.setBackground(CustomColor.WhiteCloud);
+		infos.add(field_title);
+		infos.add(other_data);
+		
+		field_title_name.setText("Name :");
+		field_title_name.setFont(field_title_font);
+		field_title_name.setBackground(null);
+		field_title_volume.setText("Volume :");
+		field_title_volume.setFont(field_title_font);
+		field_title_volume.setBackground(null);
+		field_title_issue_number.setText("Issue number :");
+		field_title_issue_number.setFont(field_title_font);
+		field_title_issue_number.setBackground(null);
+		field_title_cover_date.setText("Cover date :");
+		field_title_cover_date.setFont(field_title_font);
+		field_title_cover_date.setBackground(null);
+		name.setText("Not found");
+		name.setBackground(null);
+		volume.setText("Not found");
+		volume.setBackground(null);
+		issue_number.setText("Not found");
+		issue_number.setBackground(null);
+		cover_date.setText("Not found");
+		cover_date.setBackground(null);
+		// The following lines handle the case where the comic informations are null
+		if (this.result.getName() != null)
+			name.setText(this.result.getName());
+		if (this.result.getVolume().getName() != null)
+			volume.setText(this.result.getVolume().getName());
+		if (this.result.getIssue_number() != null)
+			issue_number.setText(this.result.getIssue_number());
+		if (this.result.getCover_date() != null)
+			cover_date.setText(this.result.getCover_date());
+		field_title.add(field_title_name);
+		field_title.add(field_title_volume);
+		field_title.add(field_title_issue_number);
+		field_title.add(field_title_cover_date);
+		other_data.add(name);
+		other_data.add(volume);
+		other_data.add(issue_number);
+		other_data.add(cover_date);
+		infos.setBackground(CustomColor.WhiteCloud);
+		infos.setBorder(null);
+		box2.add(infos);
 		
 		this.setBackground(CustomColor.WhiteCloud);
 		this.setPreferredSize(new Dimension(1000, 600));

@@ -64,7 +64,7 @@ public class ResultDto {
 
 	public Issue convertToIssue() {
 		return new Issue(aliases, api_detail_url, id, issue_number, name, this.image.getMedium_url(), deck,
-				description);
+				description, volume);
 	}
 
 	public VineCharacter convertToCharacter() {

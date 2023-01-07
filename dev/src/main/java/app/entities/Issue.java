@@ -24,6 +24,21 @@ public class Issue {
 	
 	public Issue() {}
 	
+	// Used in ResultDto's convertToIssue method
+	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url,
+			String deck, String description, Volume volume) {
+		this.aliases=aliases;
+		this.api_detail_url = api_detail_url;
+		this.id = id;
+		this.issue_number = issue_number;
+		this.name = name;
+		this.image = new ImageResultDto(image_url);
+		this.deck = deck;
+		this.description = description;
+		this.volume = volume;
+	}
+	
+	// Used in DataBaseService
 	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url,
 			String deck, String description) {
 		this.aliases=aliases;
@@ -34,7 +49,6 @@ public class Issue {
 		this.image = new ImageResultDto(image_url);
 		this.deck = deck;
 		this.description = description;
-
 	}
 	
 	public Issue(String aliases, String api_detail_url, int id, String issue_number, String name, String image_url) {

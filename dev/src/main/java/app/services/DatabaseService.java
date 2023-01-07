@@ -87,15 +87,13 @@ public class DatabaseService {
 	
 	// Users table methods
 	public void addNewUserAccount(String first_name, String last_name, String username, String password) {
-		
-		String encodePassword = encoder.encode(password);
 		String sql = "INSERT INTO users(first_name,last_name,username,password) VALUES(?,?,?,?)";
 		
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, first_name);
 			pstmt.setString(2, last_name);
 			pstmt.setString(3, username);
-			pstmt.setString(4, encodePassword);
+			pstmt.setString(4, password);
 			pstmt.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -127,31 +125,6 @@ public class DatabaseService {
 		}	
 	}
 	
-	
-	public boolean verifUsername(String username) {
-		String sql = "SELECT username FROM users WHERE username=" + '"' + username + '"' + " LIMIT 1";
-		
-		try (Connection conn = this.connect();
-				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)){
-			
-			if(!rs.next()) //Check if we have a result of the sql execute
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	
 	public void loginUserFromUsername(String username, String password) {
 		String sql = "SELECT user_id, first_name, last_name, username, password FROM users WHERE username=" 
 				+ '"' +  username + '"'
@@ -163,19 +136,12 @@ public class DatabaseService {
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)){
 			
-			if(rs.next())
+			if(encoder.matches(password, rs.getString("password")))
 			{
-				if(encoder.matches(password, rs.getString("password")))
-				{
-					if(rs.getInt("user_id") != 0)
-						isAuthenticated = true;
-					
-					userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")));
-				}
-				else
-				{
-					userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-				}
+				if(rs.getInt("user_id") != 0)
+					isAuthenticated = true;
+				
+				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")));
 			}
 			else
 			{
@@ -333,7 +299,8 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"),
+						rs.getString("issue_name"), rs.getString("image_url"), rs.getString("deck"), rs.getString("description"));
 				issues.add(i);
 			}
 			
@@ -358,7 +325,8 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"),
+						rs.getString("issue_name"), rs.getString("image_url"), rs.getString("deck"), rs.getString("description"));
 				issues_reading.add(i);
 			}
 			
@@ -383,7 +351,8 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"),
+						rs.getString("issue_name"), rs.getString("image_url"), rs.getString("deck"), rs.getString("description"));
 				issues_readed.add(i);
 			}
 			
