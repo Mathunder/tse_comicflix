@@ -113,7 +113,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		contentPane.add(txtField_username);
 		txtField_username.setColumns(1);
 		
-		JLabel lblPassword = new JLabel("Passorwd");
+		JLabel lblPassword = new JLabel("Password");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPassword, 0, SpringLayout.SOUTH, lblUsername);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblPassword, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblPassword, 54, SpringLayout.SOUTH, lblUsername);
@@ -130,7 +130,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
 		contentPane.add(passwordField);
 		
-		JLabel lblConfirmPassword = new JLabel("Confirm passorwd");
+		JLabel lblConfirmPassword = new JLabel("Confirm password");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblConfirmPassword, 0, SpringLayout.SOUTH, lblPassword);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblConfirmPassword, 30, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblConfirmPassword, 54, SpringLayout.SOUTH, lblPassword);
