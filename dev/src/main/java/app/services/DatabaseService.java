@@ -87,13 +87,15 @@ public class DatabaseService {
 	
 	// Users table methods
 	public void addNewUserAccount(String first_name, String last_name, String username, String password) {
+		
+		String encodePassword = encoder.encode(password);
 		String sql = "INSERT INTO users(first_name,last_name,username,password) VALUES(?,?,?,?)";
 		
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, first_name);
 			pstmt.setString(2, last_name);
 			pstmt.setString(3, username);
-			pstmt.setString(4, password);
+			pstmt.setString(4, encodePassword);
 			pstmt.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -125,6 +127,31 @@ public class DatabaseService {
 		}	
 	}
 	
+	
+	public boolean verifUsername(String username) {
+		String sql = "SELECT username FROM users WHERE username=" + '"' + username + '"' + " LIMIT 1";
+		
+		try (Connection conn = this.connect();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)){
+			
+			if(!rs.next()) //Check if we have a result of the sql execute
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
 	public void loginUserFromUsername(String username, String password) {
 		String sql = "SELECT user_id, first_name, last_name, username, password FROM users WHERE username=" 
 				+ '"' +  username + '"'
@@ -136,12 +163,19 @@ public class DatabaseService {
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)){
 			
-			if(encoder.matches(password, rs.getString("password")))
+			if(rs.next())
 			{
-				if(rs.getInt("user_id") != 0)
-					isAuthenticated = true;
-				
-				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")));
+				if(encoder.matches(password, rs.getString("password")))
+				{
+					if(rs.getInt("user_id") != 0)
+						isAuthenticated = true;
+					
+					userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")));
+				}
+				else
+				{
+					userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+				}
 			}
 			else
 			{
@@ -167,8 +201,6 @@ public class DatabaseService {
 		String issue_name = issue.getName();
 		String api_detail_url = issue.getApi_detail_url();
 		String image_url = issue.getImage().getMedium_url();
-		String deck = issue.getDeck();
-		String description = issue.getDescription();
 		
 		
 		// FIRST CHECK IF THE ENTRY DOESNT ALREADY EXIST
@@ -198,7 +230,7 @@ public class DatabaseService {
 		
 		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
 		if(!isTupleAlreadyExists) {
-			sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url, deck, description) VALUES(?,?,?,?,?,?,?)";
+			sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url) VALUES(?,?,?,?,?)";
 			
 			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 				pstmt.setInt(1, issue_id);
@@ -206,8 +238,6 @@ public class DatabaseService {
 				pstmt.setString(3, issue_name);
 				pstmt.setString(4, api_detail_url);
 				pstmt.setString(5, image_url);
-				pstmt.setString(6, deck);
-				pstmt.setString(7, description);
 				pstmt.executeUpdate();
 							
 			} catch (SQLException e) {
@@ -303,8 +333,7 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"),
-						rs.getString("issue_name"), rs.getString("image_url"), rs.getString("deck"), rs.getString("description"));
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
 				issues.add(i);
 			}
 			
@@ -329,8 +358,7 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"),
-						rs.getString("issue_name"), rs.getString("image_url"), rs.getString("deck"), rs.getString("description"));
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
 				issues_reading.add(i);
 			}
 			
@@ -355,8 +383,7 @@ public class DatabaseService {
 			while(rs.next())
 			{
 				// Build the issue
-				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"),
-						rs.getString("issue_name"), rs.getString("image_url"), rs.getString("deck"), rs.getString("description"));
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
 				issues_readed.add(i);
 			}
 			

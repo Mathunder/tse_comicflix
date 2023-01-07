@@ -41,7 +41,6 @@ public class ComicCoverPanel extends JPanel{
 		this.issue = issue;
 		this.databaseService = dbS;
 		this.user = u;
-		this.setToolTipText(returnToolTipText(issue));
 		
 		//Load a test image, resize and paint of the panel background
 		try {
@@ -56,18 +55,8 @@ public class ComicCoverPanel extends JPanel{
 		setPreferredSize(new Dimension(206,310));
 		setBackground(CustomColor.WhiteCloud);
 		
-		// Creation of the label title
-		String str = "";
-		if (issue.getName() == null) {
-			try {
-				str = issue.getVolume().getName() + " (" + issue.getIssue_number() + ")";
-			} catch (NullPointerException e) {
-				str = "";
-			}
-		} else {
-			str = issue.getName();
-		}
-		JLabel titleLabel = new JLabel(titleUpdate(str, 13));
+		// Création du label titre
+		JLabel titleLabel = new JLabel(titleUpdate(issue.getName()));
 		titleLabel.setOpaque(true);
 		titleLabel.setFont(new Font("Tahoma", Font.PLAIN,20));
 		titleLabel.setBackground(CustomColor.DarkGray);
@@ -248,16 +237,16 @@ public class ComicCoverPanel extends JPanel{
 	} 
 	
 	
-	public String titleUpdate(String title, int n) {
+	public String titleUpdate(String title) {
 		//If the title is too long, transformation into HTML and add of line break
 		String titleDisplayed = new String("<html>");
 		if(title == null) { return ""; 
 		}
-		if(title.length()>n) {
+		if(title.length()>13) {
 
 			for (int j=0;j<title.length();j++) {
 				titleDisplayed = titleDisplayed.concat(String.valueOf(title.charAt(j)));
-				if(j != 0 && (j % n == 0)) {
+				if(j != 0 && (j % 13 == 0)) {
 					for (int k=j+1;k<title.length();k++) {
 						if(title.charAt(k) == ' ' || title.charAt(k) == '-') {
 							titleDisplayed = titleDisplayed.concat("<br>");
@@ -287,34 +276,8 @@ public class ComicCoverPanel extends JPanel{
 	    }
 	    return count;
 	}
-	
-	private String returnToolTipText (Issue issue) {
-		//Return the string which is going to be printed in the ToolTip
-		// Print those API features : deck > description > aliases > name
-		
-		String deck = titleUpdate(issue.getDeck(), 30);
-		if (deck.length() > 15) {
-			return deck;
-		}
-		String description = titleUpdate(issue.getDescription(), 30);
-		if (description.length() > 15 && description.indexOf("<p> Translates") == -1){
-			if (description.indexOf("List") != -1) {
-				return description.substring(0, description.indexOf("List"))+"</html>";
-			}
-			else if (description.length() > 450) {
-				return description.substring(0, 450)+"</html>";
-			}
-			else {
-				return description;
-			}
-		}
-		String aliases = titleUpdate(issue.getAliases(), 30);
-		if (aliases.length()>15) {
-			return aliases;
-		}
-		else {
-			return titleUpdate(issue.getName(), 30);
-			
-		}
+
+	public Issue getIssue() {
+		return this.issue;
 	}
 }
