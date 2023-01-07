@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import app.entities.Collection;
 import app.entities.Issue;
 import app.entities.User;
 import junit.framework.TestCase;
@@ -21,8 +22,9 @@ public class TestUserModel extends TestCase {
 		boolean isAuthenticated = false;
 		List<Issue> userReadingIss = new ArrayList<>(); 
 		List<Issue> userReadedIss = new ArrayList<>();
+		List<Collection> userCollection = new ArrayList<>();
 		
-		test.setUser(isAuthenticated, u, userFavoriteIssues, userReadingIss, userReadedIss);
+		test.setUser(isAuthenticated, u, userFavoriteIssues, userReadingIss, userReadedIss, userCollection);
 		
 		
 		String aliases = null;
@@ -61,8 +63,9 @@ public class TestUserModel extends TestCase {
 		boolean isAuthenticated = false;
 		List<Issue> userReadingIss = new ArrayList<>(); 
 		List<Issue> userReadedIss = new ArrayList<>();
+		List<Collection> userCollection = new ArrayList<>();
 		
-		test.setUser(isAuthenticated, u, userFavoriteIssues, userReadingIss, userReadedIss);
+		test.setUser(isAuthenticated, u, userFavoriteIssues, userReadingIss, userReadedIss, userCollection);
 		
 		
 		String aliases = null;

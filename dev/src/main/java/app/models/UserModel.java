@@ -5,6 +5,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.entities.Collection;
 import app.entities.Issue;
 import app.entities.User;
 
@@ -16,19 +17,20 @@ public class UserModel {
 	private List<Issue> userFavoriteIssues = new ArrayList<>();
 	private List<Issue> userReadingIssues = new ArrayList<>();
 	private List<Issue> userReadedIssues = new ArrayList<>();
+	private List<Collection> userCollections = new ArrayList<>();
 	
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		this.pcs.addPropertyChangeListener(listener);
 	}
 	
-	public void setUser(boolean isAuth, User u, List<Issue> userFavIss, List<Issue> userReadingIss, List<Issue> userReadedIss) {
+	public void setUser(boolean isAuth, User u, List<Issue> userFavIss, List<Issue> userReadingIss, List<Issue> userReadedIss, List<Collection> userCols) {
 		User previousUser = user;
 		user = u;
 		isAuthenticated = isAuth;
 		userFavoriteIssues = userFavIss;
 		userReadingIssues = userReadingIss;
 		userReadedIssues = userReadedIss;
-		
+		userCollections = userCols;
 		this.pcs.firePropertyChange("userChange", previousUser, user);
 	}
 	
@@ -96,5 +98,62 @@ public class UserModel {
 	
 	public List<Issue> getUserReadedIssues(){
 		return userReadedIssues;
+	}
+	
+	public void addNewUserCollection(Collection col) {
+		List<Collection> oldUserCollection = userCollections;
+		
+		this.userCollections.add(col);
+		
+		this.pcs.firePropertyChange("collectionListChange",oldUserCollection, "add");
+		this.pcs.firePropertyChange("collectionChange",oldUserCollection,"add");
+		
+	}
+	
+	public void removeUserCollection(Collection col) {
+		List<Collection> oldUserCollection = userCollections;
+		
+		this.userCollections.removeIf(n -> n.getName().equals(col.getName()));
+		
+		this.pcs.firePropertyChange("collectionListChange", oldUserCollection, "remove");
+		this.pcs.firePropertyChange("collectionChange",oldUserCollection,"remove");
+	}
+	
+	public List<Collection> getUserCollections(){
+		return userCollections;
+	}
+	
+	public void addNewIssueInUserCollection(String cName, Issue iss) {
+		List<Collection> oldUserCollection = userCollections;
+		
+		for(int i=0; i<userCollections.size();i++) {			
+			if(userCollections.get(i).getName().equals(cName)) {
+				System.out.println("UM : Adding new issue in the collection : " + cName);
+				userCollections.get(i).addIssuesInCollection(iss);
+			}
+		}
+		
+		this.pcs.firePropertyChange("collectionChange",oldUserCollection, "add");
+	}
+	
+	public void removeIssueInUserCollection(String cName, Issue iss) {
+		List<Collection> oldUserCollection = userCollections;
+		
+		for(int i=0; i<userCollections.size();i++) {
+			if(userCollections.get(i).getName().equals(cName)) {
+				System.out.println("Removing issue in the collection : " + cName);
+				userCollections.get(i).removeIssuesInCollection(iss);
+			}
+		}
+		
+		this.pcs.firePropertyChange("collectionChange",oldUserCollection, "remove");
+	}
+	
+	public List<Issue> getAllCollectionnedIssues() {
+		List<Issue> resultIssueList = new ArrayList<>();
+		for(Collection collection: userCollections) {
+			resultIssueList.addAll(collection.getIssues());
+		}
+		return resultIssueList;
 	}
 }

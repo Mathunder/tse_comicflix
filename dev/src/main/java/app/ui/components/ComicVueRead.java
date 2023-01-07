@@ -73,6 +73,29 @@ public class ComicVueRead extends ComicVue{
 				
 				ComicCoverPanels.get(i).refreshStateButtons(readState);
 			}
+			if(itemRefreshCode == 3 || itemRefreshCode == 0) {
+				String selectedItem = "All";
+				Boolean findCorrespondance = false;
+				for(int k=0; k<userModel.getUserCollections().size();k++) {
+					if (!findCorrespondance) {
+						for(Issue issue_col: userModel.getUserCollections().get(k).getIssues()) {
+							if(issue_col.getId() == userModel.getUserReadingIssues().get(i).getId()) {
+								selectedItem = userModel.getUserCollections().get(k).getName();
+								findCorrespondance = true;
+								break;
+							}
+						}
+					}
+					else 
+						break;
+				}
+
+				ComicCoverPanels.get(i).refreshStateComboBox(selectedItem);
+			}
+			if(itemRefreshCode == 4 || itemRefreshCode == 0) {
+				ComicCoverPanels.get(i).updateComboBoxList();
+				updateButtonStates(3);
+			}
 		}
 		
 		for(int j=0; j<userModel.getUserReadedIssues().size();j++) {	
@@ -108,6 +131,29 @@ public class ComicVueRead extends ComicVue{
 				}
 				ComicCoverPanels.get(j+i).refreshStateButtons(readState);
 			}
+			if(itemRefreshCode == 3 || itemRefreshCode == 0) {
+				String selectedItem = "All";
+				Boolean findCorrespondance = false;
+				for(int l=0; l<userModel.getUserCollections().size();l++) {
+					if (!findCorrespondance) {
+						for(Issue issue_col: userModel.getUserCollections().get(l).getIssues()) {
+							if(issue_col.getId() == userModel.getUserReadedIssues().get(j).getId()) {
+								selectedItem = userModel.getUserCollections().get(l).getName();
+								findCorrespondance = true;
+								break;
+							}
+						}
+					}
+					else 
+						break;
+				}
+
+				ComicCoverPanels.get(i+j).refreshStateComboBox(selectedItem);
+			}
+			if(itemRefreshCode == 4 || itemRefreshCode == 0) {
+				ComicCoverPanels.get(i+j).updateComboBoxList();
+				updateButtonStates(3);
+			}
 		}
 	}
 
@@ -134,6 +180,16 @@ public class ComicVueRead extends ComicVue{
 			
 			showResult();
 			updateButtonStates(0);
+		}
+		else if(evt.getPropertyName() == "collectionChange") {
+			if(evt.getNewValue() == "add")
+				System.out.println("Collection change [add] (VueRead)");
+			else if(evt.getNewValue() == "remove")
+				System.out.println("Collection change [remove] (VueRead)");
+			updateButtonStates(3);
+		}
+		else if(evt.getPropertyName() == "collectionListChange") {
+			updateButtonStates(4);
 		}
 	}
 }

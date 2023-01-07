@@ -5,8 +5,11 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -14,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -31,17 +37,32 @@ public class ComicCoverPanel extends JPanel{
 	private BufferedImage resizedImageBg;
 	private DefaultButton button_fav;
 	private DefaultButton button_read;
+	private DefaultComboBox collectionBox;
+	private SpringLayout springLayout;
+	private JLabel titleLabel;
 	
 	private Issue issue;
 	protected DatabaseService databaseService;
 	private User user;
+	
+	private boolean needUpdate;
+	
+	@SuppressWarnings("rawtypes")
+	private DefaultComboBoxModel model;
 	
 	public ComicCoverPanel(Issue issue, DatabaseService dbS, User u){
 		super();
 		this.issue = issue;
 		this.databaseService = dbS;
 		this.user = u;
-		this.setToolTipText(returnToolTipText(issue));
+		
+		this.needUpdate = false;
+		
+		// ComboBox collection
+		String[] options = {"All"};
+	    model = new DefaultComboBoxModel(options);
+	    
+	    this.setToolTipText(returnToolTipText(issue));
 		
 		//Load a test image, resize and paint of the panel background
 		try {
@@ -81,7 +102,7 @@ public class ComicCoverPanel extends JPanel{
 			labelHeight -= 25;
 		
 		//Put constraint on Label 
-		SpringLayout springLayout = new SpringLayout();
+		springLayout = new SpringLayout();
 		springLayout.putConstraint(SpringLayout.NORTH, titleLabel, labelHeight, SpringLayout.SOUTH, titleLabel);
 		springLayout.putConstraint(SpringLayout.WEST, titleLabel, 0, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.SOUTH, titleLabel, this.resizedImageBg.getHeight(), SpringLayout.NORTH, this);
@@ -124,6 +145,28 @@ public class ComicCoverPanel extends JPanel{
 			// Add button to the panel
 			add(button_read);
 			
+			// ComboBox collection
+			collectionBox = new DefaultComboBox(new ArrayList<>());
+			List<String> colNames = databaseService.getAllCollectionNamesFromUser(user.getId());
+			colNames.add(0,"All");
+			model = new DefaultComboBoxModel<>(colNames.toArray());
+			collectionBox.setModel(model);
+			
+			collectionBox.addItemListener(new ItemListener() {	
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					// TODO Auto-generated method stub
+					collectionBoxActionPerformed(e);
+				}
+			});
+			
+			//Put Constraints on fav button
+			springLayout.putConstraint(SpringLayout.NORTH, collectionBox, -25 , SpringLayout.NORTH, titleLabel);
+			springLayout.putConstraint(SpringLayout.WEST, collectionBox, 140, SpringLayout.WEST, this);
+			springLayout.putConstraint(SpringLayout.SOUTH, collectionBox, 0, SpringLayout.NORTH, titleLabel);
+			springLayout.putConstraint(SpringLayout.EAST, collectionBox, 0, SpringLayout.EAST, this);
+			
+			add(collectionBox);
 		}
 		
 	}
@@ -186,6 +229,15 @@ public class ComicCoverPanel extends JPanel{
 		}
 	}
 	
+	public void refreshStateComboBox(String selectedItem) {
+		collectionBox.setSelectedItem(selectedItem);
+	}
+	public void updateComboBoxList() {
+		List<String> colNames = databaseService.getAllCollectionNamesFromUser(user.getId());
+		colNames.add(0,"All");
+		model = new DefaultComboBoxModel<>(colNames.toArray());
+		collectionBox.setModel(model);
+	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -214,7 +266,6 @@ public class ComicCoverPanel extends JPanel{
 		}
 	}
 	
-	
 	private void button_readActionPerformed(ActionEvent e) {
 		if(button_read.getColor() == CustomColor.Red) { //IF ISSUE NOT ALREADY READ OR READING OR READED
 			button_read.setColor(CustomColor.Orange);
@@ -233,6 +284,45 @@ public class ComicCoverPanel extends JPanel{
 			button_read.setText("Pas lu");
 			//Remove issue from read
 			databaseService.removeUserRead(user, issue);
+		}
+	}
+	
+	static private String selectedString(ItemSelectable is) {
+	    Object selected[] = is.getSelectedObjects();
+	    return ((selected.length == 0) ? "null" : (String) selected[0]);
+	  }
+	
+	public void collectionBoxActionPerformed(ItemEvent e) {
+				
+		int state = e.getStateChange();
+		
+		if(state == ItemEvent.DESELECTED) {
+			
+			ItemSelectable is = e.getItemSelectable();
+			if(!databaseService.checkIfIssueInUserCollection(selectedString(is).toString(), user, issue)) {
+				if(!needUpdate) {
+					needUpdate = true;
+					String str_selected = selectedString(is).toString();
+					if(!e.getItem().toString().equals("All")) {
+						
+						databaseService.removeIssueFromUserCollection(e.getItem().toString(), user, issue);
+
+						if (!str_selected.equals("All")){
+							databaseService.addNewIssueInUserCollection(str_selected, user, issue);
+						}
+					}
+					else
+					{
+						if (!str_selected.equals("All")){
+							databaseService.addNewIssueInUserCollection(str_selected, user, issue);
+						}
+					}
+				}
+				else
+					needUpdate = false;
+			}
+			else
+				needUpdate = false;		
 		}
 	}
 	
@@ -286,6 +376,9 @@ public class ComicCoverPanel extends JPanel{
 	        ++index;
 	    }
 	    return count;
+	}
+	public Issue getIssue() {
+		return this.issue;
 	}
 	
 	private String returnToolTipText (Issue issue) {
