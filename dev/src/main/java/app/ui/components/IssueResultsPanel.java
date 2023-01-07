@@ -120,6 +120,29 @@ public class IssueResultsPanel extends ResultsPanel {
 				}
 				comicCoverPanels.get(i).refreshStateButtons(readState);
 			}
+			if(itemRefreshCode == 3 || itemRefreshCode == 0) {
+				String selectedItem = "All";
+				Boolean findCorrespondance = false;
+				for(int j=0; j<userModel.getUserCollections().size();j++) {
+					if (!findCorrespondance) {
+						for(Issue issue_col: userModel.getUserCollections().get(j).getIssues()) {
+							if(issue_col.getId() == issues.get(i).getId()) {
+								selectedItem = userModel.getUserCollections().get(j).getName();
+								findCorrespondance = true;
+								break;
+							}
+						}
+					}
+					else 
+						break;
+				}
+
+				comicCoverPanels.get(i).refreshStateComboBox(selectedItem);
+			}
+			if(itemRefreshCode == 4 || itemRefreshCode == 0) {
+				comicCoverPanels.get(i).updateComboBoxList();
+				updateButtonStates(3);
+			}
 		}
 	}
 
@@ -151,6 +174,16 @@ public class IssueResultsPanel extends ResultsPanel {
 			else if (evt.getNewValue() == "remove")
 				System.out.println("remove read (Vue search)");
 			updateButtonStates(2);
+		}
+		else if(evt.getPropertyName() == "collectionChange") {
+			if(evt.getNewValue() == "add")
+				System.out.println("Collection change [add] (VueFavorite)");
+			else if(evt.getNewValue() == "remove")
+				System.out.println("Collection change [remove] (VueFavorite)");
+			updateButtonStates(3);
+		}
+		else if(evt.getPropertyName() == "collectionListChange") {
+			updateButtonStates(4);
 		}
 
 	}
