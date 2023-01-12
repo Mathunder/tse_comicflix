@@ -87,17 +87,34 @@ public class DatabaseService {
 	}
 	
 	// Users table methods
-	public void addNewUserAccount(String first_name, String last_name, String username, String password) {
+	public void addNewUserAccount(String first_name, String last_name, String username, String password, String question) {
 		
 		String encodePassword = encoder.encode(password);
-		String sql = "INSERT INTO users(first_name,last_name,username,password) VALUES(?,?,?,?)";
+		String encodeQuestion = encoder.encode(question);
+		String sql = "INSERT INTO users(first_name,last_name,username,password,question) VALUES(?,?,?,?,?)";
 		
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, first_name);
 			pstmt.setString(2, last_name);
 			pstmt.setString(3, username);
 			pstmt.setString(4, encodePassword);
+			pstmt.setString(5, encodeQuestion);
 			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void updatePassword(String password, String username)
+	{
+		String encodePassword = encoder.encode(password);
+		String sql = "UPDATE users SET password =" + '"' + encodePassword + '"' + "WHERE username =" + '"' + username + '"';
+		
+		try (Connection conn = this.connect(); Statement stmt = conn.createStatement();){
+			
+			stmt.executeQuery(sql);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -117,7 +134,8 @@ public class DatabaseService {
 								   rs.getString("first_name") + "\t" +
 								   rs.getString("last_name") + "\t" +
 								   rs.getString("username") + "\t" + 
-								   rs.getString("password"));
+								   rs.getString("password")+ "\t" +
+								   rs.getString("question"));
 			}
 			
 			return rs;
@@ -152,9 +170,32 @@ public class DatabaseService {
 		}
 	}
 	
+	public boolean verifQuestion(String question) {
+		String sql = "SELECT question FROM users WHERE question=" + '"' + question + '"' + " LIMIT 1";
+		
+		try (Connection conn = this.connect();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)){
+			
+			if(!rs.next()) //Check if we have a result of the sql execute
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	
 	public void loginUserFromUsername(String username, String password) {
-		String sql = "SELECT user_id, first_name, last_name, username, password FROM users WHERE username=" 
+		String sql = "SELECT user_id, first_name, last_name, username, password, question FROM users WHERE username=" 
 				+ '"' +  username + '"'
 				+ " LIMIT 1";
 		

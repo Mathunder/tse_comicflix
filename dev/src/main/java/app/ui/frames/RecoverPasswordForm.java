@@ -28,7 +28,9 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 	private JPanel contentPane;
 	private JTextField txtField_question;
 	private JTextField txtField_username;
-	private JTextField txtField_password;
+	private JPasswordField passwordField;
+	private JPasswordField confirmPasswordField;
+	private JLabel lblErrorCreate;
 	//Model
 	protected UserModel userModel; 
 	//Controller
@@ -43,7 +45,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		setTitle("Recover Password");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 250);
+		setBounds(100, 100, 450, 350);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(249, 246, 241));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -70,7 +72,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		contentPane.add(txtField_username);
 		txtField_username.setColumns(1);
 		
-		JLabel lblQuestion = new JLabel("Dans quelle ville étes-vous né(e) ?");
+		JLabel lblQuestion = new JLabel("Dans quelle ville êtes-vous né(e) ?");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblQuestion, 0, SpringLayout.SOUTH, lblUsername);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblQuestion, 5, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblQuestion, 54, SpringLayout.SOUTH, lblUsername);
@@ -88,14 +90,51 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		contentPane.add(txtField_question);
 		txtField_question.setColumns(1);
 		
-		JLabel lblErrorCreate = new JLabel("");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorCreate, 0, SpringLayout.SOUTH, lblQuestion);
+		JLabel lblPassword = new JLabel("New password");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPassword, 0, SpringLayout.SOUTH, lblQuestion);
+		sl_contentPane.putConstraint(SpringLayout.WEST, lblPassword, 45, SpringLayout.WEST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblPassword, 54, SpringLayout.SOUTH, lblQuestion);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblPassword, -282, SpringLayout.EAST, contentPane);
+		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
+		contentPane.add(lblPassword);
+		
+		passwordField = new JPasswordField();
+		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		sl_contentPane.putConstraint(SpringLayout.NORTH, passwordField, 13, SpringLayout.NORTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.WEST, passwordField, 34, SpringLayout.EAST, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, passwordField, -9, SpringLayout.SOUTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_question);
+		contentPane.add(passwordField);
+		passwordField.setColumns(1);
+		
+		JLabel lblConfirmPassword = new JLabel("Confirm new passorwd");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblConfirmPassword, 0, SpringLayout.SOUTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.WEST, lblConfirmPassword, 10, SpringLayout.WEST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblConfirmPassword, 54, SpringLayout.SOUTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblConfirmPassword, -270, SpringLayout.EAST, contentPane);
+		lblConfirmPassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblConfirmPassword.setHorizontalAlignment(SwingConstants.CENTER);
+		contentPane.add(lblConfirmPassword);
+		
+		confirmPasswordField = new JPasswordField();
+		confirmPasswordField.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		sl_contentPane.putConstraint(SpringLayout.NORTH, confirmPasswordField, 13, SpringLayout.NORTH, lblConfirmPassword);
+		sl_contentPane.putConstraint(SpringLayout.WEST, confirmPasswordField, 0, SpringLayout.WEST, passwordField);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, confirmPasswordField, -9, SpringLayout.SOUTH, lblConfirmPassword);
+		sl_contentPane.putConstraint(SpringLayout.EAST, confirmPasswordField, 0, SpringLayout.EAST, passwordField);
+		contentPane.add(confirmPasswordField);
+		
+		lblErrorCreate = new JLabel("");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorCreate, 0, SpringLayout.SOUTH, lblConfirmPassword);
 		sl_contentPane.putConstraint(SpringLayout.HORIZONTAL_CENTER, lblErrorCreate, 225, SpringLayout.WEST, contentPane);
 		lblErrorCreate.setFont(new Font("Tahoma", Font.ITALIC, 14));
 		lblErrorCreate.setForeground(Color.RED);
 		lblErrorCreate.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblErrorCreate.setVisible(false);
 		contentPane.add(lblErrorCreate);
+		
+		
 		
 		DefaultButton btnRecover = new DefaultButton("Recover", CustomColor.CrimsonRed, 14, true);
 		btnRecover.addActionListener(new ActionListener() {
@@ -121,26 +160,6 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnCancel, 0, SpringLayout.SOUTH, btnRecover);
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnCancel, 110, SpringLayout.WEST, contentPane);
 		contentPane.add(btnCancel);
-		
-		JLabel lblPassword = new JLabel("Password");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPassword, -10, SpringLayout.NORTH, btnCancel);
-		sl_contentPane.putConstraint(SpringLayout.WEST, lblPassword, 0, SpringLayout.EAST, btnCancel);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblPassword, 10, SpringLayout.SOUTH, btnCancel);
-		sl_contentPane.putConstraint(SpringLayout.EAST, lblPassword, 80, SpringLayout.EAST, btnCancel);
-		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
-		contentPane.add(lblPassword);
-		
-		txtField_password = new JTextField();
-		txtField_password.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		sl_contentPane.putConstraint(SpringLayout.NORTH, txtField_password, 15, SpringLayout.NORTH, lblPassword);
-		sl_contentPane.putConstraint(SpringLayout.WEST, txtField_password, 0, SpringLayout.EAST, lblPassword);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, txtField_password, -15, SpringLayout.SOUTH, lblPassword);
-		sl_contentPane.putConstraint(SpringLayout.EAST, txtField_password, -10, SpringLayout.WEST, btnRecover);
-		contentPane.add(txtField_password);
-		txtField_password.setColumns(1);
-		txtField_password.setEditable(false);
-	
 	}
 	
 	private void btnCancelActionPerformed(ActionEvent e) {
@@ -148,7 +167,42 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 	}
 	
 	private void btnRecoverActionPerformed(ActionEvent e) {
-		
+		if ( !txtField_username.getText().isEmpty() && !txtField_question.getText().isEmpty()
+				&& !String.valueOf(passwordField.getPassword()).isEmpty()
+				&& !String.valueOf(confirmPasswordField.getPassword()).isEmpty())
+		{
+			if (String.valueOf(passwordField.getPassword()).contentEquals(String.valueOf(confirmPasswordField.getPassword())))
+			{
+				if (!databaseService.verifUsername(txtField_username.getText()))
+				{
+					if (databaseService.verifQuestion(txtField_question.getText()))
+					{
+						databaseService.updatePassword(String.valueOf(passwordField.getPassword()), txtField_username.getText());
+						dispose();
+					}
+					else
+					{
+						lblErrorCreate.setText("Annswer to the question is not right ");
+						lblErrorCreate.setVisible(true);
+					}
+				}
+				else
+				{
+					lblErrorCreate.setText("Non-existent username ");
+					lblErrorCreate.setVisible(true);
+				}
+			}
+			else
+			{
+				lblErrorCreate.setText("Passwords are not the same ");
+				lblErrorCreate.setVisible(true);
+			}				
+		}
+		else
+		{
+			lblErrorCreate.setText("A field is empty ");
+			lblErrorCreate.setVisible(true);
+		}
 	}
 	
 	public void propertyChange(PropertyChangeEvent evt) {
