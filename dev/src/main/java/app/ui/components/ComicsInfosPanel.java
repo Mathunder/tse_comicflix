@@ -25,16 +25,19 @@ public class ComicsInfosPanel extends JPanel {
 	private ResponseDto response;
 	private String type;
 	
+	// This constructor is used when doing a research
 	public ComicsInfosPanel(ResultDto result, String type) {
 		this.result = result;
 		this.cvs = new ComicVineService();
 		this.type = type;
 	}
 	
+	// This constructor is used when displaying a favorite issue
 	public ComicsInfosPanel(String api_detail_url) {
 		this.cvs = new ComicVineService();
 		this.result = new ResultDto();
 		this.result.setApi_detail_url(api_detail_url);
+		// Since it is always an issue, the type is defined here
 		this.type = "issue";
 	}
 	
