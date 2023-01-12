@@ -26,6 +26,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		static JPanel searchBarPanel;
 		static JPanel creationCollection;
 		public static ComicVueSearch visuSearchComics;
+		private static ComicVueRecommandation visuRecommandedComics;
 		private static ComicVueFavorite visuFavoriteComics;
 		private static ComicVueRead visuReadComics;
 		private static ComicVueCollection visuCollectionComics;
@@ -97,7 +98,10 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 
 			//VisuComics Panels
 			visuSearchComics = new ComicVueSearch(userModel, comicVineService, dataBaseService);
-						
+			
+			//Recommendation Panels
+			visuRecommandedComics = new ComicVueRecommandation(userModel, comicVineService, dataBaseService);
+			
 			//FavoriteComics Panels
 			visuFavoriteComics = new ComicVueFavorite(userModel, comicVineService, dataBaseService);
 			
@@ -245,7 +249,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	btn_myFavorites.setBorderColorOnUnfocus();
 	    	btn_myReads.setBorderColorOnUnfocus();
 	    	btn_myCollections.setBorderColorOnUnfocus();
-	    	scrollPaneVisuComics.setViewportView(null);
+	    	scrollPaneVisuComics.setViewportView(visuRecommandedComics);
 	    	searchBarPanel.setVisible(true);
 	    	paginationPanel.setVisible(true);
 	    	creationCollection.setVisible(false);
@@ -295,7 +299,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		    	loginFrame.setVisible(true);
 	    	}
 	    	else { 
-	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	    	}
 	    	
 	    }
