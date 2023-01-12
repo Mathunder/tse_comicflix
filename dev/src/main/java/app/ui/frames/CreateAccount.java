@@ -156,7 +156,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		lblErrorCreate.setVisible(false);
 		contentPane.add(lblErrorCreate);
 		
-		DefaultButton btnCreate = new DefaultButton("Create", CustomColor.Red, 14, true);
+		DefaultButton btnCreate = new DefaultButton("Create", CustomColor.CrimsonRed, 14, true);
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCreateActionPerformed(e);

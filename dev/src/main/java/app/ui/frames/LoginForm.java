@@ -84,13 +84,28 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(lblPassword);
 		
+		passwordField = new JPasswordField();
+		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		sl_contentPane.putConstraint(SpringLayout.NORTH, passwordField, 13, SpringLayout.NORTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.WEST, passwordField, 0, SpringLayout.WEST, txtField_username);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, passwordField, -9, SpringLayout.SOUTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
+		contentPane.add(passwordField);
+		
+		lblErrorLogin = new JLabel("Invalid username or password ! ");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorLogin, 8, SpringLayout.SOUTH, lblPassword);
+		sl_contentPane.putConstraint(SpringLayout.WEST, lblErrorLogin, 111, SpringLayout.WEST, contentPane);
+		lblErrorLogin.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		lblErrorLogin.setForeground(Color.RED);
+		lblErrorLogin.setVisible(false);
+		contentPane.add(lblErrorLogin);
+		
 		DefaultButton btnLogin = new DefaultButton("Login", CustomColor.Red, 14, true);
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnLoginActionPerformed(e);
 			}
-		});
-		
+		});		
 		sl_contentPane.putConstraint(SpringLayout.NORTH, btnLogin, 151, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnLogin, -60, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, txtField_username, -106, SpringLayout.NORTH, btnLogin);
@@ -122,21 +137,17 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnCreate, -20, SpringLayout.WEST, btnLogin);
 		contentPane.add(btnCreate);
 		
-		passwordField = new JPasswordField();
-		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		sl_contentPane.putConstraint(SpringLayout.NORTH, passwordField, 13, SpringLayout.NORTH, lblPassword);
-		sl_contentPane.putConstraint(SpringLayout.WEST, passwordField, 0, SpringLayout.WEST, txtField_username);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, passwordField, -9, SpringLayout.SOUTH, lblPassword);
-		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
-		contentPane.add(passwordField);
-		
-		lblErrorLogin = new JLabel("Invalid username or password ! ");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorLogin, 8, SpringLayout.SOUTH, lblPassword);
-		sl_contentPane.putConstraint(SpringLayout.WEST, lblErrorLogin, 111, SpringLayout.WEST, contentPane);
-		lblErrorLogin.setFont(new Font("Tahoma", Font.ITALIC, 14));
-		lblErrorLogin.setForeground(Color.RED);
-		lblErrorLogin.setVisible(false);
-		contentPane.add(lblErrorLogin);
+		DefaultButton btnRecover = new DefaultButton("Recover Password", CustomColor.LightGray, 14, true);
+		btnRecover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnRecoverActionPerformed(e); 				
+			}
+		});
+		sl_contentPane.putConstraint(SpringLayout.NORTH, btnRecover, 10, SpringLayout.SOUTH, btnCreate);
+		sl_contentPane.putConstraint(SpringLayout.WEST, btnRecover, 0, SpringLayout.WEST, btnCreate);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnRecover, -7, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, btnRecover, 0, SpringLayout.EAST, btnCreate);
+		contentPane.add(btnRecover);
 	}
 	
 	private void btnCancelActionPerformed(ActionEvent e) {
@@ -146,6 +157,11 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 	private void btnCreateActionPerformed(ActionEvent e) {
 		JFrame CreateAccount = new CreateAccount(userModel, databaseService);
 		CreateAccount.setVisible(true);
+	}
+	
+	private void btnRecoverActionPerformed(ActionEvent e) {
+		JFrame RecoverPassword = new RecoverPasswordForm(userModel, databaseService);
+		RecoverPassword.setVisible(true);
 	}
 	
 	private void btnLoginActionPerformed(ActionEvent e) {
