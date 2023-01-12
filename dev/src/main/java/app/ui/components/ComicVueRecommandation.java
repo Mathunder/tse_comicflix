@@ -15,10 +15,12 @@ public class ComicVueRecommandation extends ComicVue {
 
 	@Override
 	public void showResult() {
-		this.removeAll();
+		removeComics();
+		
 		
 		//Show user recommended issues
 		for(int i=0;i<userModel.getRecommandedIssueList().size();i++) {
+			System.out.println(userModel.getRecommandedIssueList().get(i).getName());
 			ComicCoverPanel comicCover = new ComicCoverPanel(userModel.getRecommandedIssueList().get(i), databaseService, userModel.getUser());
 			this.ComicCoverPanels.add(comicCover);
 			this.add(comicCover);
@@ -94,6 +96,7 @@ public class ComicVueRecommandation extends ComicVue {
 	public void propertyChange(PropertyChangeEvent evt) {
 		
 		if(evt.getPropertyName() == "userChange") {
+			System.out.println("USER CHANGE (VueRecommandation)");
 			showResult();
 			updateButtonStates(0);
 		}

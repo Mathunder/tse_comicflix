@@ -159,15 +159,7 @@ public class UserModel {
 		return resultIssueList;
 	}
 	
-	public void setRecommandedIssueList(List<Issue> recoIssues) {
-		List<Issue> oldRecoIssues = userRecommandedIssues;
-		
-		userRecommandedIssues = recoIssues;
-		
-		this.pcs.firePropertyChange("recommendationChange", oldRecoIssues, "new");
-	}
-	
 	public List<Issue> getRecommandedIssueList(){
-		return userRecommandedIssues;
+		return this.userRecommandedIssues;
 	}
 }

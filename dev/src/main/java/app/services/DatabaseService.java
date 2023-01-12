@@ -276,7 +276,6 @@ public class DatabaseService {
 			return null;
 		}
 		
-		userModel.setRecommandedIssueList(issuesResult);
 		return issuesResult;
 	}
 
