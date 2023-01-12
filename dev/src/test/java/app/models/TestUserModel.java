@@ -23,8 +23,9 @@ public class TestUserModel extends TestCase {
 		List<Issue> userReadingIss = new ArrayList<>(); 
 		List<Issue> userReadedIss = new ArrayList<>();
 		List<Collection> userCollection = new ArrayList<>();
+		List<Issue> userRecommended = new ArrayList<>();
 		
-		test.setUser(isAuthenticated, u, userFavoriteIssues, userReadingIss, userReadedIss, userCollection);
+		test.setUser(isAuthenticated, u, userRecommended, userFavoriteIssues, userReadingIss, userReadedIss, userCollection);
 		
 		
 		String aliases = null;
@@ -64,8 +65,9 @@ public class TestUserModel extends TestCase {
 		List<Issue> userReadingIss = new ArrayList<>(); 
 		List<Issue> userReadedIss = new ArrayList<>();
 		List<Collection> userCollection = new ArrayList<>();
+		List<Issue> userRecommended = new ArrayList<>();
 		
-		test.setUser(isAuthenticated, u, userFavoriteIssues, userReadingIss, userReadedIss, userCollection);
+		test.setUser(isAuthenticated, u, userRecommended, userFavoriteIssues, userReadingIss, userReadedIss, userCollection);
 		
 		
 		String aliases = null;

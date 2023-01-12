@@ -172,28 +172,23 @@ public class DatabaseService {
 					if(rs.getInt("user_id") != 0)
 						isAuthenticated = true;
 					
-					userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
+					userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserRecommandation(),getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
 				}
 				else
 				{
-					userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+					userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 				}
-
-				if(rs.getInt("user_id") != 0)
-					isAuthenticated = true;
-				
-				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
 
 			}
 			else
 			{
-				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			}
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		}	
 	}
 	
@@ -236,6 +231,7 @@ public class DatabaseService {
 			e.printStackTrace();
 		}
 		
+		
 		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
 		if(!isTupleAlreadyExists) {
 			sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url) VALUES(?,?,?,?,?)";
@@ -254,6 +250,34 @@ public class DatabaseService {
 			}
 		}
 
+	}
+	
+	// Recommandations methods
+	public List<Issue> getUserRecommandation(){
+		List<Issue> issuesResult = new ArrayList<>();
+		
+		String sql = "SELECT * FROM issues WHERE issue_id IN (SELECT issue_id FROM issues ORDER BY RANDOM() LIMIT 16);";
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next())
+			{
+				// Build the issue
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				issuesResult.add(i);
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		userModel.setRecommandedIssueList(issuesResult);
+		return issuesResult;
 	}
 
 	// Favorites table methods
@@ -325,6 +349,7 @@ public class DatabaseService {
 				e.printStackTrace();
 		}
 	}
+	
 	
 
 	private List<Issue> getUserFavorites(int user_id){
