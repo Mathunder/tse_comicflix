@@ -1,8 +1,16 @@
 package app.ui.components;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JFrame;
 
 import app.entities.Issue;
 import app.models.UserModel;
@@ -23,7 +31,36 @@ public class ComicVueFavorite extends ComicVue{
 		
 		// Show userFavoriteIssues
 		for(int i=0; i<userModel.getUserFavoriteIssues().size();i++) {
-			ComicCoverPanel comicCover = new ComicCoverPanel(userModel.getUserFavoriteIssues().get(i), databaseService, userModel.getUser());
+			Issue favorite_issue = userModel.getUserFavoriteIssues().get(i);
+			ComicCoverPanel comicCover = new ComicCoverPanel(favorite_issue, databaseService, userModel.getUser());
+			// Adding the mouse listener to enable the click on an issue 
+			comicCover.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+
+					ComicsInfosPanel infos = new ComicsInfosPanel(favorite_issue.getApi_detail_url());
+					infos.fetchInformations();
+					infos.createInfosPanel();
+					// Creating the new frame that will display the informations the user wants.
+					String frame_name = "";
+					try {
+						frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+					} catch (NullPointerException e1) {}
+					
+					JFrame f = new JFrame(frame_name);
+					try {
+
+						URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+						Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+						f.setIconImage(icon);
+					} catch (MalformedURLException e1) {}
+					f.setSize(1050, 600);
+					f.add(infos);
+					f.setResizable(false);
+					f.setVisible(true);
+
+				}
+			});
+			
 			this.ComicCoverPanels.add(comicCover);
 			this.add(comicCover);
 		}

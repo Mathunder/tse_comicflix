@@ -31,6 +31,13 @@ public class ComicsInfosPanel extends JPanel {
 		this.type = type;
 	}
 	
+	public ComicsInfosPanel(String api_detail_url) {
+		this.cvs = new ComicVineService();
+		this.result = new ResultDto();
+		this.result.setApi_detail_url(api_detail_url);
+		this.type = "issue";
+	}
+	
 	public ResponseDto getResponse() {
 		return this.response;
 	}

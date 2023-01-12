@@ -3,8 +3,6 @@ package app.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import app.dto.ImageResultDto;
 import lombok.Data;
 
@@ -58,7 +56,6 @@ public class Issue {
 		this.issue_number = issue_number;
 		this.name = name;
 		this.image = new ImageResultDto(image_url);
-
 	}
 
 }
