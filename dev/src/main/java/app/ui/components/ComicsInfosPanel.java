@@ -52,7 +52,7 @@ public class ComicsInfosPanel extends JPanel {
 		JTextArea synopsis = new JTextArea();
 		String synopsis_text;
 		JScrollPane scroll_synopsis_text;
-		JTextArea creators_title = new JTextArea("Creators");
+		JTextArea creators_title = new JTextArea();
 		JTextArea creators = new JTextArea();
 		JScrollPane scroll_creators;
 		JTextArea characters_title = new JTextArea("Characters");
@@ -120,6 +120,11 @@ public class ComicsInfosPanel extends JPanel {
 
 		box1.add(Box.createRigidArea(new Dimension(0, 50)));
 		
+		if (this.type == "character") {
+			creators_title.setText("Creators");
+		} else if (this.type == "issue") {
+			creators_title.setText("Person Credits");
+		}
 		creators_title.setEditable(false);
 		creators_title.setFont(title_font);
 		creators_title.setBackground(CustomColor.WhiteCloud);
@@ -127,8 +132,15 @@ public class ComicsInfosPanel extends JPanel {
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 
 		try {
-			for (int i = 0; i < this.result.getCreators().size(); i++) {
-				characters.setText(this.result.getCreators().get(i).getName() + "\n");
+			if (this.type == "character") {
+				for (int i = 0; i < this.result.getCreators().size(); i++) {
+					creators.setText(this.result.getCreators().get(i).getName() + "\n");
+				}
+			} else if (this.type == "issue") {
+				for (int i = 0; i < this.result.getPerson_credits().size(); i++) {
+					creators.setText(this.result.getPerson_credits().get(i).getRole() + " : "
+							+ this.result.getPerson_credits().get(i).getName() + "\n");
+				}
 			}
 		} catch (NullPointerException e) {
 			creators.setText("Sorry, no creators were found.");
