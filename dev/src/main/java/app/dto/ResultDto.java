@@ -4,12 +4,7 @@ import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import app.entities.CharacterCredits;
-import app.entities.Creators;
-import app.entities.Issue;
-import app.entities.Publisher;
-import app.entities.VineCharacter;
-import app.entities.Volume;
+import app.entities.*;
 import lombok.Data;
 
 /*
@@ -41,6 +36,7 @@ public class ResultDto {
 	private ArrayList<CharacterCredits> character_credits;
 	private String issue_number;
 	private Volume volume;
+	private ArrayList<PersonCredits> person_credits;
 
 	// Fields that are specific to the character type
 	private String birth;

@@ -46,7 +46,7 @@ public class CharacterResultsPanel extends ResultsPanel {
 					characterCover.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent e) {
 
-							ComicsInfosPanel infos = new ComicsInfosPanel(character);
+							ComicsInfosPanel infos = new ComicsInfosPanel(character, "character");
 							infos.fetchInformations();
 							infos.createInfosPanel();
 							// Creating the new frame that will display the informations the user wants.

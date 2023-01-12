@@ -23,10 +23,12 @@ public class ComicsInfosPanel extends JPanel {
 	private ResultDto result;
 	private ComicVineService cvs;
 	private ResponseDto response;
+	private String type;
 	
-	public ComicsInfosPanel(ResultDto result) {
+	public ComicsInfosPanel(ResultDto result, String type) {
 		this.result = result;
 		this.cvs = new ComicVineService();
+		this.type = type;
 	}
 	
 	public ResponseDto getResponse() {
