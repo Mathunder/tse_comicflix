@@ -55,12 +55,20 @@ public class ComicsInfosPanel extends JPanel {
 		this.result = this.cvs.getInfosResult().getResults();
 	}
 	
+	/*
+	 * This method create the panel in which every information about a character or an issue is displayed.
+	 * The data is systematically analyzed like this :
+	 * --> is it empty ?
+	 * --> is it null ?
+	 * If one of these conditions is true, then a default message will be displayed.
+	 * These tests are all in a try{ if/else }/catch section
+	 */
 	public void createInfosPanel() {
 		
 		JPanel box1 = new JPanel();
 		JTextArea synopsis_title = new JTextArea("Summary");
 		JTextArea synopsis = new JTextArea();
-		String synopsis_text;
+		String synopsis_text = "";
 		JScrollPane scroll_synopsis_text;
 		JTextArea creators_title = new JTextArea();
 		JTextArea creators = new JTextArea();
@@ -109,7 +117,19 @@ public class ComicsInfosPanel extends JPanel {
 		box1.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		try {
-			synopsis_text = this.result.getDescription().replaceAll("\\<.*?\\>", "");
+			if (this.type == "issue") {
+				if (!this.result.getDescription().isEmpty()) {
+					synopsis_text = this.result.getDescription().replaceAll("\\<.*?\\>", "");
+				} else {
+					synopsis_text = "Sorry, no description was found.";
+				}
+			} else if (this.type == "character") {
+				if (!this.result.getDeck().isEmpty()) {
+					synopsis_text = this.result.getDeck().replaceAll("\\<.*?\\>", "");
+				} else {
+					synopsis_text = "Sorry, no description was found.";
+				}
+			}
 		} catch (NullPointerException e) {
 			synopsis_text = "Sorry, no description was found.";
 		}
@@ -143,17 +163,29 @@ public class ComicsInfosPanel extends JPanel {
 
 		try {
 			if (this.type == "character") {
-				for (int i = 0; i < this.result.getCreators().size(); i++) {
-					creators.setText(this.result.getCreators().get(i).getName() + "\n");
+				if (!this.result.getCreators().isEmpty()) {
+					for (int i = 0; i < this.result.getCreators().size(); i++) {
+						creators.setText(this.result.getCreators().get(i).getName() + "\n");
+					}
+				} else {
+					creators.setText("Sorry, no creators were found.");
 				}
 			} else if (this.type == "issue") {
-				for (int i = 0; i < this.result.getPerson_credits().size(); i++) {
-					creators.setText(this.result.getPerson_credits().get(i).getRole() + " : "
-							+ this.result.getPerson_credits().get(i).getName() + "\n");
+				if (this.type == "character") {
+					for (int i = 0; i < this.result.getPerson_credits().size(); i++) {
+						creators.setText(this.result.getPerson_credits().get(i).getRole() + " : "
+								+ this.result.getPerson_credits().get(i).getName() + "\n");
+					}
+				} else {
+					creators.setText("Sorry, no person credits were found.");
 				}
 			}
 		} catch (NullPointerException e) {
-			creators.setText("Sorry, no creators were found.");
+			if (this.type == "issue") {
+				creators.setText("Sorry, no person credits were found.");
+			} else if (this.type == "character") {
+				creators.setText("Sorry, no creators were found.");
+			}
 		}
 		creators.setEditable(false);
 		creators.setLineWrap(true);
