@@ -114,7 +114,7 @@ public class DatabaseService {
 		
 		try (Connection conn = this.connect(); Statement stmt = conn.createStatement();){
 			
-			stmt.executeQuery(sql);
+			stmt.executeUpdate(sql);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -170,16 +170,23 @@ public class DatabaseService {
 		}
 	}
 	
-	public boolean verifQuestion(String question) {
-		String sql = "SELECT question FROM users WHERE question=" + '"' + question + '"' + " LIMIT 1";
+	public boolean verifQuestion(String username, String question) {
+		String sql = "SELECT question FROM users WHERE username=" + '"' + username + '"' + " LIMIT 1";
 		
 		try (Connection conn = this.connect();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)){
 			
-			if(!rs.next()) //Check if we have a result of the sql execute
+			if(rs.next()) //Check if we have a result of the sql execute
 			{
-				return true;
+				if(encoder.matches(question, rs.getString("question")))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			}
 			else
 			{
@@ -219,12 +226,6 @@ public class DatabaseService {
 				{
 					userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 				}
-
-				if(rs.getInt("user_id") != 0)
-					isAuthenticated = true;
-				
-				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
-
 			}
 			else
 			{

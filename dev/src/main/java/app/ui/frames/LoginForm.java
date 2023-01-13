@@ -113,7 +113,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnLogin, -25, SpringLayout.EAST, contentPane);
 		contentPane.add(btnLogin);
 		
-		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Gray, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -137,17 +137,17 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnCreate, -20, SpringLayout.WEST, btnLogin);
 		contentPane.add(btnCreate);
 		
-		DefaultButton btnRecover = new DefaultButton("Recover Password", CustomColor.LightGray, 14, true);
-		btnRecover.addActionListener(new ActionListener() {
+		DefaultButton btnChange = new DefaultButton("Change Password", CustomColor.Gray, 14, true);
+		btnChange.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnRecoverActionPerformed(e); 				
+				btnChangeActionPerformed(e); 				
 			}
 		});
-		sl_contentPane.putConstraint(SpringLayout.NORTH, btnRecover, 10, SpringLayout.SOUTH, btnCreate);
-		sl_contentPane.putConstraint(SpringLayout.WEST, btnRecover, 0, SpringLayout.WEST, btnCreate);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnRecover, -7, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, btnRecover, 0, SpringLayout.EAST, btnCreate);
-		contentPane.add(btnRecover);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, btnChange, 10, SpringLayout.SOUTH, btnCreate);
+		sl_contentPane.putConstraint(SpringLayout.WEST, btnChange, 0, SpringLayout.WEST, btnCreate);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnChange, -7, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, btnChange, 0, SpringLayout.EAST, btnCreate);
+		contentPane.add(btnChange);
 	}
 	
 	private void btnCancelActionPerformed(ActionEvent e) {
@@ -159,7 +159,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		CreateAccount.setVisible(true);
 	}
 	
-	private void btnRecoverActionPerformed(ActionEvent e) {
+	private void btnChangeActionPerformed(ActionEvent e) {
 		JFrame RecoverPassword = new RecoverPasswordForm(userModel, databaseService);
 		RecoverPassword.setVisible(true);
 	}

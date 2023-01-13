@@ -42,7 +42,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		this.userModel.addPropertyChangeListener(this);
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
-		setTitle("Recover Password");
+		setTitle("Change Password");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 350);
@@ -136,28 +136,28 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		
 		
 		
-		DefaultButton btnRecover = new DefaultButton("Recover", CustomColor.CrimsonRed, 14, true);
-		btnRecover.addActionListener(new ActionListener() {
+		DefaultButton btnChange = new DefaultButton("Change", CustomColor.CrimsonRed, 14, true);
+		btnChange.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnRecoverActionPerformed(e);
+				btnChangeActionPerformed(e);
 			}
 		});
 		
-		sl_contentPane.putConstraint(SpringLayout.NORTH, btnRecover, -50, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnRecover, -10, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, btnRecover, -10, SpringLayout.EAST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.WEST, btnRecover, -110, SpringLayout.EAST, contentPane);
-		contentPane.add(btnRecover);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, btnChange, -50, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnChange, -10, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, btnChange, -10, SpringLayout.EAST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.WEST, btnChange, -110, SpringLayout.EAST, contentPane);
+		contentPane.add(btnChange);
 		
-		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Gray, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
 			}
 		});
-		sl_contentPane.putConstraint(SpringLayout.NORTH, btnCancel, 0, SpringLayout.NORTH, btnRecover);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, btnCancel, 0, SpringLayout.NORTH, btnChange);
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnCancel, 10, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnCancel, 0, SpringLayout.SOUTH, btnRecover);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnCancel, 0, SpringLayout.SOUTH, btnChange);
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnCancel, 110, SpringLayout.WEST, contentPane);
 		contentPane.add(btnCancel);
 	}
@@ -166,7 +166,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		dispose();
 	}
 	
-	private void btnRecoverActionPerformed(ActionEvent e) {
+	private void btnChangeActionPerformed(ActionEvent e) {
 		if ( !txtField_username.getText().isEmpty() && !txtField_question.getText().isEmpty()
 				&& !String.valueOf(passwordField.getPassword()).isEmpty()
 				&& !String.valueOf(confirmPasswordField.getPassword()).isEmpty())
@@ -175,7 +175,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 			{
 				if (!databaseService.verifUsername(txtField_username.getText()))
 				{
-					if (databaseService.verifQuestion(txtField_question.getText()))
+					if (databaseService.verifQuestion(txtField_username.getText(), txtField_question.getText()))
 					{
 						databaseService.updatePassword(String.valueOf(passwordField.getPassword()), txtField_username.getText());
 						dispose();

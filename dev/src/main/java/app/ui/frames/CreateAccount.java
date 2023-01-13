@@ -188,7 +188,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnCreate, -110, SpringLayout.EAST, contentPane);
 		contentPane.add(btnCreate);
 		
-		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Gray, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
