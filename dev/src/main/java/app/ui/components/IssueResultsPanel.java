@@ -53,7 +53,7 @@ public class IssueResultsPanel extends ResultsPanel {
 				comicCover.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 
-						ComicsInfosPanel infos = new ComicsInfosPanel(issue, "issue");
+						ComicsInfosPanel infos = new ComicsInfosPanel(issue, "issue", databaseService, userModel.getUser());
 						infos.fetchInformations();
 						infos.fetchPreviousNextInformations();
 						infos.createInfosPanel();

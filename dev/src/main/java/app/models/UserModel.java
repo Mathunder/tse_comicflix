@@ -162,4 +162,5 @@ public class UserModel {
 	public List<Issue> getRecommandedIssueList(){
 		return this.userRecommandedIssues;
 	}
+
 }
