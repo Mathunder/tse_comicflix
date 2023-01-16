@@ -32,14 +32,14 @@ import lombok.Data;
 public class ComicVineService {
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	private int limit = 8;
-	private int totalNumberOfPages = Integer.MIN_VALUE;
+	private int totalNumberOfPages = 1;
 	private String keyword;
 	private ComicVineSearchStatus searchStatus = ComicVineSearchStatus.IDLE;
 	private int currentPage = 1;
 	private List<ComicVineSearchFilter> filters;
 	private List<ResultDto> issueResults;
 	private List<ResultDto> characterResults;
-	private ResponseDto infosResult; 
+	private ResponseDto infosResult;
 
 	public ComicVineService() {
 		this.issueResults = new ArrayList<>();
@@ -50,7 +50,6 @@ public class ComicVineService {
 		RestAssured.baseURI = "https://comicvine.gamespot.com/api";
 		RestAssured.port = 443;
 	}
-	
 
 	/**
 	 * this function will fire a keywordChanged event whenever we change the keyword
@@ -78,7 +77,7 @@ public class ComicVineService {
 			params.put("page", Integer.toString(this.currentPage));
 			String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
 			this.setSearchStatus(ComicVineSearchStatus.FETCHING);
-			
+
 			filters.stream().forEach(filter -> {
 				params.put("resources", filter.getFilterValue());
 				SearchResultDto searchResult = given().params(params).header("User-Agent", userAgent).expect()
@@ -88,7 +87,6 @@ public class ComicVineService {
 				processSearchResults(searchResult);
 			});
 
-		
 			this.setSearchStatus(ComicVineSearchStatus.DONE);
 
 		});
@@ -108,13 +106,13 @@ public class ComicVineService {
 				break;
 			}
 			case "character": {
-				
+
 				this.characterResults.add(result);
 				break;
 			}
 			}
 		});
-	
+
 		this.pcs.firePropertyChange("searchResultsChanged", true, true);
 
 	}
@@ -136,7 +134,7 @@ public class ComicVineService {
 	public void initialSearch(String keyword) {
 		this.setKeyword(keyword);
 		this.setCurrentPage(1);
-		this.setTotalNumberOfPages(Integer.MIN_VALUE);
+		this.setTotalNumberOfPages(1);
 
 		CompletableFuture.runAsync(() -> {
 			this.search();
@@ -166,7 +164,7 @@ public class ComicVineService {
 		ComicVineSearchStatus oldSearchStatus = this.getSearchStatus();
 		this.searchStatus = status;
 		this.pcs.firePropertyChange("searchStatus", oldSearchStatus, this.getSearchStatus());
-		
+
 	}
 
 	public void clearSearchResults() {
@@ -175,38 +173,46 @@ public class ComicVineService {
 		this.pcs.firePropertyChange("clearSearchResults", true, true);
 
 	}
-	
-	public void updateFilter( ComicVineSearchFilter filter) {
-		if(this.filters.contains(filter)) {
+
+	public void updateFilter(ComicVineSearchFilter filter, int state) {
+
+		if (state == 2) {
 			this.filters.remove(filter);
-		}else {
-			this.filters.add(filter);
+		} else {
+			if (!this.filters.contains(filter)) {
+				this.filters.add(filter);
+			}
 		}
+		
+		this.pcs.firePropertyChange("updateFilter", null, filters.size());
 	}
+
 	/*
-	 * This method IS NOT asynchronous since it is computed very quickly, hence the asynchrony is not needed.
+	 * This method IS NOT asynchronous since it is computed very quickly, hence the
+	 * asynchrony is not needed.
 	 */
 	public void search_from_url(String url) {
-		
+
 		// The base url is changed for the url we want
 		RestAssured.baseURI = url;
-		
-		// The parameters are fewer since the url targets perfectly the result we want. Only the "api_key" and "format" remain.
+
+		// The parameters are fewer since the url targets perfectly the result we want.
+		// Only the "api_key" and "format" remain.
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("api_key", "f9073eee3658e2a4f39a9f531ad521b935ce87bc");	
+		params.put("api_key", "f9073eee3658e2a4f39a9f531ad521b935ce87bc");
 		params.put("format", "json");
 		String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
 
 		/*
-		 * The part that makes the request; the verifications were removed since there is no possible error 
-		 * (if the api gives an url, then we suppose that this url points towards something that exists).
+		 * The part that makes the request; the verifications were removed since there
+		 * is no possible error (if the api gives an url, then we suppose that this url
+		 * points towards something that exists).
 		 */
 		this.infosResult = given().params(params).header("User-Agent", userAgent).when().get().as(ResponseDto.class);
 
-		// Since the baseURI has been modified, it is put back to its original value at the end of this method.
+		// Since the baseURI has been modified, it is put back to its original value at
+		// the end of this method.
 		RestAssured.baseURI = "https://comicvine.gamespot.com/api";
 	}
-	
-	
-	
+
 }
