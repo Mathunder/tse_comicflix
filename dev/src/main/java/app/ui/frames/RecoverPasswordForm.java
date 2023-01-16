@@ -108,7 +108,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		contentPane.add(passwordField);
 		passwordField.setColumns(1);
 		
-		JLabel lblConfirmPassword = new JLabel("Confirm new passorwd");
+		JLabel lblConfirmPassword = new JLabel("Confirm new password");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblConfirmPassword, 0, SpringLayout.SOUTH, lblPassword);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblConfirmPassword, 10, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblConfirmPassword, 54, SpringLayout.SOUTH, lblPassword);
