@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import app.dto.ResultDto;
 import app.entities.Issue;
@@ -53,7 +55,11 @@ public class IssueResultsPanel extends ResultsPanel {
 
 						ComicsInfosPanel infos = new ComicsInfosPanel(issue, "issue");
 						infos.fetchInformations();
+						infos.fetchPreviousNextInformations();
 						infos.createInfosPanel();
+						JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
 						// Creating the new frame that will display the informations the user wants.
 						String frame_name = "";
 						try {
@@ -68,7 +74,7 @@ public class IssueResultsPanel extends ResultsPanel {
 							f.setIconImage(icon);
 						} catch (MalformedURLException e1) {}
 						f.setSize(1050, 600);
-						f.add(infos);
+						f.add(scrollPaneComicsInfos);
 						f.setResizable(false);
 						f.setVisible(true);
 
