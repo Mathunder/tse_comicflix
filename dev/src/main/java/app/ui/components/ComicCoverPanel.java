@@ -106,7 +106,7 @@ public class ComicCoverPanel extends JPanel{
 		springLayout.putConstraint(SpringLayout.NORTH, titleLabel, labelHeight, SpringLayout.SOUTH, titleLabel);
 		springLayout.putConstraint(SpringLayout.WEST, titleLabel, 0, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.SOUTH, titleLabel, this.resizedImageBg.getHeight(), SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.EAST, titleLabel, 0, SpringLayout.EAST, this);
+		springLayout.putConstraint(SpringLayout.EAST, titleLabel, this.resizedImageBg.getWidth(), SpringLayout.WEST, this);
 		setLayout(springLayout);
 		// Add the label to the panel
 		add(titleLabel);
@@ -164,7 +164,7 @@ public class ComicCoverPanel extends JPanel{
 			springLayout.putConstraint(SpringLayout.NORTH, collectionBox, -25 , SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.WEST, collectionBox, 140, SpringLayout.WEST, this);
 			springLayout.putConstraint(SpringLayout.SOUTH, collectionBox, 0, SpringLayout.NORTH, titleLabel);
-			springLayout.putConstraint(SpringLayout.EAST, collectionBox, 0, SpringLayout.EAST, this);
+			springLayout.putConstraint(SpringLayout.EAST, collectionBox, this.resizedImageBg.getWidth(), SpringLayout.WEST, this);
 			
 			add(collectionBox);
 		}

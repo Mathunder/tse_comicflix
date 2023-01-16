@@ -11,7 +11,10 @@ import javax.swing.border.Border;
 
 import app.dto.ResponseDto;
 import app.dto.ResultDto;
+import app.entities.Issue;
+import app.entities.User;
 import app.services.ComicVineService;
+import app.services.DatabaseService;
 import app.ui.themes.CustomColor;
 
 /*
@@ -27,11 +30,23 @@ public class ComicsInfosPanel extends JPanel {
 	private ResultDto result_volume;
 	private ResultDto result_prev;
 	private ResultDto result_next;
+	private DatabaseService dbS;
+	private User user;
+	private ComicCoverPanel comicCoverPanel;
 	private boolean hasNext = false;
 	private boolean hasPrev = false;
 	
 	
-	// This constructor is used when doing a research
+	// This constructor is used when doing a research of an issue
+	public ComicsInfosPanel(ResultDto result, String type, DatabaseService dbS, User user) {
+		this.result = result;
+		this.cvs = new ComicVineService();
+		this.type = type;
+		this.dbS = dbS;
+		this.user = user;
+	}
+	
+	// This constructor is used when doing a research of a character
 	public ComicsInfosPanel(ResultDto result, String type) {
 		this.result = result;
 		this.cvs = new ComicVineService();
@@ -68,6 +83,7 @@ public class ComicsInfosPanel extends JPanel {
 			this.cvs.search_from_url(this.result.getVolume().getApi_detail_url());
 			this.response = this.cvs.getInfosResult();
 			this.result_volume = this.cvs.getInfosResult().getResults();
+			this.comicCoverPanel = new ComicCoverPanel(this.result.convertToIssue(), this.dbS, this.user);
 		}
 	}
 	
@@ -75,13 +91,16 @@ public class ComicsInfosPanel extends JPanel {
 		// Sometimes the API has missing issues (ex: 2, 3, 4, 6, 7...)
 		
 		// Verifying if the current issue has has a sequel and/or prequel
-		if (this.result_volume.getCount_of_issues() != Integer.parseInt(this.result.getIssue_number())) {
+		System.out.println(this.result_volume.getCount_of_issues());
+		System.out.println(Integer.parseInt(this.result.getIssue_number()));
+		if (this.result_volume.getCount_of_issues() >= Integer.parseInt(this.result.getIssue_number())) {
 			this.hasNext = true;
 		}
 		if (this.result.getIssue_number() != "1") {
 			this.hasPrev = true;
 		}
-		
+		System.out.println(this.hasNext);
+		System.out.println(this.hasPrev);
 		// Fetching the informations of the sequel
 		if (this.hasNext) {
 			this.cvs = new ComicVineService();
@@ -295,19 +314,20 @@ public class ComicsInfosPanel extends JPanel {
 		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));
 		box2.setBackground(CustomColor.WhiteCloud);
 		
-		ImageIcon img;
-		try {
-			URL url_img = new URL(this.result.getImage().getMedium_url());
-			BufferedImage imageBrute = ImageIO.read(url_img);
-			Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-			img = new ImageIcon(imageResize);
-			image.setIcon(img);
-		} catch (IOException e) {
-			// The url is displayed in case the image cold not be loaded
-			img = new ImageIcon(this.result.getImage().getMedium_url());
-		}
-		image.setIcon(img);
-		box2.add(image);
+//		ImageIcon img;
+//		try {
+//			URL url_img = new URL(this.result.getImage().getMedium_url());
+//			BufferedImage imageBrute = ImageIO.read(url_img);
+//			Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+//			img = new ImageIcon(imageResize);
+//			image.setIcon(img);
+//		} catch (IOException e) {
+//			// The url is displayed in case the image cold not be loaded
+//			img = new ImageIcon(this.result.getImage().getMedium_url());
+//		}
+//		image.setIcon(img);
+//		box2.add(image);
+		box2.add(this.comicCoverPanel);
 		
 		box2.add(Box.createRigidArea(new Dimension(0, 50)));
 		image.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -408,11 +428,36 @@ public class ComicsInfosPanel extends JPanel {
 			}
 			image_next_issue.setIcon(img_next);
 			box3.add(image_next_issue);
+		} else if (this.hasNext && !this.hasPrev) {
+			ImageIcon img_next;
+			try {
+				URL url_img = new URL(this.result_next.getImage().getMedium_url());
+				BufferedImage imageBrute = ImageIO.read(url_img);
+				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+				img_next = new ImageIcon(imageResize);
+				image_next_issue.setIcon(img_next);
+			} catch (IOException e) {
+				// The url is displayed in case the image cold not be loaded
+				img_next = new ImageIcon(this.result_next.getImage().getMedium_url());
+			}
+			image_next_issue.setIcon(img_next);
+			box3.add(image_next_issue);
+		} else if (!this.hasNext && this.hasPrev) {
+			ImageIcon img_prev;
+			try {
+				URL url_img = new URL(this.result_prev.getImage().getMedium_url());
+				BufferedImage imageBrute = ImageIO.read(url_img);
+				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+				img_prev = new ImageIcon(imageResize);
+				image_prev_issue.setIcon(img_prev);
+			} catch (IOException e) {
+				// The url is displayed in case the image cold not be loaded
+				img_prev = new ImageIcon(this.result_prev.getImage().getMedium_url());
+			}
+			image_prev_issue.setIcon(img_prev);
+			box3.add(image_prev_issue);
 		}
-		// If this is the first issue (no previous issue)
-		if (this.hasNext && !this.hasPrev) {
 
-		}
 		
 		
 		subpanel1.setBackground(CustomColor.WhiteCloud);
