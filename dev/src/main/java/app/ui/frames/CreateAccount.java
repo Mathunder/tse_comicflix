@@ -31,6 +31,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 	private JTextField txtField_username;
 	private JPasswordField passwordField;
 	private JPasswordField confirmPasswordField;
+	private JTextField txtField_question;
 	private JLabel lblErrorCreate;
 	//Model
 	protected UserModel userModel; 
@@ -50,7 +51,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		setTitle("Create Account");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 400);
+		setBounds(100, 100, 450, 450);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(249, 246, 241));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -147,8 +148,26 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, confirmPasswordField, 0, SpringLayout.EAST, passwordField);
 		contentPane.add(confirmPasswordField);
 		
+		JLabel lblQuestion = new JLabel("Dans quelle ville êtes-vous né(e) ?");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblQuestion, 0, SpringLayout.SOUTH, lblConfirmPassword);
+		sl_contentPane.putConstraint(SpringLayout.WEST, lblQuestion, 5, SpringLayout.WEST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblQuestion, 54, SpringLayout.SOUTH, lblConfirmPassword);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblQuestion, -200, SpringLayout.EAST, contentPane);
+		lblQuestion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblQuestion.setHorizontalAlignment(SwingConstants.CENTER);
+		contentPane.add(lblQuestion);
+		
+		txtField_question = new JTextField();
+		txtField_question.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		sl_contentPane.putConstraint(SpringLayout.NORTH, txtField_question, 13, SpringLayout.NORTH, lblQuestion);
+		sl_contentPane.putConstraint(SpringLayout.WEST, txtField_question, 5, SpringLayout.EAST, lblQuestion);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, txtField_question, -9, SpringLayout.SOUTH, lblQuestion);
+		sl_contentPane.putConstraint(SpringLayout.EAST, txtField_question, 0, SpringLayout.EAST, confirmPasswordField);
+		contentPane.add(txtField_question);
+		txtField_question.setColumns(1);
+		
 		lblErrorCreate = new JLabel("");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorCreate, 0, SpringLayout.SOUTH, lblConfirmPassword);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorCreate, 0, SpringLayout.SOUTH, lblQuestion);
 		sl_contentPane.putConstraint(SpringLayout.HORIZONTAL_CENTER, lblErrorCreate, 225, SpringLayout.WEST, contentPane);
 		lblErrorCreate.setFont(new Font("Tahoma", Font.ITALIC, 14));
 		lblErrorCreate.setForeground(Color.RED);
@@ -156,7 +175,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		lblErrorCreate.setVisible(false);
 		contentPane.add(lblErrorCreate);
 		
-		DefaultButton btnCreate = new DefaultButton("Create", CustomColor.Red, 14, true);
+		DefaultButton btnCreate = new DefaultButton("Create", CustomColor.CrimsonRed, 14, true);
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCreateActionPerformed(e);
@@ -169,7 +188,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnCreate, -110, SpringLayout.EAST, contentPane);
 		contentPane.add(btnCreate);
 		
-		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Gray, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -190,14 +209,15 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		
 		if ( !txtField_firstName.getText().isEmpty() && !txtField_lastName.getText().isEmpty() 
 				&& !txtField_username.getText().isEmpty() && !String.valueOf(passwordField.getPassword()).isEmpty()
-				&& !String.valueOf(confirmPasswordField.getPassword()).isEmpty())
+				&& !String.valueOf(confirmPasswordField.getPassword()).isEmpty()
+				&& !txtField_question.getText().isEmpty())
 		{
 			if (String.valueOf(passwordField.getPassword()).contentEquals(String.valueOf(confirmPasswordField.getPassword())))
 			{
 				if (databaseService.verifUsername(txtField_username.getText()))
 				{
 					databaseService.addNewUserAccount(txtField_firstName.getText(), txtField_lastName.getText(), 
-							txtField_username.getText(), String.valueOf(passwordField.getPassword()) );
+							txtField_username.getText(), String.valueOf(passwordField.getPassword()), txtField_question.getText() );
 					dispose();
 				}
 				else
