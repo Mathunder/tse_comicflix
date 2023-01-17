@@ -93,16 +93,13 @@ public class ComicsInfosPanel extends JPanel {
 		// Sometimes the API has missing issues (ex: 2, 3, 4, 6, 7...)
 		
 		// Verifying if the current issue has has a sequel and/or prequel
-		System.out.println(this.result_volume.getCount_of_issues());
-		System.out.println(Integer.parseInt(this.result.getIssue_number()));
 		if (this.result_volume.getCount_of_issues() >= Integer.parseInt(this.result.getIssue_number())) {
 			this.hasNext = true;
 		}
-		if (this.result.getIssue_number() != "1") {
+		if (Integer.parseInt(this.result.getIssue_number()) != 1) {
 			this.hasPrev = true;
 		}
-		System.out.println(this.hasNext);
-		System.out.println(this.hasPrev);
+
 		// Fetching the informations of the sequel
 		if (this.hasNext) {
 			this.cvs = new ComicVineService();
@@ -164,8 +161,6 @@ public class ComicsInfosPanel extends JPanel {
 		JTextArea cover_date = new JTextArea();
 		
 		JPanel box3 = new JPanel();
-		JLabel image_prev_issue = new JLabel();
-		JLabel image_next_issue = new JLabel();
 
 
 		Font title_font = new Font("Dialog", Font.BOLD, 16);
@@ -318,19 +313,6 @@ public class ComicsInfosPanel extends JPanel {
 		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));
 		box2.setBackground(CustomColor.WhiteCloud);
 		
-//		ImageIcon img;
-//		try {
-//			URL url_img = new URL(this.result.getImage().getMedium_url());
-//			BufferedImage imageBrute = ImageIO.read(url_img);
-//			Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-//			img = new ImageIcon(imageResize);
-//			image.setIcon(img);
-//		} catch (IOException e) {
-//			// The url is displayed in case the image cold not be loaded
-//			img = new ImageIcon(this.result.getImage().getMedium_url());
-//		}
-//		image.setIcon(img);
-//		box2.add(image);
 		box2.add(this.comicCoverPanel_current);
 		
 		box2.add(Box.createRigidArea(new Dimension(0, 50)));
@@ -402,66 +384,13 @@ public class ComicsInfosPanel extends JPanel {
 		box3.setLayout(new BoxLayout(box3, BoxLayout.X_AXIS));
 		box3.setBackground(CustomColor.WhiteCloud);
 		if (this.hasNext && this.hasPrev) {
-			// Displaying the image of the issue
-//			ImageIcon img_prev;
-//			try {
-//				URL url_img = new URL(this.result_prev.getImage().getMedium_url());
-//				BufferedImage imageBrute = ImageIO.read(url_img);
-//				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-//				img_prev = new ImageIcon(imageResize);
-//				image_prev_issue.setIcon(img_prev);
-//			} catch (IOException e) {
-//				// The url is displayed in case the image cold not be loaded
-//				img_prev = new ImageIcon(this.result_prev.getImage().getMedium_url());
-//			}
-//			image_prev_issue.setIcon(img_prev);
-//			box3.add(image_prev_issue);
 			box3.add(comicCoverPanel_prev);
-			
 			box3.add(Box.createRigidArea(new Dimension(100, 0)));
-			
-//			ImageIcon img_next;
-//			try {
-//				URL url_img = new URL(this.result_next.getImage().getMedium_url());
-//				BufferedImage imageBrute = ImageIO.read(url_img);
-//				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-//				img_next = new ImageIcon(imageResize);
-//				image_next_issue.setIcon(img_next);
-//			} catch (IOException e) {
-//				// The url is displayed in case the image cold not be loaded
-//				img_next = new ImageIcon(this.result_next.getImage().getMedium_url());
-//			}
-//			image_next_issue.setIcon(img_next);
-//			box3.add(image_next_issue);
 			box3.add(this.comicCoverPanel_next);
 		} else if (this.hasNext && !this.hasPrev) {
-			ImageIcon img_next;
-			try {
-				URL url_img = new URL(this.result_next.getImage().getMedium_url());
-				BufferedImage imageBrute = ImageIO.read(url_img);
-				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-				img_next = new ImageIcon(imageResize);
-				image_next_issue.setIcon(img_next);
-			} catch (IOException e) {
-				// The url is displayed in case the image cold not be loaded
-				img_next = new ImageIcon(this.result_next.getImage().getMedium_url());
-			}
-			image_next_issue.setIcon(img_next);
-			box3.add(image_next_issue);
-		} else if (!this.hasNext && this.hasPrev) {
-			ImageIcon img_prev;
-			try {
-				URL url_img = new URL(this.result_prev.getImage().getMedium_url());
-				BufferedImage imageBrute = ImageIO.read(url_img);
-				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-				img_prev = new ImageIcon(imageResize);
-				image_prev_issue.setIcon(img_prev);
-			} catch (IOException e) {
-				// The url is displayed in case the image cold not be loaded
-				img_prev = new ImageIcon(this.result_prev.getImage().getMedium_url());
-			}
-			image_prev_issue.setIcon(img_prev);
-			box3.add(image_prev_issue);
+			box3.add(this.comicCoverPanel_next);
+		} else if ((!this.hasNext) && this.hasPrev) {
+			box3.add(this.comicCoverPanel_prev);
 		}
 
 		
