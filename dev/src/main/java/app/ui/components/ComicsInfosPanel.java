@@ -399,18 +399,18 @@ public class ComicsInfosPanel extends JPanel {
 		subpanel1.setPreferredSize(new Dimension(1000, 600));
 		subpanel1.setLayout(new BoxLayout(subpanel1, BoxLayout.LINE_AXIS));
 		subpanel1.add(BorderLayout.WEST, box1);
-		// Vertical separator
 		subpanel1.add(Box.createHorizontalGlue());
 		subpanel1.add(BorderLayout.WEST, box2);
+		
 		subpanel2.setBackground(CustomColor.WhiteCloud);
-		subpanel2.setLayout(new BoxLayout(subpanel2, BoxLayout.X_AXIS));
-		subpanel2.add(box3);
+//		subpanel2.setLayout(new BoxLayout(subpanel2, BoxLayout.X_AXIS));
+		subpanel2.add(BorderLayout.CENTER, box3);
 		
 		this.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 		this.setBackground(CustomColor.WhiteCloud);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.add(BorderLayout.NORTH, subpanel1);
-		this.add(Box.createRigidArea(new Dimension(0, 100)));
+		this.add(Box.createRigidArea(new Dimension(0, 60)));
 		this.add(BorderLayout.SOUTH, subpanel2);
 		this.setVisible(true);
 	}
