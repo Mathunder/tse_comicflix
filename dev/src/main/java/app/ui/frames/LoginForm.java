@@ -172,9 +172,11 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		//CHECK CREDENTIAL AND GET USER INFO
 		databaseService.loginUserFromUsername(usr_name, usr_password);
 		
-		if(isCredientialCorrect) {	
+		if(isCredientialCorrect){	
 			lblErrorLogin.setVisible(false);
 			dispose();
+			JFrame PopUp = new PopUpForm(userModel, databaseService, "successful login ");
+			PopUp.setVisible(true);
 		}
 		else 
 			lblErrorLogin.setVisible(true);
