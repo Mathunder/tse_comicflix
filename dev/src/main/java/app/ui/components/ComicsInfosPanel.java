@@ -32,7 +32,9 @@ public class ComicsInfosPanel extends JPanel {
 	private ResultDto result_next;
 	private DatabaseService dbS;
 	private User user;
-	private ComicCoverPanel comicCoverPanel;
+	private ComicCoverPanel comicCoverPanel_current;
+	private ComicCoverPanel comicCoverPanel_prev;
+	private ComicCoverPanel comicCoverPanel_next;
 	private boolean hasNext = false;
 	private boolean hasPrev = false;
 	
@@ -83,7 +85,7 @@ public class ComicsInfosPanel extends JPanel {
 			this.cvs.search_from_url(this.result.getVolume().getApi_detail_url());
 			this.response = this.cvs.getInfosResult();
 			this.result_volume = this.cvs.getInfosResult().getResults();
-			this.comicCoverPanel = new ComicCoverPanel(this.result.convertToIssue(), this.dbS, this.user);
+			this.comicCoverPanel_current = new ComicCoverPanel(this.result.convertToIssue(), this.dbS, this.user);
 		}
 	}
 	
@@ -108,6 +110,7 @@ public class ComicsInfosPanel extends JPanel {
 			this.cvs.search_from_url(this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) + 1).getApi_detail_url());
 			this.response = this.cvs.getInfosResult();
 			this.result_next = this.cvs.getInfosResult().getResults();
+			this.comicCoverPanel_next = new ComicCoverPanel(this.result_next.convertToIssue(), this.dbS, this.user);
 		}
 		// Fetching the informations of the prequel
 		if (this.hasPrev) {
@@ -116,6 +119,7 @@ public class ComicsInfosPanel extends JPanel {
 			this.cvs.search_from_url(this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) - 1).getApi_detail_url());
 			this.response = this.cvs.getInfosResult();
 			this.result_prev = this.cvs.getInfosResult().getResults();
+			this.comicCoverPanel_prev = new ComicCoverPanel(this.result_prev.convertToIssue(), this.dbS, this.user);
 		}
 	}
 	
@@ -327,7 +331,7 @@ public class ComicsInfosPanel extends JPanel {
 //		}
 //		image.setIcon(img);
 //		box2.add(image);
-		box2.add(this.comicCoverPanel);
+		box2.add(this.comicCoverPanel_current);
 		
 		box2.add(Box.createRigidArea(new Dimension(0, 50)));
 		image.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -399,35 +403,37 @@ public class ComicsInfosPanel extends JPanel {
 		box3.setBackground(CustomColor.WhiteCloud);
 		if (this.hasNext && this.hasPrev) {
 			// Displaying the image of the issue
-			ImageIcon img_prev;
-			try {
-				URL url_img = new URL(this.result_prev.getImage().getMedium_url());
-				BufferedImage imageBrute = ImageIO.read(url_img);
-				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-				img_prev = new ImageIcon(imageResize);
-				image_prev_issue.setIcon(img_prev);
-			} catch (IOException e) {
-				// The url is displayed in case the image cold not be loaded
-				img_prev = new ImageIcon(this.result_prev.getImage().getMedium_url());
-			}
-			image_prev_issue.setIcon(img_prev);
-			box3.add(image_prev_issue);
+//			ImageIcon img_prev;
+//			try {
+//				URL url_img = new URL(this.result_prev.getImage().getMedium_url());
+//				BufferedImage imageBrute = ImageIO.read(url_img);
+//				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+//				img_prev = new ImageIcon(imageResize);
+//				image_prev_issue.setIcon(img_prev);
+//			} catch (IOException e) {
+//				// The url is displayed in case the image cold not be loaded
+//				img_prev = new ImageIcon(this.result_prev.getImage().getMedium_url());
+//			}
+//			image_prev_issue.setIcon(img_prev);
+//			box3.add(image_prev_issue);
+			box3.add(comicCoverPanel_prev);
 			
 			box3.add(Box.createRigidArea(new Dimension(100, 0)));
 			
-			ImageIcon img_next;
-			try {
-				URL url_img = new URL(this.result_next.getImage().getMedium_url());
-				BufferedImage imageBrute = ImageIO.read(url_img);
-				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-				img_next = new ImageIcon(imageResize);
-				image_next_issue.setIcon(img_next);
-			} catch (IOException e) {
-				// The url is displayed in case the image cold not be loaded
-				img_next = new ImageIcon(this.result_next.getImage().getMedium_url());
-			}
-			image_next_issue.setIcon(img_next);
-			box3.add(image_next_issue);
+//			ImageIcon img_next;
+//			try {
+//				URL url_img = new URL(this.result_next.getImage().getMedium_url());
+//				BufferedImage imageBrute = ImageIO.read(url_img);
+//				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+//				img_next = new ImageIcon(imageResize);
+//				image_next_issue.setIcon(img_next);
+//			} catch (IOException e) {
+//				// The url is displayed in case the image cold not be loaded
+//				img_next = new ImageIcon(this.result_next.getImage().getMedium_url());
+//			}
+//			image_next_issue.setIcon(img_next);
+//			box3.add(image_next_issue);
+			box3.add(this.comicCoverPanel_next);
 		} else if (this.hasNext && !this.hasPrev) {
 			ImageIcon img_next;
 			try {
