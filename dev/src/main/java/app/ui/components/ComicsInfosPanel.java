@@ -411,7 +411,6 @@ public class ComicsInfosPanel extends JPanel {
 		other_data.add(cover_date);
 		infos.setBackground(CustomColor.WhiteCloud);
 		infos.setBorder(null);
-		infos.setBorder(BorderFactory.createLineBorder(Color.black));
 		box2.add(infos);
 		
 		
