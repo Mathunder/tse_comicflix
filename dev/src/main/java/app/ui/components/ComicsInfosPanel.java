@@ -112,6 +112,7 @@ public class ComicsInfosPanel extends JPanel {
 		if (this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) - 1).getApi_detail_url() != null) {
 			this.hasPrev = true;
 		}
+
 		// Fetching the informations of the sequel
 		if (this.hasNext) {
 			this.cvs = new ComicVineService();
@@ -357,6 +358,7 @@ public class ComicsInfosPanel extends JPanel {
 		if (this.type == "character") {
 			infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
 		}
+		
 		infos.setLayout(new BoxLayout(infos, BoxLayout.X_AXIS));
 		field_title.setLayout(new BoxLayout(field_title, BoxLayout.Y_AXIS));
 		infos.setOpaque(true);
@@ -409,6 +411,7 @@ public class ComicsInfosPanel extends JPanel {
 		other_data.add(cover_date);
 		infos.setBackground(CustomColor.WhiteCloud);
 		infos.setBorder(null);
+		infos.setBorder(BorderFactory.createLineBorder(Color.black));
 		box2.add(infos);
 		
 		
@@ -448,7 +451,6 @@ public class ComicsInfosPanel extends JPanel {
 						f.add(scrollPaneComicsInfos);
 						f.setResizable(false);
 						f.setVisible(true);
-
 					}
 				});
 				box3.add(this.comicCoverPanel_prev);
@@ -479,7 +481,6 @@ public class ComicsInfosPanel extends JPanel {
 						f.add(scrollPaneComicsInfos);
 						f.setResizable(false);
 						f.setVisible(true);
-
 					}
 				});
 				box3.add(this.comicCoverPanel_next);
@@ -510,7 +511,6 @@ public class ComicsInfosPanel extends JPanel {
 						f.add(scrollPaneComicsInfos);
 						f.setResizable(false);
 						f.setVisible(true);
-
 					}
 				});
 				box3.add(this.comicCoverPanel_next);
@@ -541,14 +541,12 @@ public class ComicsInfosPanel extends JPanel {
 						f.add(scrollPaneComicsInfos);
 						f.setResizable(false);
 						f.setVisible(true);
-
 					}
 				});
 				box3.add(this.comicCoverPanel_prev);
 			}
-		}
 
-		
+			
 		
 		subpanel1.setBackground(CustomColor.WhiteCloud);
 		subpanel1.setPreferredSize(new Dimension(1000, 600));
@@ -568,5 +566,6 @@ public class ComicsInfosPanel extends JPanel {
 		this.add(Box.createRigidArea(new Dimension(0, 60)));
 		this.add(BorderLayout.SOUTH, subpanel2);
 		this.setVisible(true);
+		}
 	}
 }

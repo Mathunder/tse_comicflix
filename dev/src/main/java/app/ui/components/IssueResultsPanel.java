@@ -54,6 +54,7 @@ public class IssueResultsPanel extends ResultsPanel {
 					public void mouseClicked(MouseEvent e) {
 
 						ComicsInfosPanel infos = new ComicsInfosPanel(resultdto, "issue", databaseService, userModel.getUser());
+
 						infos.fetchInformations();
 						infos.fetchPreviousNextInformations();
 						infos.createInfosPanel();
