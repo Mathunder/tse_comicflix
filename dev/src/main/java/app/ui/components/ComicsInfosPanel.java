@@ -104,7 +104,11 @@ public class ComicsInfosPanel extends JPanel {
 		if (this.hasNext) {
 			this.cvs = new ComicVineService();
 			this.response = new ResponseDto();
-			this.cvs.search_from_url(this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) + 1).getApi_detail_url());
+			try {
+				this.cvs.search_from_url(this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) + 1).getApi_detail_url());
+			} catch (IllegalArgumentException e) {
+				// error msg
+			}
 			this.response = this.cvs.getInfosResult();
 			this.result_next = this.cvs.getInfosResult().getResults();
 			this.comicCoverPanel_next = new ComicCoverPanel(this.result_next.convertToIssue(), this.dbS, this.user);
@@ -113,7 +117,11 @@ public class ComicsInfosPanel extends JPanel {
 		if (this.hasPrev) {
 			this.cvs = new ComicVineService();
 			this.response = new ResponseDto();
-			this.cvs.search_from_url(this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) - 1).getApi_detail_url());
+			try {
+				this.cvs.search_from_url(this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) - 1).getApi_detail_url());
+			} catch (IllegalArgumentException e) {
+				// error msg
+			}
 			this.response = this.cvs.getInfosResult();
 			this.result_prev = this.cvs.getInfosResult().getResults();
 			this.comicCoverPanel_prev = new ComicCoverPanel(this.result_prev.convertToIssue(), this.dbS, this.user);
@@ -319,7 +327,7 @@ public class ComicsInfosPanel extends JPanel {
 		image.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		// matching the size of the block to the size of the image
-		infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
+		//infos.setMaximumSize(new Dimension(this.comicCoverPanel_current., 500));
 		infos.setLayout(new BoxLayout(infos, BoxLayout.X_AXIS));
 		field_title.setLayout(new BoxLayout(field_title, BoxLayout.Y_AXIS));
 		infos.setOpaque(true);
@@ -372,6 +380,7 @@ public class ComicsInfosPanel extends JPanel {
 		other_data.add(cover_date);
 		infos.setBackground(CustomColor.WhiteCloud);
 		infos.setBorder(null);
+		infos.setBorder(BorderFactory.createLineBorder(Color.black));
 		box2.add(infos);
 		
 		
@@ -385,7 +394,7 @@ public class ComicsInfosPanel extends JPanel {
 		box3.setBackground(CustomColor.WhiteCloud);
 		if (this.hasNext && this.hasPrev) {
 			box3.add(comicCoverPanel_prev);
-			box3.add(Box.createRigidArea(new Dimension(100, 0)));
+			box3.add(Box.createRigidArea(new Dimension(70, 0)));
 			box3.add(this.comicCoverPanel_next);
 		} else if (this.hasNext && !this.hasPrev) {
 			box3.add(this.comicCoverPanel_next);
