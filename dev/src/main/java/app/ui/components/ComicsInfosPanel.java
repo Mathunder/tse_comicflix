@@ -1,8 +1,11 @@
 package app.ui.components;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -64,6 +67,16 @@ public class ComicsInfosPanel extends JPanel {
 		this.type = "issue";
 	}
 	
+	// This constructor is used when displaying an issue from another issue
+		public ComicsInfosPanel(String api_detail_url, DatabaseService dbS, User user) {
+			this.type = "issue";
+			this.cvs = new ComicVineService();
+			this.dbS = dbS;
+			this.user = user;
+			this.result = new ResultDto();
+			this.result.setApi_detail_url(api_detail_url);
+		}
+	
 	public ResponseDto getResponse() {
 		return this.response;
 	}
@@ -93,13 +106,12 @@ public class ComicsInfosPanel extends JPanel {
 		// Sometimes the API has missing issues (ex: 2, 3, 4, 6, 7...)
 		
 		// Verifying if the current issue has has a sequel and/or prequel
-		if (this.result_volume.getCount_of_issues() >= Integer.parseInt(this.result.getIssue_number())) {
+		if (this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) + 1).getApi_detail_url() != null) {
 			this.hasNext = true;
 		}
-		if (Integer.parseInt(this.result.getIssue_number()) != 1) {
+		if (this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) - 1).getApi_detail_url() != null) {
 			this.hasPrev = true;
 		}
-
 		// Fetching the informations of the sequel
 		if (this.hasNext) {
 			this.cvs = new ComicVineService();
@@ -323,7 +335,7 @@ public class ComicsInfosPanel extends JPanel {
 		
 		box2.add(this.comicCoverPanel_current);
 		
-		box2.add(Box.createRigidArea(new Dimension(0, 50)));
+		//box2.add(Box.createRigidArea(new Dimension(0, 50)));
 		image.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		// matching the size of the block to the size of the image
@@ -380,7 +392,6 @@ public class ComicsInfosPanel extends JPanel {
 		other_data.add(cover_date);
 		infos.setBackground(CustomColor.WhiteCloud);
 		infos.setBorder(null);
-		infos.setBorder(BorderFactory.createLineBorder(Color.black));
 		box2.add(infos);
 		
 		
@@ -390,16 +401,134 @@ public class ComicsInfosPanel extends JPanel {
 		/*
 		 * This part displays the previous and next issue when an issue is selected
 		 */
-		box3.setLayout(new BoxLayout(box3, BoxLayout.X_AXIS));
-		box3.setBackground(CustomColor.WhiteCloud);
-		if (this.hasNext && this.hasPrev) {
-			box3.add(comicCoverPanel_prev);
-			box3.add(Box.createRigidArea(new Dimension(70, 0)));
-			box3.add(this.comicCoverPanel_next);
-		} else if (this.hasNext && !this.hasPrev) {
-			box3.add(this.comicCoverPanel_next);
-		} else if ((!this.hasNext) && this.hasPrev) {
-			box3.add(this.comicCoverPanel_prev);
+		if (this.type == "issue") {
+			box3.setLayout(new BoxLayout(box3, BoxLayout.X_AXIS));
+			box3.setBackground(CustomColor.WhiteCloud);
+			if (this.hasNext && this.hasPrev) {
+				this.comicCoverPanel_prev.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_prev.getIssue().getApi_detail_url(), dbS, user);
+						infos.fetchInformations();
+						infos.fetchPreviousNextInformations();
+						infos.createInfosPanel();
+						JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+						// Creating the new frame that will display the informations the user wants.
+						String frame_name = "";
+						try {
+							frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+						} catch (NullPointerException e1) {}
+						
+						JFrame f = new JFrame(frame_name);
+						try {
+
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
+						f.setSize(1050, 600);
+						f.add(scrollPaneComicsInfos);
+						f.setResizable(false);
+						f.setVisible(true);
+
+					}
+				});
+				box3.add(this.comicCoverPanel_prev);
+				box3.add(Box.createRigidArea(new Dimension(70, 0)));
+				this.comicCoverPanel_next.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_next.getIssue().getApi_detail_url(), dbS, user);
+						infos.fetchInformations();
+						infos.fetchPreviousNextInformations();
+						infos.createInfosPanel();
+						JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+						// Creating the new frame that will display the informations the user wants.
+						String frame_name = "";
+						try {
+							frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+						} catch (NullPointerException e1) {}
+						
+						JFrame f = new JFrame(frame_name);
+						try {
+
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
+						f.setSize(1050, 600);
+						f.add(scrollPaneComicsInfos);
+						f.setResizable(false);
+						f.setVisible(true);
+
+					}
+				});
+				box3.add(this.comicCoverPanel_next);
+			} else if (this.hasNext && !this.hasPrev) {
+				this.comicCoverPanel_next.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_next.getIssue().getApi_detail_url(), dbS, user);
+						infos.fetchInformations();
+						infos.fetchPreviousNextInformations();
+						infos.createInfosPanel();
+						JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+						// Creating the new frame that will display the informations the user wants.
+						String frame_name = "";
+						try {
+							frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+						} catch (NullPointerException e1) {}
+						
+						JFrame f = new JFrame(frame_name);
+						try {
+
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
+						f.setSize(1050, 600);
+						f.add(scrollPaneComicsInfos);
+						f.setResizable(false);
+						f.setVisible(true);
+
+					}
+				});
+				box3.add(this.comicCoverPanel_next);
+			} else if ((!this.hasNext) && this.hasPrev) {
+				this.comicCoverPanel_prev.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_prev.getIssue().getApi_detail_url(), dbS, user);
+						infos.fetchInformations();
+						infos.fetchPreviousNextInformations();
+						infos.createInfosPanel();
+						JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+						// Creating the new frame that will display the informations the user wants.
+						String frame_name = "";
+						try {
+							frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+						} catch (NullPointerException e1) {}
+						
+						JFrame f = new JFrame(frame_name);
+						try {
+
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
+						f.setSize(1050, 600);
+						f.add(scrollPaneComicsInfos);
+						f.setResizable(false);
+						f.setVisible(true);
+
+					}
+				});
+				box3.add(this.comicCoverPanel_prev);
+			}
 		}
 
 		

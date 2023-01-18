@@ -46,14 +46,14 @@ public class IssueResultsPanel extends ResultsPanel {
 			this.setVisible(true);
 			// Show ResultAPIIssues
 			for (int i = 0; i < issues.size(); i++) {
-				ResultDto issue = issues.get(i);
-				ComicCoverPanel comicCover = new ComicCoverPanel(issue.convertToIssue(), databaseService, userModel.getUser());
+				ResultDto resultdto = issues.get(i);
+				ComicCoverPanel comicCover = new ComicCoverPanel(resultdto.convertToIssue(), databaseService, userModel.getUser());
 				comicCoverPanels.add(comicCover);
 				// Adding the mouse listener to enable the click on a search result
 				comicCover.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 
-						ComicsInfosPanel infos = new ComicsInfosPanel(issue, "issue", databaseService, userModel.getUser());
+						ComicsInfosPanel infos = new ComicsInfosPanel(resultdto, "issue", databaseService, userModel.getUser());
 						infos.fetchInformations();
 						infos.fetchPreviousNextInformations();
 						infos.createInfosPanel();
