@@ -333,13 +333,30 @@ public class ComicsInfosPanel extends JPanel {
 		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));
 		box2.setBackground(CustomColor.WhiteCloud);
 		
-		box2.add(this.comicCoverPanel_current);
-		
-		//box2.add(Box.createRigidArea(new Dimension(0, 50)));
-		image.setAlignmentX(Component.CENTER_ALIGNMENT);
+		if (this.type == "issue") {
+			box2.add(this.comicCoverPanel_current);
+		} else if (this.type == "character") {
+			ImageIcon img;
+			try {
+				URL url_img = new URL(this.result.getImage().getMedium_url());
+				BufferedImage imageBrute = ImageIO.read(url_img);
+				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+				img = new ImageIcon(imageResize);
+				image.setIcon(img);
+			} catch (IOException e) {
+				// The url is displayed in case the image cold not be loaded
+				img = new ImageIcon(this.result.getImage().getMedium_url());
+			}
+			image.setIcon(img);
+			box2.add(image);
+			image.setAlignmentX(Component.CENTER_ALIGNMENT);
+			box2.add(Box.createRigidArea(new Dimension(0, 50)));
+		}
 		
 		// matching the size of the block to the size of the image
-		//infos.setMaximumSize(new Dimension(this.comicCoverPanel_current., 500));
+		if (this.type == "character") {
+			infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
+		}
 		infos.setLayout(new BoxLayout(infos, BoxLayout.X_AXIS));
 		field_title.setLayout(new BoxLayout(field_title, BoxLayout.Y_AXIS));
 		infos.setOpaque(true);
