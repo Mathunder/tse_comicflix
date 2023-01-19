@@ -179,6 +179,8 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 					{
 						databaseService.updatePassword(String.valueOf(passwordField.getPassword()), txtField_username.getText());
 						dispose();
+						JFrame PopUp = new PopUpForm(userModel, databaseService, "successful change password ");
+						PopUp.setVisible(true);
 					}
 					else
 					{
