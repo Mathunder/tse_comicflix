@@ -113,7 +113,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnLogin, -25, SpringLayout.EAST, contentPane);
 		contentPane.add(btnLogin);
 		
-		DefaultButton btnCancel = new DefaultButton("Supprimer", CustomColor.Black, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Fermer", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -175,7 +175,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		if(isCredientialCorrect){	
 			lblErrorLogin.setVisible(false);
 			dispose();
-			JFrame PopUp = new PopUpForm(userModel, databaseService, "successful login ");
+			JFrame PopUp = new PopUpForm(userModel, databaseService, "Connexion réussi ");
 			PopUp.setVisible(true);
 		}
 		else 

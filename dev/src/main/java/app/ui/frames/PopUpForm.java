@@ -38,7 +38,7 @@ public class PopUpForm extends JFrame implements PropertyChangeListener{
 		this.userModel.addPropertyChangeListener(this);
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
-		setTitle("Success");
+		setTitle("Succès");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 300, 150);

@@ -42,7 +42,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		this.userModel.addPropertyChangeListener(this);
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
-		setTitle("Change Password");
+		setTitle("Changement mot de passe");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 350);
@@ -149,7 +149,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnChange, -110, SpringLayout.EAST, contentPane);
 		contentPane.add(btnChange);
 		
-		DefaultButton btnCancel = new DefaultButton("Supprimer", CustomColor.Black, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Fermer", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -179,7 +179,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 					{
 						databaseService.updatePassword(String.valueOf(passwordField.getPassword()), txtField_username.getText());
 						dispose();
-						JFrame PopUp = new PopUpForm(userModel, databaseService, "changement effectué ! ");
+						JFrame PopUp = new PopUpForm(userModel, databaseService, "Changement effectué ! ");
 						PopUp.setVisible(true);
 					}
 					else

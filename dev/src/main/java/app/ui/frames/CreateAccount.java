@@ -48,7 +48,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		this.userModel.addPropertyChangeListener(this);
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
-		setTitle("Create Account");
+		setTitle("Création de compte");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 450);
@@ -188,7 +188,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnCreate, -110, SpringLayout.EAST, contentPane);
 		contentPane.add(btnCreate);
 		
-		DefaultButton btnCancel = new DefaultButton("Supprimer", CustomColor.Black, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Fermer", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -219,6 +219,8 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 					databaseService.addNewUserAccount(txtField_firstName.getText(), txtField_lastName.getText(), 
 							txtField_username.getText(), String.valueOf(passwordField.getPassword()), txtField_question.getText() );
 					dispose();
+					JFrame PopUp = new PopUpForm(userModel, databaseService, "Compte créé avec succès ");
+					PopUp.setVisible(true);
 				}
 				else
 				{
