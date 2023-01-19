@@ -4,9 +4,13 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -16,6 +20,7 @@ import app.dto.ResponseDto;
 import app.dto.ResultDto;
 import app.entities.Issue;
 import app.entities.User;
+import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
 import app.ui.themes.CustomColor;
@@ -24,7 +29,7 @@ import app.ui.themes.CustomColor;
  *  The goal of this class is to create a panel in which the informations of the selected comic will be displayed.
  */
 @SuppressWarnings("serial")
-public class ComicsInfosPanel extends JPanel {
+public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 	
 	private ResultDto result;
 	private ComicVineService cvs;
@@ -33,22 +38,24 @@ public class ComicsInfosPanel extends JPanel {
 	private ResultDto result_volume;
 	private ResultDto result_prev;
 	private ResultDto result_next;
-	private DatabaseService dbS;
-	private User user;
+	private DatabaseService databaseService;
+	private UserModel userModel;
 	private ComicCoverPanel comicCoverPanel_current;
 	private ComicCoverPanel comicCoverPanel_prev;
 	private ComicCoverPanel comicCoverPanel_next;
+	private List<ComicCoverPanel> comicCoverPanels = new ArrayList<>();
 	private boolean hasNext = false;
 	private boolean hasPrev = false;
 	
 	
 	// This constructor is used when doing a research of an issue
-	public ComicsInfosPanel(ResultDto result, String type, DatabaseService dbS, User user) {
+	public ComicsInfosPanel(ResultDto result, DatabaseService dbS, UserModel um) {
 		this.result = result;
 		this.cvs = new ComicVineService();
-		this.type = type;
-		this.dbS = dbS;
-		this.user = user;
+		this.type = "issue";
+		this.databaseService = dbS;
+		this.userModel = um;
+		this.userModel.addPropertyChangeListener(this);
 	}
 	
 	// This constructor is used when doing a research of a character
@@ -57,25 +64,17 @@ public class ComicsInfosPanel extends JPanel {
 		this.cvs = new ComicVineService();
 		this.type = type;
 	}
-	
-	// This constructor is used when displaying a favorite issue (thus its type is "issue")
-	public ComicsInfosPanel(String api_detail_url) {
+		
+	// This constructor is used when displaying an issue from local issue
+	public ComicsInfosPanel(String api_detail_url, DatabaseService dbS, UserModel um) {
+		this.databaseService = dbS;
+		this.userModel = um;
 		this.cvs = new ComicVineService();
 		this.result = new ResultDto();
 		this.result.setApi_detail_url(api_detail_url);
-		// Since it is always an issue, the type is defined here
 		this.type = "issue";
+		this.userModel.addPropertyChangeListener(this);
 	}
-	
-	// This constructor is used when displaying an issue from another issue
-		public ComicsInfosPanel(String api_detail_url, DatabaseService dbS, User user) {
-			this.type = "issue";
-			this.cvs = new ComicVineService();
-			this.dbS = dbS;
-			this.user = user;
-			this.result = new ResultDto();
-			this.result.setApi_detail_url(api_detail_url);
-		}
 	
 	public ResponseDto getResponse() {
 		return this.response;
@@ -98,7 +97,8 @@ public class ComicsInfosPanel extends JPanel {
 			this.cvs.search_from_url(this.result.getVolume().getApi_detail_url());
 			this.response = this.cvs.getInfosResult();
 			this.result_volume = this.cvs.getInfosResult().getResults();
-			this.comicCoverPanel_current = new ComicCoverPanel(this.result.convertToIssue(), this.dbS, this.user);
+			this.comicCoverPanel_current = new ComicCoverPanel(this.result.convertToIssue(), this.databaseService, this.userModel.getUser());
+			this.comicCoverPanels.add(this.comicCoverPanel_current);
 		}
 	}
 	
@@ -124,7 +124,8 @@ public class ComicsInfosPanel extends JPanel {
 			}
 			this.response = this.cvs.getInfosResult();
 			this.result_next = this.cvs.getInfosResult().getResults();
-			this.comicCoverPanel_next = new ComicCoverPanel(this.result_next.convertToIssue(), this.dbS, this.user);
+			this.comicCoverPanel_next = new ComicCoverPanel(this.result_next.convertToIssue(), this.databaseService, this.userModel.getUser());
+			this.comicCoverPanels.add(comicCoverPanel_next);
 		}
 		// Fetching the informations of the prequel
 		if (this.hasPrev) {
@@ -137,7 +138,8 @@ public class ComicsInfosPanel extends JPanel {
 			}
 			this.response = this.cvs.getInfosResult();
 			this.result_prev = this.cvs.getInfosResult().getResults();
-			this.comicCoverPanel_prev = new ComicCoverPanel(this.result_prev.convertToIssue(), this.dbS, this.user);
+			this.comicCoverPanel_prev = new ComicCoverPanel(this.result_prev.convertToIssue(), this.databaseService, this.userModel.getUser());
+			this.comicCoverPanels.add(this.comicCoverPanel_prev);
 		}
 	}
 	
@@ -150,6 +152,8 @@ public class ComicsInfosPanel extends JPanel {
 	 * These tests are all in a try{ if/else }/catch section
 	 */
 	public void createInfosPanel() {
+		
+		removeAll();
 		
 		JPanel subpanel1 = new JPanel();
 		JPanel subpanel2 = new JPanel();
@@ -426,7 +430,7 @@ public class ComicsInfosPanel extends JPanel {
 			if (this.hasNext && this.hasPrev) {
 				this.comicCoverPanel_prev.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
-						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_prev.getIssue().getApi_detail_url(), dbS, user);
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_prev.getIssue().getApi_detail_url(), databaseService, userModel);
 						infos.fetchInformations();
 						infos.fetchPreviousNextInformations();
 						infos.createInfosPanel();
@@ -456,7 +460,7 @@ public class ComicsInfosPanel extends JPanel {
 				box3.add(Box.createRigidArea(new Dimension(70, 0)));
 				this.comicCoverPanel_next.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
-						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_next.getIssue().getApi_detail_url(), dbS, user);
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_next.getIssue().getApi_detail_url(), databaseService, userModel);
 						infos.fetchInformations();
 						infos.fetchPreviousNextInformations();
 						infos.createInfosPanel();
@@ -486,7 +490,7 @@ public class ComicsInfosPanel extends JPanel {
 			} else if (this.hasNext && !this.hasPrev) {
 				this.comicCoverPanel_next.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
-						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_next.getIssue().getApi_detail_url(), dbS, user);
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_next.getIssue().getApi_detail_url(), databaseService, userModel);
 						infos.fetchInformations();
 						infos.fetchPreviousNextInformations();
 						infos.createInfosPanel();
@@ -516,7 +520,7 @@ public class ComicsInfosPanel extends JPanel {
 			} else if ((!this.hasNext) && this.hasPrev) {
 				this.comicCoverPanel_prev.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
-						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_prev.getIssue().getApi_detail_url(), dbS, user);
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_prev.getIssue().getApi_detail_url(), databaseService, userModel);
 						infos.fetchInformations();
 						infos.fetchPreviousNextInformations();
 						infos.createInfosPanel();
@@ -564,7 +568,100 @@ public class ComicsInfosPanel extends JPanel {
 		this.add(BorderLayout.NORTH, subpanel1);
 		this.add(Box.createRigidArea(new Dimension(0, 60)));
 		this.add(BorderLayout.SOUTH, subpanel2);
+		if(userModel.getIsAuthenticated())
+			this.updateButtonStates(0);
 		this.setVisible(true);
+		}
+	}
+
+	public void updateButtonStates(int itemRefreshCode) {
+		
+		for(int i=0; i<this.comicCoverPanels.size();i++) {
+			//Favorite update
+			if(itemRefreshCode == 1 || itemRefreshCode == 0) {
+				boolean isFavorite = false;
+				for(Issue favorite : userModel.getUserFavoriteIssues()) {
+					if(favorite.getId() == this.comicCoverPanels.get(i).getIssue().getId()) {
+						isFavorite = true;
+						break;
+					}
+				}
+				this.comicCoverPanels.get(i).refreshStateButtons(isFavorite);
+			}
+			//Reading/Readed UPDATE
+			if(itemRefreshCode == 2 || itemRefreshCode == 0) {
+				int readState = 0;
+				for(Issue reading : userModel.getUserReadingIssues()) {
+					if(reading.getId() == this.comicCoverPanels.get(i).getIssue().getId()) {
+						readState = 1;
+						break;
+					}
+				}
+				// Find if the issue displayed is readed by the User
+				for(Issue readed : userModel.getUserReadedIssues()) {
+					if(readed.getId() == this.comicCoverPanels.get(i).getIssue().getId()) {
+						readState = 2;
+						break;
+					}
+				}
+				this.comicCoverPanels.get(i).refreshStateButtons(readState);
+			}
+			//COLLECTION UPDATE
+			if(itemRefreshCode == 3 || itemRefreshCode == 0) {
+				String selectedItem = "All";
+				Boolean findCorrespondance = false;
+				for(int j=0; j<userModel.getUserCollections().size();j++) {
+					if (!findCorrespondance) {
+						for(Issue issue_col: userModel.getUserCollections().get(j).getIssues()) {
+							if(issue_col.getId() == this.comicCoverPanels.get(i).getIssue().getId()) {
+								selectedItem = userModel.getUserCollections().get(j).getName();
+								findCorrespondance = true;
+								break;
+							}
+						}
+					}
+					else 
+						break;
+				}
+
+				this.comicCoverPanels.get(i).refreshStateComboBox(selectedItem);
+			}
+			if(itemRefreshCode == 4 || itemRefreshCode == 0) {
+				this.comicCoverPanels.get(i).updateComboBoxList();
+				updateButtonStates(3);
+			}
+		}
+	}
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(userModel.getIsAuthenticated()) {
+			if(evt.getPropertyName() == "userChange") {
+				updateButtonStates(0);
+			}
+			else if(evt.getPropertyName() == "favoriteChange"){
+				if(evt.getNewValue() == "add")
+					System.out.println("Add one new favorite (VueInfo)");
+				else if(evt.getNewValue() == "remove")
+					System.out.println("Remove one favorite (VueInfo)");
+				updateButtonStates(1);
+			}
+			else if(evt.getPropertyName() == "readChange") {
+				if(evt.getNewValue() == "add")
+					System.out.println("Add new read (change state)");
+				else if(evt.getNewValue() == "remove")
+					System.out.println("remove read");
+				updateButtonStates(2);
+			}
+			else if(evt.getPropertyName() == "collectionChange") {
+				if(evt.getNewValue() == "add")
+					System.out.println("Collection change [add] (VueInfo)");
+				else if(evt.getNewValue() == "remove")
+					System.out.println("Collection change [remove] (VueInfo)");
+				updateButtonStates(3);
+			}
+			else if(evt.getPropertyName() == "collectionListChange") {
+				updateButtonStates(4);
+			}
 		}
 	}
 }

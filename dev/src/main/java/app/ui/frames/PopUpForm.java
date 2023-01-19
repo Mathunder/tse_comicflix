@@ -59,7 +59,7 @@ public class PopUpForm extends JFrame implements PropertyChangeListener{
 		contentPane.add(lblPop);
 		
 		
-		DefaultButton btnOk = new DefaultButton("Cancel", CustomColor.Black, 14, true);
+		DefaultButton btnOk = new DefaultButton("Close", CustomColor.Black, 14, true);
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnOkActionPerformed(e); 				
