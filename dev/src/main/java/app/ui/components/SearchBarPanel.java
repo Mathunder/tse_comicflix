@@ -117,7 +117,7 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 				this.searchRoundBar.setSearchText("Loading...");
 				this.btnFilter.setEnabled(false);
 			} else if (evt.getNewValue() == ComicVineSearchStatus.DONE) {
-				this.searchRoundBar.setSearchText("Search");
+				this.searchRoundBar.setSearchText("Rechercher");
 				if (this.comicVineService.getFilters().size() != 0)
 					this.btnFilter.setEnabled(true);
 
