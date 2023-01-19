@@ -60,7 +60,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		SpringLayout sl_contentPane = new SpringLayout();
 		contentPane.setLayout(sl_contentPane);
 		
-		JLabel lblFirstName = new JLabel("First Name");
+		JLabel lblFirstName = new JLabel("Prénom");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblFirstName, 0, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblFirstName, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblFirstName, 54, SpringLayout.NORTH, contentPane);
@@ -78,7 +78,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		contentPane.add(txtField_firstName);
 		txtField_firstName.setColumns(1);
 		
-		JLabel lblLastName = new JLabel("Last Name");
+		JLabel lblLastName = new JLabel("Nom");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblLastName, 0, SpringLayout.SOUTH, lblFirstName);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblLastName, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblLastName, 54, SpringLayout.SOUTH, lblFirstName);
@@ -96,7 +96,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		contentPane.add(txtField_lastName);
 		txtField_lastName.setColumns(1);
 		
-		JLabel lblUsername = new JLabel("Username");
+		JLabel lblUsername = new JLabel("Utilisateur");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblUsername, 0, SpringLayout.SOUTH, lblLastName);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblUsername, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblUsername, 54, SpringLayout.SOUTH, lblLastName);
@@ -114,7 +114,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		contentPane.add(txtField_username);
 		txtField_username.setColumns(1);
 		
-		JLabel lblPassword = new JLabel("Password");
+		JLabel lblPassword = new JLabel("Mot de passe");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPassword, 0, SpringLayout.SOUTH, lblUsername);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblPassword, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblPassword, 54, SpringLayout.SOUTH, lblUsername);
@@ -131,7 +131,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
 		contentPane.add(passwordField);
 		
-		JLabel lblConfirmPassword = new JLabel("Confirm password");
+		JLabel lblConfirmPassword = new JLabel("Confirmation MDP");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblConfirmPassword, 0, SpringLayout.SOUTH, lblPassword);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblConfirmPassword, 30, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblConfirmPassword, 54, SpringLayout.SOUTH, lblPassword);
@@ -175,7 +175,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		lblErrorCreate.setVisible(false);
 		contentPane.add(lblErrorCreate);
 		
-		DefaultButton btnCreate = new DefaultButton("Create", CustomColor.CrimsonRed, 14, true);
+		DefaultButton btnCreate = new DefaultButton("Créer", CustomColor.CrimsonRed, 14, true);
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCreateActionPerformed(e);
@@ -188,7 +188,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnCreate, -110, SpringLayout.EAST, contentPane);
 		contentPane.add(btnCreate);
 		
-		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Black, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Supprimer", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -222,20 +222,20 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 				}
 				else
 				{
-					lblErrorCreate.setText("Username already exist ");
+					lblErrorCreate.setText("Utilisateur existe déjà ");
 					lblErrorCreate.setVisible(true);
 				}
 			}
 			else
 			{
-				lblErrorCreate.setText("Passwords are not the same ");
+				lblErrorCreate.setText("MDPs ne sont pas les mêmes ");
 				lblErrorCreate.setVisible(true);
 			}
 				
 		}
 		else
 		{
-			lblErrorCreate.setText("A field is empty ");
+			lblErrorCreate.setText("Un champ est vide ");
 			lblErrorCreate.setVisible(true);
 		}
 		
