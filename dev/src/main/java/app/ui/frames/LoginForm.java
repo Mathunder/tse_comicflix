@@ -58,7 +58,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		SpringLayout sl_contentPane = new SpringLayout();
 		contentPane.setLayout(sl_contentPane);
 		
-		JLabel lblUsername = new JLabel("Username");
+		JLabel lblUsername = new JLabel("Utilisateur");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblUsername, 0, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblUsername, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblUsername, 54, SpringLayout.NORTH, contentPane);
@@ -75,7 +75,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		contentPane.add(txtField_username);
 		txtField_username.setColumns(1);
 		
-		JLabel lblPassword = new JLabel("Password");
+		JLabel lblPassword = new JLabel("Mot de passe");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPassword, 0, SpringLayout.SOUTH, lblUsername);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblPassword, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblPassword, -147, SpringLayout.SOUTH, contentPane);
@@ -92,7 +92,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
 		contentPane.add(passwordField);
 		
-		lblErrorLogin = new JLabel("Invalid username or password ! ");
+		lblErrorLogin = new JLabel("Utilisateur et/ou mot de passe incorrect(s) ! ");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblErrorLogin, 8, SpringLayout.SOUTH, lblPassword);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblErrorLogin, 111, SpringLayout.WEST, contentPane);
 		lblErrorLogin.setFont(new Font("Tahoma", Font.ITALIC, 14));
