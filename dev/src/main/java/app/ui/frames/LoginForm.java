@@ -100,7 +100,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		lblErrorLogin.setVisible(false);
 		contentPane.add(lblErrorLogin);
 		
-		DefaultButton btnLogin = new DefaultButton("Login", CustomColor.Red, 14, true);
+		DefaultButton btnLogin = new DefaultButton("Connexion", CustomColor.Red, 14, true);
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnLoginActionPerformed(e);
@@ -113,7 +113,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnLogin, -25, SpringLayout.EAST, contentPane);
 		contentPane.add(btnLogin);
 		
-		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Black, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Supprimer", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -125,7 +125,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnCancel, 130, SpringLayout.WEST, contentPane);
 		contentPane.add(btnCancel);
 		
-		DefaultButton btnCreate = new DefaultButton("Create Account", CustomColor.CrimsonRed, 14, true);
+		DefaultButton btnCreate = new DefaultButton("Créer compte", CustomColor.CrimsonRed, 14, true);
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCreateActionPerformed(e); 				
@@ -137,7 +137,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnCreate, -20, SpringLayout.WEST, btnLogin);
 		contentPane.add(btnCreate);
 		
-		DefaultButton btnChange = new DefaultButton("Change Password", CustomColor.Gray, 14, true);
+		DefaultButton btnChange = new DefaultButton("Changer MDP", CustomColor.Gray, 14, true);
 		btnChange.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnChangeActionPerformed(e); 				
