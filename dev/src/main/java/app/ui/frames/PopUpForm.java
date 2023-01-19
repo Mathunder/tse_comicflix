@@ -58,8 +58,8 @@ public class PopUpForm extends JFrame implements PropertyChangeListener{
 		lblPop.setHorizontalTextPosition(SwingConstants.CENTER);
 		contentPane.add(lblPop);
 		
-		
-		DefaultButton btnOk = new DefaultButton("Close", CustomColor.Black, 14, true);
+		DefaultButton btnOk = new DefaultButton("Fermer", CustomColor.Black, 14, true);
+
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnOkActionPerformed(e); 				
