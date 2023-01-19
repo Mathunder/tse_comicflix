@@ -65,8 +65,7 @@ public class ComicVueRecommandation extends ComicVue {
 			
 			this.ComicCoverPanels.add(comicCover);
 			this.add(comicCover);
-		}
-		
+		}	
 		refreshPanel();
 	}
 	
