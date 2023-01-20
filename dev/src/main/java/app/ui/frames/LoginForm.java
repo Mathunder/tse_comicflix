@@ -16,6 +16,7 @@ import java.awt.Toolkit;
 
 import app.models.UserModel;
 import app.services.DatabaseService;
+import app.services.UiController;
 import app.ui.components.DefaultButton;
 import app.ui.themes.CustomColor;
 import java.awt.event.ActionListener;
@@ -35,14 +36,15 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 	protected UserModel userModel; 
 	//Controller
 	protected DatabaseService databaseService;
-	
+	protected UiController uiController;
 	
 	/**
 	 * Create the frame.
 	 */
-	public LoginForm(UserModel um, DatabaseService dbS) {
+	public LoginForm(UserModel um, DatabaseService dbS, UiController uiC) {
 		this.userModel = um;
 		this.databaseService = dbS;
+		this.uiController = uiC;
 		this.userModel.addPropertyChangeListener(this);
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
@@ -151,6 +153,8 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 	}
 	
 	private void btnCancelActionPerformed(ActionEvent e) {
+		
+		uiController.setEnableLoginButton();
 		dispose();
 	}
 	
@@ -166,11 +170,14 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 	
 	private void btnLoginActionPerformed(ActionEvent e) {
 		
+		System.out.println("LOGIN");
 		String usr_name = new String(txtField_username.getText());
 		String usr_password = new String(passwordField.getPassword());
 		
 		//CHECK CREDENTIAL AND GET USER INFO
 		databaseService.loginUserFromUsername(usr_name, usr_password);
+			
+		uiController.setEnableLoginButton();
 		
 		if(isCredientialCorrect){	
 			lblErrorLogin.setVisible(false);

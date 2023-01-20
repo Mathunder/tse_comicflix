@@ -2,9 +2,12 @@ package app.ui.frames;
 
 import app.entities.User;
 import app.helpers.ComicVineSearchStatus;
+import app.models.UiModel;
 import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
+import app.services.UiController;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -44,19 +47,23 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		
 		//Models
 		protected UserModel userModel;
+		protected UiModel uiModel;
 		
 		//Controllers
 		protected ComicVineService comicVineService;
 		protected DatabaseService dataBaseService;
+		protected UiController uiController;
 		
-		public MainFrame(UserModel um, ComicVineService comicVineService, DatabaseService dbS) {	
+		public MainFrame(UserModel um, UiModel uim, ComicVineService comicVineService, DatabaseService dbS, UiController uiC) {	
 			super();
 			this.userModel = um;
+			this.uiModel = uim;
 			this.comicVineService = comicVineService;
 			this.dataBaseService = dbS;
+			this.uiController = uiC;
 			this.userModel.addPropertyChangeListener(this);
 			this.comicVineService.addPropertyChangeListener(this);
-			
+			this.uiModel.addPropertyChangeListener(this);
 			initComponents();
 		}
 		
@@ -295,8 +302,9 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	
 	    	//If user is not authenticated
 	    	if (!userModel.getIsAuthenticated()) {
-		    	JFrame loginFrame = new LoginForm(userModel, dataBaseService);
+		    	JFrame loginFrame = new LoginForm(userModel, dataBaseService, uiController);
 		    	loginFrame.setVisible(true);
+		    	uiController.setDisableLoginButton();
 	    	}
 	    	else { 
 	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
@@ -337,6 +345,10 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	}
 	    }
 	    
+	    public void changeStateLoginButton(boolean state) {
+	    	this.btnUserLogin.setEnabled(state);
+	    }
+	    
 	    public void propertyChange(PropertyChangeEvent evt) {
 	    	if (evt.getPropertyName() == "userChange") {
 				showUserInfo();
@@ -349,5 +361,16 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 					setFocusOnDiscoverPanel();
 				}
 			}
+	    	
+	    	if(evt.getPropertyName() == "loginButtonStateChange") //From Controller/Model ComicVineService
+			{
+				if(evt.getNewValue().equals(true)) {
+					changeStateLoginButton(true);
+				}
+				else {
+					changeStateLoginButton(false);
+				}
+			}
+	    	
 	    }
 }
