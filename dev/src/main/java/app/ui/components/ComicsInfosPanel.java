@@ -14,12 +14,10 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import app.dto.ResponseDto;
 import app.dto.ResultDto;
 import app.entities.Issue;
-import app.entities.User;
 import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
@@ -29,12 +27,12 @@ import app.ui.themes.CustomColor;
  *  The goal of this class is to create a panel in which the informations of the selected comic will be displayed.
  */
 @SuppressWarnings("serial")
-public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
+public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 	
 	private ResultDto result;
 	private ComicVineService cvs;
 	private ResponseDto response;
-	private String type;
+	private String type = "";
 	private ResultDto result_volume;
 	private ResultDto result_prev;
 	private ResultDto result_next;
@@ -157,17 +155,16 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 		
 		JPanel subpanel1 = new JPanel();
 		JPanel subpanel2 = new JPanel();
-		JPanel scrollable_panel = new JPanel();
 		
 		JPanel box1 = new JPanel();
-		JTextArea synopsis_title = new JTextArea("Summary");
+		JTextArea synopsis_title = new JTextArea("Résumé");
 		JTextArea synopsis = new JTextArea();
 		String synopsis_text = "";
 		JScrollPane scroll_synopsis_text;
 		JTextArea creators_title = new JTextArea();
 		JTextArea creators = new JTextArea();
 		JScrollPane scroll_creators;
-		JTextArea characters_title = new JTextArea("Characters");
+		JTextArea characters_title = new JTextArea("Personnages");
 		JTextArea characters = new JTextArea();
 		JScrollPane scroll_characters;
 		
@@ -216,17 +213,17 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 				if (!this.result.getDescription().isEmpty()) {
 					synopsis_text = this.result.getDescription().replaceAll("\\<.*?\\>", "");
 				} else {
-					synopsis_text = "Sorry, no description was found.";
+					synopsis_text = "Désolé, nous n'avons pas trouvé de résumé.";
 				}
 			} else if (this.type == "character") {
 				if (!this.result.getDeck().isEmpty()) {
 					synopsis_text = this.result.getDeck().replaceAll("\\<.*?\\>", "");
 				} else {
-					synopsis_text = "Sorry, no description was found.";
+					synopsis_text = "Désolé, nous n'avons pas trouvé de résumé.";
 				}
 			}
 		} catch (NullPointerException e) {
-			synopsis_text = "Sorry, no description was found.";
+			synopsis_text = "Désolé, nous n'avons pas trouvé de résumé.";
 		}
 		synopsis.setText(synopsis_text);
 		synopsis.setEditable(false);
@@ -246,9 +243,9 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 		box1.add(Box.createRigidArea(new Dimension(0, 50)));
 		
 		if (this.type == "character") {
-			creators_title.setText("Creators");
+			creators_title.setText("Créateurs");
 		} else if (this.type == "issue") {
-			creators_title.setText("Person Credits");
+			creators_title.setText("Crédits");
 		}
 		creators_title.setEditable(false);
 		creators_title.setFont(title_font);
@@ -263,23 +260,23 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 						creators.setText(this.result.getCreators().get(i).getName() + "\n");
 					}
 				} else {
-					creators.setText("Sorry, no creators were found.");
+					creators.setText("Désolé, nous n'avons pas trouvé de créateurs.");
 				}
 			} else if (this.type == "issue") {
-				if (this.type == "character") {
+				if (!this.result.getPerson_credits().isEmpty()) {
 					for (int i = 0; i < this.result.getPerson_credits().size(); i++) {
 						creators.setText(this.result.getPerson_credits().get(i).getRole() + " : "
 								+ this.result.getPerson_credits().get(i).getName() + "\n");
 					}
 				} else {
-					creators.setText("Sorry, no person credits were found.");
+					creators.setText("Désolé, nous n'avons pas trouvé de crédits.");
 				}
 			}
 		} catch (NullPointerException e) {
 			if (this.type == "issue") {
-				creators.setText("Sorry, no person credits were found.");
+				creators.setText("Désolé, nous n'avons pas trouvé de crédits.");
 			} else if (this.type == "character") {
-				creators.setText("Sorry, no creators were found.");
+				creators.setText("Désolé, nous n'avons pas trouvé de crédits.");
 			}
 		}
 		creators.setEditable(false);
@@ -310,10 +307,10 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 					characters.setText(characters.getText() + this.result.getCharacter_credits().get(i).getName() + '\n');
 				}
 			} else {
-				characters.setText("Sorry, no characters were found.");
+				characters.setText("Désolé, nous n'avons pas trouvé de personnages.");
 			}
 		} catch (NullPointerException e) {
-			characters.setText("Sorry, no characters were found.");
+			characters.setText("Désolé, nous n'avons pas trouvé de personnages.");
 		}
 		characters.setEditable(false);
 		characters.setLineWrap(true);
@@ -374,25 +371,25 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 		infos.add(field_title);
 		infos.add(other_data);
 		
-		field_title_name.setText("Name :");
+		field_title_name.setText("Nom :");
 		field_title_name.setFont(field_title_font);
 		field_title_name.setBackground(null);
 		field_title_volume.setText("Volume :");
 		field_title_volume.setFont(field_title_font);
 		field_title_volume.setBackground(null);
-		field_title_issue_number.setText("Issue number :");
+		field_title_issue_number.setText("Numéro :");
 		field_title_issue_number.setFont(field_title_font);
 		field_title_issue_number.setBackground(null);
-		field_title_cover_date.setText("Cover date :");
+		field_title_cover_date.setText("Date :");
 		field_title_cover_date.setFont(field_title_font);
 		field_title_cover_date.setBackground(null);
-		name.setText("Not found");
+		name.setText("Non trouvé");
 		name.setBackground(null);
-		volume.setText("Not found");
+		volume.setText("Non trouvé");
 		volume.setBackground(null);
-		issue_number.setText("Not found");
+		issue_number.setText("Non trouvé");
 		issue_number.setBackground(null);
-		cover_date.setText("Not found");
+		cover_date.setText("Non trouvé");
 		cover_date.setBackground(null);
 		// The following lines handle the case where the comic informations are null
 		if (this.result.getName() != null)
@@ -548,6 +545,7 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 				});
 				box3.add(this.comicCoverPanel_prev);
 			}
+		}
 
 			
 		
@@ -557,10 +555,13 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 		subpanel1.add(BorderLayout.WEST, box1);
 		subpanel1.add(Box.createHorizontalGlue());
 		subpanel1.add(BorderLayout.WEST, box2);
+		subpanel1.setVisible(true);
 		
 		subpanel2.setBackground(CustomColor.WhiteCloud);
 //		subpanel2.setLayout(new BoxLayout(subpanel2, BoxLayout.X_AXIS));
 		subpanel2.add(BorderLayout.CENTER, box3);
+		subpanel2.setVisible(true);
+
 		
 		this.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 		this.setBackground(CustomColor.WhiteCloud);
@@ -568,10 +569,12 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener{
 		this.add(BorderLayout.NORTH, subpanel1);
 		this.add(Box.createRigidArea(new Dimension(0, 60)));
 		this.add(BorderLayout.SOUTH, subpanel2);
-		if(userModel.getIsAuthenticated())
-			this.updateButtonStates(0);
-		this.setVisible(true);
+		if (this.type == "issue") {
+			if(userModel.getIsAuthenticated())
+				this.updateButtonStates(0);
 		}
+		this.setVisible(true);
+		
 	}
 
 	public void updateButtonStates(int itemRefreshCode) {
