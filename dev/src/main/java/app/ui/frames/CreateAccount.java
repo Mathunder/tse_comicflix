@@ -18,6 +18,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import app.models.UiModel;
 import app.models.UserModel;
 import app.services.DatabaseService;
 import app.services.UiController;

@@ -6,6 +6,8 @@ import java.beans.PropertyChangeSupport;
 public class UiModel {
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	
+	private final PropertyChangeSupport pcs1 = new PropertyChangeSupport(this);
+	
 	private boolean buttonState = true;
 	private boolean buttonStateCreateAccount = true;
 	
@@ -36,13 +38,13 @@ public class UiModel {
 	public void setDisableCreateAccountButton() {
 		boolean oldState = buttonStateCreateAccount;
 		buttonStateCreateAccount = false;
-		this.pcs.firePropertyChange("createAccountButtonStateChange", oldState, buttonState);
+		this.pcs1.firePropertyChange("createAccountButtonStateChange", oldState, buttonState);
 	}
 	
 	public void setEnableCreateAccountButton() {
 		boolean oldState = buttonStateCreateAccount;
 		buttonStateCreateAccount = true;
-		this.pcs.firePropertyChange("createAccountButtonStateChange", oldState, buttonState);
+		this.pcs1.firePropertyChange("createAccountButtonStateChange", oldState, buttonState);
 	}
 }
 
