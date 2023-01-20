@@ -21,12 +21,15 @@ import app.services.UiController;
 import app.ui.components.DefaultButton;
 import app.ui.themes.CustomColor;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
-public class LoginForm extends JFrame implements PropertyChangeListener {
+public class LoginForm extends JFrame implements PropertyChangeListener, WindowListener {
 
 	private DefaultButton btnCreate;
 	
@@ -175,6 +178,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		uiController.setDisableCreateAccountButton();
 		JFrame CreateAccount = new CreateAccount(userModel, databaseService, uiController);
 		CreateAccount.setVisible(true);
+	
 	}
 	
 	private void btnChangeActionPerformed(ActionEvent e) {
@@ -230,4 +234,50 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 			}
     	}
     }
+
+	
+	
+	
+	//methods from WindowListener Interface
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		uiController.setEnableCreateAccountButton();
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }
