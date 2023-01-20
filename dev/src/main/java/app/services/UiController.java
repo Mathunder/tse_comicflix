@@ -18,4 +18,12 @@ public class UiController {
 	}
 	
 	
+	public void setEnableCreateAccountButton() {
+		uiModel.setEnableCreateAccountButton();
+	}
+	
+	public void setDisableCreateAccountButton() {
+		uiModel.setDisableCreateAccountButton();
+	}
+	
 }

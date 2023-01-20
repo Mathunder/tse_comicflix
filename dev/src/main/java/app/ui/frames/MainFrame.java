@@ -302,7 +302,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	
 	    	//If user is not authenticated
 	    	if (!userModel.getIsAuthenticated()) {
-		    	JFrame loginFrame = new LoginForm(userModel, dataBaseService, uiController);
+		    	JFrame loginFrame = new LoginForm(userModel, dataBaseService, uiController, uiModel);
 		    	loginFrame.setVisible(true);
 		    	uiController.setDisableLoginButton();
 	    	}

@@ -14,6 +14,7 @@ import java.awt.Font;
 import javax.swing.SpringLayout;
 import java.awt.Toolkit;
 
+import app.models.UiModel;
 import app.models.UserModel;
 import app.services.DatabaseService;
 import app.services.UiController;
@@ -27,6 +28,8 @@ import javax.swing.JPasswordField;
 
 public class LoginForm extends JFrame implements PropertyChangeListener {
 
+	private DefaultButton btnCreate;
+	
 	private JPanel contentPane;
 	private JTextField txtField_username;
 	private JPasswordField passwordField;
@@ -34,6 +37,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 	private boolean isCredientialCorrect = false;
 	//Model
 	protected UserModel userModel; 
+	protected UiModel uiModel;
 	//Controller
 	protected DatabaseService databaseService;
 	protected UiController uiController;
@@ -41,12 +45,19 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 	/**
 	 * Create the frame.
 	 */
-	public LoginForm(UserModel um, DatabaseService dbS, UiController uiC) {
+	public LoginForm(UserModel um, DatabaseService dbS, UiController uiC, UiModel UiM) {
 		this.userModel = um;
 		this.databaseService = dbS;
 		this.uiController = uiC;
+		this.uiModel = UiM;
 		this.userModel.addPropertyChangeListener(this);
+		this.uiModel.addPropertyChangeListener(this);
+		initComponents();
 		
+		
+	}
+	
+	private void initComponents() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
 		setTitle("Login");
 		setResizable(false);
@@ -127,7 +138,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnCancel, 130, SpringLayout.WEST, contentPane);
 		contentPane.add(btnCancel);
 		
-		DefaultButton btnCreate = new DefaultButton("Créer compte", CustomColor.CrimsonRed, 14, true);
+		this.btnCreate = new DefaultButton("Créer compte", CustomColor.CrimsonRed, 14, true);
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCreateActionPerformed(e); 				
@@ -152,6 +163,7 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 		contentPane.add(btnChange);
 	}
 	
+	
 	private void btnCancelActionPerformed(ActionEvent e) {
 		
 		uiController.setEnableLoginButton();
@@ -159,7 +171,9 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 	}
 	
 	private void btnCreateActionPerformed(ActionEvent e) {
-		JFrame CreateAccount = new CreateAccount(userModel, databaseService);
+		
+		uiController.setDisableCreateAccountButton();
+		JFrame CreateAccount = new CreateAccount(userModel, databaseService, uiController);
 		CreateAccount.setVisible(true);
 	}
 	
@@ -197,7 +211,23 @@ public class LoginForm extends JFrame implements PropertyChangeListener {
 			isCredientialCorrect = false;
 	}
 	
+	
+	private void changeStateCreateAccountButton(boolean state) {
+		this.btnCreate.setEnabled(state);
+	}
+	
+	
 	public void propertyChange(PropertyChangeEvent evt) {
     	checkCredential();
+    	
+    	if (evt.getPropertyName() == "createAccountButtonStateChange") {
+ 
+    		if(evt.getNewValue().equals(true)) {
+				changeStateCreateAccountButton(true);
+			}
+			else {
+				changeStateCreateAccountButton(false);
+			}
+    	}
     }
 }
