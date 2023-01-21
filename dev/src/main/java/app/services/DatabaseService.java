@@ -3,6 +3,7 @@ package app.services;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -770,6 +771,40 @@ public class DatabaseService {
 		return collection_names;
 	}
 	
+	public List<String> getNotes(User user, int issue_id){
+		List<String> notes = new ArrayList<>();
+		String sql_query = "SELECT note_message FROM notes WHERE user_id = " + user.getId() + " AND issue_id = " + issue_id;
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)){
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next())
+			{
+				notes.add(rs.getString("note_message"));
+			}
+		} 
+		catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+		return notes;
+	}
+	
+	public void addNotes(User user, int issue_id, String note) {
+	    String sql_query = "INSERT INTO notes (issue_id, user_id, note_message, note_date) VALUES (?, ?, ?, ?)";
+	    java.sql.Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
+	    try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)) {
+	        pstmt.setInt(1, issue_id);
+	        pstmt.setInt(2, user.getId());
+	        pstmt.setString(3, note);
+	        pstmt.setTimestamp(4, timestamp);
+	        pstmt.executeUpdate();
+	        System.out.println("data added");
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	
 	private Collection getAllIssuesFromUserCollection(int user_id, String cName){
 		List<Issue> issues = new ArrayList<>();
 		
@@ -817,21 +852,4 @@ public class DatabaseService {
 		return user_collections;
 	}
 	
-	private List<String> getNotes(User user, Issue issue){
-		List<String> notes = new ArrayList<>();
-		String sql_query = "SELECT note_message FROM notes WHERE user_id = " + user.getId() + " AND issue_id = " + issue.getId();
-		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)){
-			ResultSet rs = pstmt.executeQuery();
-			
-			while(rs.next())
-			{
-				notes.add(rs.getString("note_message"));
-			}
-		} 
-		catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-		}
-		return notes;
-	}
 }

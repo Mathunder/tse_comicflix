@@ -1,6 +1,8 @@
  package app.ui.components;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -422,6 +424,35 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		 * This part displays user personal notes if a user is connected and if it is an issue
 		 */
 		if (this.type == "issue" && userModel.getIsAuthenticated()) {
+			System.out.println(userModel.getUser().getId());
+			System.out.println(result.getId());
+			System.out.println(databaseService.getNotes(userModel.getUser(), result.getId()));
+			List<String> list_notes= databaseService.getNotes(userModel.getUser(), result.getId());
+			JTextArea title = new JTextArea("Commentaires sur ce comics");
+			title.setFont(new Font("Arial", Font.BOLD, 15));
+			title.setEditable(false);
+			notes.setText(String.join("\n", list_notes));
+			notes.setFont(new Font("Verdana", Font.ITALIC, 12));
+			notes.setEditable(false);
+			notes.setLineWrap(true);
+			notes.setWrapStyleWord(true);
+			box_notes.setLayout(new BoxLayout(box_notes, BoxLayout.Y_AXIS));
+			box_notes.add(title);
+			box_notes.add(notes);
+			
+			JTextField inputBox = new JTextField();
+			JButton submitButton = new JButton("Enregistrer la note");
+
+			submitButton.addActionListener(new ActionListener() {
+			    public void actionPerformed(ActionEvent e) {
+			        String inputText = inputBox.getText();
+			       databaseService.addNotes(userModel.getUser(), result.getId(), inputText);
+			    }
+			});
+
+			box_notes.add(inputBox);
+			box_notes.add(submitButton);
+
 			
 		}
 		
@@ -567,7 +598,8 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		
 		subpanel2.setBackground(CustomColor.WhiteCloud);
 //		subpanel2.setLayout(new BoxLayout(subpanel2, BoxLayout.X_AXIS));
-		subpanel2.add(BorderLayout.CENTER, box3);
+		subpanel2.add(BorderLayout.WEST, box3);
+		subpanel2.add(BorderLayout.EAST, box_notes);
 		subpanel2.setVisible(true);
 
 		
@@ -581,6 +613,7 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 			if(userModel.getIsAuthenticated())
 				this.updateButtonStates(0);
 		}
+//		this.add(box_notes);
 		this.setVisible(true);
 		
 	}
