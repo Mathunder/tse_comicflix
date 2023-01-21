@@ -72,7 +72,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener{
 			mf = new JFrame("Comics Library");   
 			mf.getContentPane().setBackground(new Color(172, 0, 0));
 			
-			Image icon = Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png");  
+			Image icon = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("icon.png"));  
 			mf.setIconImage(icon);  
 			mf.setSize(1050,600);      
 			mf.setBackground(CustomColor.Red);
