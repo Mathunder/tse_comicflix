@@ -1,0 +1,14 @@
+stages:
+  - clean
+  - build
+
+clean:
+  script: mvn clean
+
+build:
+  script: mvn package
+
+deploy:
+  script: mvn deploy
+  only:
+    - master
