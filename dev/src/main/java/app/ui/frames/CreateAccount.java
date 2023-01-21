@@ -18,13 +18,17 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import app.models.UiModel;
 import app.models.UserModel;
 import app.services.DatabaseService;
+import app.services.UiController;
 import app.ui.components.DefaultButton;
 import app.ui.themes.CustomColor;
 
 public class CreateAccount extends JFrame implements PropertyChangeListener {
 	
+	private DefaultButton btnCreate;
+	private DefaultButton btnCancel;
 	private JPanel contentPane;
 	private JTextField txtField_firstName;
 	private JTextField txtField_lastName;
@@ -37,16 +41,24 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 	protected UserModel userModel; 
 	//Controller
 	protected DatabaseService databaseService;
+	protected UiController uiController;
 	
 	
 	/**
 	 * Create the frame.
 	 */
-	public CreateAccount(UserModel um, DatabaseService dbS) {
+	public CreateAccount(UserModel um, DatabaseService dbS, UiController UiC) {
 		this.userModel = um;
 		this.databaseService = dbS;
+		this.uiController = UiC;
 		this.userModel.addPropertyChangeListener(this);
+		initComponents();
 		
+	}
+	
+	
+	
+	private void initComponents() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
 		setTitle("Création de compte");
 		setResizable(false);
@@ -175,7 +187,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		lblErrorCreate.setVisible(false);
 		contentPane.add(lblErrorCreate);
 		
-		DefaultButton btnCreate = new DefaultButton("Créer", CustomColor.CrimsonRed, 14, true);
+		this.btnCreate = new DefaultButton("Créer", CustomColor.CrimsonRed, 14, true);
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCreateActionPerformed(e);
@@ -188,7 +200,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnCreate, -110, SpringLayout.EAST, contentPane);
 		contentPane.add(btnCreate);
 		
-		DefaultButton btnCancel = new DefaultButton("Fermer", CustomColor.Black, 14, true);
+		this.btnCancel = new DefaultButton("Fermer", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -201,7 +213,10 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		contentPane.add(btnCancel);
 	}
 	
+	
 	private void btnCancelActionPerformed(ActionEvent e) {
+		
+		uiController.setEnableCreateAccountButton();
 		dispose();
 	}
 	
@@ -221,6 +236,9 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 					dispose();
 					JFrame PopUp = new PopUpForm(userModel, databaseService, "Compte créé avec succès ");
 					PopUp.setVisible(true);
+					
+					uiController.setEnableCreateAccountButton();
+
 				}
 				else
 				{
