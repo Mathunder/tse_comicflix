@@ -42,9 +42,9 @@ public class ComicVueSearch extends JPanel {
 		this.comicsVineService = comicVineService;
 		this.databaseService = databaseService;
 		// * Issue Results Panel
-		IssueResultsPanel issuesResultPanel = new IssueResultsPanel("Issues :", userModel, comicVineService,databaseService);
+		IssueResultsPanel issuesResultPanel = new IssueResultsPanel("Comics :", userModel, comicVineService,databaseService);
 		// * Character Results Panel
-		CharacterResultsPanel characterResultPanel = new CharacterResultsPanel("Characters :", userModel, comicVineService, databaseService);
+		CharacterResultsPanel characterResultPanel = new CharacterResultsPanel("Héros :", userModel, comicVineService, databaseService);
 		this.add(issuesResultPanel);
 		this.add(characterResultPanel);
 

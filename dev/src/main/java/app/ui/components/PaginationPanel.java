@@ -45,7 +45,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 		pageNumberLabel.setVisible(true);
 
 		// * Previous Page
-		prevPageButton = new DefaultButton("Previous", CustomColor.Red, 16, true);
+		prevPageButton = new DefaultButton("<<<", CustomColor.Red, 16, true);
 		prevPageButton.setBounds(10, 0, 100, 30);
 		prevPageButton.setVisible(false);
 		prevPageButton.addActionListener(new ActionListener() {
@@ -54,7 +54,7 @@ public class PaginationPanel extends JPanel implements PropertyChangeListener {
 			}
 		});
 		// * Next Page
-		nextPageButton = new DefaultButton("Next", CustomColor.Red, 16, true);
+		nextPageButton = new DefaultButton(">>>", CustomColor.Red, 16, true);
 		nextPageButton.setBounds(730, 0, 100, 30);
 		nextPageButton.setVisible(false);
 		nextPageButton.addActionListener(new ActionListener() {
