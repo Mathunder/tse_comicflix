@@ -1,5 +1,6 @@
 stages:
   - clean
+  - build
   - deploy
 
 image: maven:3.6-jdk-11
@@ -8,11 +9,11 @@ clean-project:
   stage : clean
   script: mvn clean -f dev/pom.xml
 
+build-project:
+  stage : build
+  script: mvn package -f dev/pom.xml
 
 deploy:
   stage : deploy
-  script: 
-  - mvn package -f dev/pom.xml -DfinalName=Comics_Library 
-  - ls -l dev/target/
-  - mvn deploy:deploy-file  -s ci_settings.xml -f dev/pom.xml -DgroupId=fr.tse.fise2.prinfo5 -DartifactId=dev -Dversion=0.0.1-SNAPSHOT -DfinalName=Comics_Library -Dfile=target/Comics_Library.jar -Dpackaging=jar -Durl=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/maven -Dpassword=$CI_REGISTRY_PASSWORD -Dusername=$CI_REGISTRY_USER
+  script: mvn deploy -s ci_settings.xml -f dev/pom.xml
 
