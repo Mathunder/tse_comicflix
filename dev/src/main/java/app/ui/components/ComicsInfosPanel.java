@@ -181,12 +181,8 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		JTextArea volume = new JTextArea();
 		JTextArea issue_number = new JTextArea();
 		JTextArea cover_date = new JTextArea();
-<<<<<<< Upstream, based on develop
-		
 		JPanel box3 = new JPanel();
-=======
 		JTextArea notes = new JTextArea();
->>>>>>> c1f8cec delete unused picture + add Jtextarea
 
 
 		Font title_font = new Font("Dialog", Font.BOLD, 16);
