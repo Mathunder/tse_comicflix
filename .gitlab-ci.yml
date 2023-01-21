@@ -11,7 +11,7 @@ clean-project:
 
 build-project:
   stage : build
-  script: mvn package -f dev/pom.xml
+  script: mvn package -f dev/pom.xml -DfinalName="Comics_Library" 
 
 deploy:
   stage : deploy
