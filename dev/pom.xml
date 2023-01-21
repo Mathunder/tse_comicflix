@@ -109,6 +109,7 @@
 									<mainClass>app.Main</mainClass>
 								</transformer>
 							</transformers>
+							<directory>src/main/resources</directory>
 						</configuration>
 					</execution>
 				</executions>
