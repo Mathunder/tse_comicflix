@@ -82,6 +82,22 @@
         <target>11</target>
       </configuration>
     </plugin>
+
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <version>3.2.0</version>
+    <configuration>
+      <archive>
+        <manifest>
+          <addClasspath>true</addClasspath>
+          <mainClass>fr.tse.fise2.prinfo5.dev.src.main.java.app.Main</mainClass>
+        </manifest>
+      </archive>
+    </configuration>
+  </plugin>
+
+
   </plugins>
 </build>
 
