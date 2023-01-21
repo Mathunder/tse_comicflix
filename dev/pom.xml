@@ -70,7 +70,9 @@
 			<url>${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/maven</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<packaging>jar</packaging>
 	<build>
+		<finalName>Comics_Library</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -93,11 +95,7 @@
 						<goals>
 							<goal>shade</goal>
 						</goals>
-						<configuration>
-
-           				<finalName>Comics_Library</finalName>
-            			<shadedArtifactAttached>true</shadedArtifactAttached>
-   
+						<configuration>   
 							<filters>
 								<filter>
 									<artifact>*:*</artifact>
