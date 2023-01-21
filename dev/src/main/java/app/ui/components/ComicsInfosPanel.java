@@ -90,6 +90,7 @@ public class ComicsInfosPanel extends JPanel {
 		JTextArea volume = new JTextArea();
 		JTextArea issue_number = new JTextArea();
 		JTextArea cover_date = new JTextArea();
+		JTextArea notes = new JTextArea();
 
 
 		Font title_font = new Font("Dialog", Font.BOLD, 16);
