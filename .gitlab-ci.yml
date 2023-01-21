@@ -3,6 +3,8 @@ stages:
   - build
   - deploy
 
+image: maven:3.6-jdk-11
+
 clean-project:
   stage : clean
   script: mvn clean
@@ -13,7 +15,5 @@ build-project:
 
 deploy:
   stage : deploy
-  script: mvn deploy
-  only:
-    - develop
-    - main
+  script: mvn deploy -s ci_settings.xml
+
