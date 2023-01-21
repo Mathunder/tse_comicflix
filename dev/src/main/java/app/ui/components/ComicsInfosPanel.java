@@ -181,10 +181,7 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		JTextArea volume = new JTextArea();
 		JTextArea issue_number = new JTextArea();
 		JTextArea cover_date = new JTextArea();
-<<<<<<< HEAD
 		JPanel box3 = new JPanel();
-=======
->>>>>>> branch 'PRI5-25-add-bookmarks-comments' of https://devops.telecomste.fr/prinfo/2022-23/Info5.git
 		JTextArea notes = new JTextArea();
 
 
