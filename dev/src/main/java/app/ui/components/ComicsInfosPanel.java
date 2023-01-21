@@ -182,8 +182,8 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		JTextArea issue_number = new JTextArea();
 		JTextArea cover_date = new JTextArea();
 		JPanel box3 = new JPanel();
+		JPanel box_notes = new JPanel();
 		JTextArea notes = new JTextArea();
-
 
 		Font title_font = new Font("Dialog", Font.BOLD, 16);
 		Font field_title_font = new Font("Dialog", Font.BOLD, 12);
@@ -416,6 +416,14 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		
 		
 		/* -------------------------------------------------- */
+		
+		
+		/*
+		 * This part displays user personal notes if a user is connected and if it is an issue
+		 */
+		if (this.type == "issue" && userModel.getIsAuthenticated()) {
+			
+		}
 		
 		
 		/*

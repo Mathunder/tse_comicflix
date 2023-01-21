@@ -816,4 +816,22 @@ public class DatabaseService {
 		
 		return user_collections;
 	}
+	
+	private List<String> getNotes(User user, Issue issue){
+		List<String> notes = new ArrayList<>();
+		String sql_query = "SELECT note_message FROM notes WHERE user_id = " + user.getId() + " AND issue_id = " + issue.getId();
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)){
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next())
+			{
+				notes.add(rs.getString("note_message"));
+			}
+		} 
+		catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+		return notes;
+	}
 }
