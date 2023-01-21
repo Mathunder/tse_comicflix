@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,9 @@ import lombok.Data;
 
 @Data
 public class ComicVineService {
+	private final Map<List<String>, SearchResultDto> cachePagination = new HashMap<>();
+	private final Map<String, ResponseDto> cacheURL = new HashMap<>();
+
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	private int limit = 8;
 	private int totalNumberOfPages = 1;
@@ -69,8 +73,6 @@ public class ComicVineService {
 
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("api_key", "f9073eee3658e2a4f39a9f531ad521b935ce87bc");
-			params.put("resources", String.join(",",
-					filters.stream().map(comicVineFilter -> comicVineFilter.getFilterValue()).toList()));
 			params.put("format", "json");
 			params.put("query", keyword);
 			params.put("limit", Integer.toString(limit));
@@ -79,11 +81,17 @@ public class ComicVineService {
 			this.setSearchStatus(ComicVineSearchStatus.FETCHING);
 
 			filters.stream().forEach(filter -> {
+				SearchResultDto searchResult = null;
 				params.put("resources", filter.getFilterValue());
-				SearchResultDto searchResult = given().params(params).header("User-Agent", userAgent).expect()
-						.statusCode(200).body("status_code", equalTo(1)).when().get("/search")
-						.as(SearchResultDto.class);
-
+				if (cachePagination.containsKey(Arrays.asList(params.get("query"),params.get("page"),params.get("resources")))) {
+					//* If the information is already stored in the cache then no need to send a new request
+					searchResult = cachePagination.get(Arrays.asList(params.get("query"),params.get("page"),params.get("resources")));
+				} else {
+					searchResult = given().params(params).header("User-Agent", userAgent).expect().statusCode(200)
+							.body("status_code", equalTo(1)).when().get("/search").as(SearchResultDto.class);
+					cachePagination.put(Arrays.asList(params.get("query"),params.get("page"),params.get("resources")),searchResult);
+				
+				}
 				processSearchResults(searchResult);
 			});
 
@@ -183,7 +191,7 @@ public class ComicVineService {
 				this.filters.add(filter);
 			}
 		}
-		
+
 		this.pcs.firePropertyChange("updateFilter", null, filters.size());
 	}
 
@@ -208,7 +216,12 @@ public class ComicVineService {
 		 * is no possible error (if the api gives an url, then we suppose that this url
 		 * points towards something that exists).
 		 */
-		this.infosResult = given().params(params).header("User-Agent", userAgent).when().get().as(ResponseDto.class);
+		if(cacheURL.containsKey(url)) {
+			this.infosResult= cacheURL.get(url);
+		}else {
+			this.infosResult = given().params(params).header("User-Agent", userAgent).when().get().as(ResponseDto.class);
+			cacheURL.put(url, this.infosResult);
+		}
 
 		// Since the baseURI has been modified, it is put back to its original value at
 		// the end of this method.
