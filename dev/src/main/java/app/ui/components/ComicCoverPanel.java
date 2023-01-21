@@ -124,7 +124,7 @@ public class ComicCoverPanel extends JPanel{
 			springLayout.putConstraint(SpringLayout.NORTH, button_fav, -25 , SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.WEST, button_fav, 0, SpringLayout.WEST, this);
 			springLayout.putConstraint(SpringLayout.SOUTH, button_fav, 0, SpringLayout.NORTH, titleLabel);
-			springLayout.putConstraint(SpringLayout.EAST, button_fav, -140, SpringLayout.EAST, this);
+			springLayout.putConstraint(SpringLayout.EAST, button_fav, 70, SpringLayout.WEST, this);
 			// Add buttons to the panel
 			add(button_fav);
 			
@@ -141,7 +141,7 @@ public class ComicCoverPanel extends JPanel{
 			springLayout.putConstraint(SpringLayout.NORTH, button_read, -25, SpringLayout.NORTH, titleLabel);
 			springLayout.putConstraint(SpringLayout.WEST, button_read, 70, SpringLayout.WEST, this);
 			springLayout.putConstraint(SpringLayout.SOUTH, button_read, 0, SpringLayout.NORTH, titleLabel);
-			springLayout.putConstraint(SpringLayout.EAST, button_read, -70, SpringLayout.EAST, this);
+			springLayout.putConstraint(SpringLayout.EAST, button_read, 140, SpringLayout.WEST, this);
 			// Add button to the panel
 			add(button_read);
 			
