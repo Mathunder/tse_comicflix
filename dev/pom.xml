@@ -91,7 +91,7 @@
       <archive>
         <manifest>
           <addClasspath>true</addClasspath>
-          <mainClass>fr.tse.fise2.prinfo5.dev.src.main.java.app.Main</mainClass>
+          <mainClass>fr.tse.fise2.prinfo5.app.Main</mainClass>
         </manifest>
       </archive>
     </configuration>
