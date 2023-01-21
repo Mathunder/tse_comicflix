@@ -17,5 +17,5 @@ build-project:
 
 deploy:
   stage : deploy
-  script: mvn deploy:deploy-file  -s ci_settings.xml -f dev/pom.xml -DfinalName=Comics_Library -Dfile=dev/target/Comics_Library.jar -Dpackaging=jar -Durl=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/maven
+  script: mvn deploy:deploy-file  -s ci_settings.xml -f dev/pom.xml -DfinalName=original-Comics_Library -Dfile=target/Comics_Library.jar -Dpackaging=jar -Durl=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/maven
 
