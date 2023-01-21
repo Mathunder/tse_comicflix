@@ -17,3 +17,6 @@ deploy:
   stage : deploy
   script: mvn deploy -s ci_settings.xml -f dev/pom.xml
 
+rules:
+  - if: $CI_COMMIT_BRANCH == "master"
+    when: always
