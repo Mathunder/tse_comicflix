@@ -94,6 +94,10 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+
+           				<finalName>Comics_Library</finalName>
+            			<shadedArtifactAttached>true</shadedArtifactAttached>
+   
 							<filters>
 								<filter>
 									<artifact>*:*</artifact>
