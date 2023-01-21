@@ -1,14 +1,19 @@
 stages:
   - clean
   - build
+  - deploy
 
-clean:
+clean-project:
+  stage : clean
   script: mvn clean
 
-build:
+build-project:
+  stage : build
   script: mvn package
 
 deploy:
+  stage : deploy
   script: mvn deploy
   only:
-    - master
+    - develop
+    - main
