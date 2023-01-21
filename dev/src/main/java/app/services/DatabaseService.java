@@ -35,7 +35,7 @@ public class DatabaseService {
 	
 	private Connection connect() {
 		
-		String path = "jdbc:sqlite:src\\main\\resources\\db\\app.db";
+		String path = "jdbc:sqlite::resource:app.db";
 		
 		Connection conn = null;
         try {
