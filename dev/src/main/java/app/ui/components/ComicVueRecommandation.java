@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import app.entities.Issue;
 import app.models.UserModel;
@@ -25,7 +27,6 @@ public class ComicVueRecommandation extends ComicVue {
 	public void showResult() {
 		removeComics();
 		
-		
 		//Show user recommended issues
 		for(int i=0;i<userModel.getRecommandedIssueList().size();i++) {
 			Issue recommanded_issue = userModel.getRecommandedIssueList().get(i);
@@ -34,9 +35,13 @@ public class ComicVueRecommandation extends ComicVue {
 			comicCover.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 
-					ComicsInfosPanel infos = new ComicsInfosPanel(recommanded_issue.getApi_detail_url());
+					ComicsInfosPanel infos = new ComicsInfosPanel(recommanded_issue.getApi_detail_url(), databaseService, userModel);
 					infos.fetchInformations();
+					infos.fetchPreviousNextInformations();
 					infos.createInfosPanel();
+					JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+					scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+					scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
 					// Creating the new frame that will display the informations the user wants.
 					String frame_name = "";
 					try {
@@ -51,7 +56,7 @@ public class ComicVueRecommandation extends ComicVue {
 						f.setIconImage(icon);
 					} catch (MalformedURLException e1) {}
 					f.setSize(1050, 600);
-					f.add(infos);
+					f.add(scrollPaneComicsInfos);
 					f.setResizable(false);
 					f.setVisible(true);
 
@@ -60,8 +65,7 @@ public class ComicVueRecommandation extends ComicVue {
 			
 			this.ComicCoverPanels.add(comicCover);
 			this.add(comicCover);
-		}
-		
+		}	
 		refreshPanel();
 	}
 	

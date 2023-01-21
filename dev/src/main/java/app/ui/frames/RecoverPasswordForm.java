@@ -42,7 +42,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		this.userModel.addPropertyChangeListener(this);
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
-		setTitle("Change Password");
+		setTitle("Changement mot de passe");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 350);
@@ -54,7 +54,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		SpringLayout sl_contentPane = new SpringLayout();
 		contentPane.setLayout(sl_contentPane);
 		
-		JLabel lblUsername = new JLabel("Username");
+		JLabel lblUsername = new JLabel("Utilisateur");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblUsername, 0, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblUsername, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblUsername, 54, SpringLayout.NORTH, contentPane);
@@ -90,7 +90,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		contentPane.add(txtField_question);
 		txtField_question.setColumns(1);
 		
-		JLabel lblPassword = new JLabel("New password");
+		JLabel lblPassword = new JLabel("Nouveau MDP");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPassword, 0, SpringLayout.SOUTH, lblQuestion);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblPassword, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblPassword, 54, SpringLayout.SOUTH, lblQuestion);
@@ -108,7 +108,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		contentPane.add(passwordField);
 		passwordField.setColumns(1);
 		
-		JLabel lblConfirmPassword = new JLabel("Confirm new password");
+		JLabel lblConfirmPassword = new JLabel("Confirmer MDP");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblConfirmPassword, 0, SpringLayout.SOUTH, lblPassword);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblConfirmPassword, 10, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblConfirmPassword, 54, SpringLayout.SOUTH, lblPassword);
@@ -136,7 +136,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		
 		
 		
-		DefaultButton btnChange = new DefaultButton("Change", CustomColor.CrimsonRed, 14, true);
+		DefaultButton btnChange = new DefaultButton("Changer", CustomColor.CrimsonRed, 14, true);
 		btnChange.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnChangeActionPerformed(e);
@@ -149,7 +149,7 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnChange, -110, SpringLayout.EAST, contentPane);
 		contentPane.add(btnChange);
 		
-		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Black, 14, true);
+		DefaultButton btnCancel = new DefaultButton("Fermer", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -179,28 +179,30 @@ public class RecoverPasswordForm extends JFrame implements PropertyChangeListene
 					{
 						databaseService.updatePassword(String.valueOf(passwordField.getPassword()), txtField_username.getText());
 						dispose();
+						JFrame PopUp = new PopUpForm(userModel, databaseService, "Changement effectué ! ");
+						PopUp.setVisible(true);
 					}
 					else
 					{
-						lblErrorCreate.setText("Annswer to the question is not right ");
+						lblErrorCreate.setText("La réponse à la question est fausse ");
 						lblErrorCreate.setVisible(true);
 					}
 				}
 				else
 				{
-					lblErrorCreate.setText("Non-existent username ");
+					lblErrorCreate.setText("Utilisateur inconnu ");
 					lblErrorCreate.setVisible(true);
 				}
 			}
 			else
 			{
-				lblErrorCreate.setText("Passwords are not the same ");
+				lblErrorCreate.setText("Les mots de passe ne sont pas les mêmes ");
 				lblErrorCreate.setVisible(true);
 			}				
 		}
 		else
 		{
-			lblErrorCreate.setText("A field is empty ");
+			lblErrorCreate.setText("Un champ est vide ");
 			lblErrorCreate.setVisible(true);
 		}
 	}

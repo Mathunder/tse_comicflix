@@ -18,13 +18,17 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import app.models.UiModel;
 import app.models.UserModel;
 import app.services.DatabaseService;
+import app.services.UiController;
 import app.ui.components.DefaultButton;
 import app.ui.themes.CustomColor;
 
 public class CreateAccount extends JFrame implements PropertyChangeListener {
 	
+	private DefaultButton btnCreate;
+	private DefaultButton btnCancel;
 	private JPanel contentPane;
 	private JTextField txtField_firstName;
 	private JTextField txtField_lastName;
@@ -37,18 +41,26 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 	protected UserModel userModel; 
 	//Controller
 	protected DatabaseService databaseService;
+	protected UiController uiController;
 	
 	
 	/**
 	 * Create the frame.
 	 */
-	public CreateAccount(UserModel um, DatabaseService dbS) {
+	public CreateAccount(UserModel um, DatabaseService dbS, UiController UiC) {
 		this.userModel = um;
 		this.databaseService = dbS;
+		this.uiController = UiC;
 		this.userModel.addPropertyChangeListener(this);
+		initComponents();
 		
+	}
+	
+	
+	
+	private void initComponents() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png"));
-		setTitle("Create Account");
+		setTitle("Création de compte");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 450);
@@ -60,7 +72,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		SpringLayout sl_contentPane = new SpringLayout();
 		contentPane.setLayout(sl_contentPane);
 		
-		JLabel lblFirstName = new JLabel("First Name");
+		JLabel lblFirstName = new JLabel("Prénom");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblFirstName, 0, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblFirstName, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblFirstName, 54, SpringLayout.NORTH, contentPane);
@@ -78,7 +90,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		contentPane.add(txtField_firstName);
 		txtField_firstName.setColumns(1);
 		
-		JLabel lblLastName = new JLabel("Last Name");
+		JLabel lblLastName = new JLabel("Nom");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblLastName, 0, SpringLayout.SOUTH, lblFirstName);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblLastName, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblLastName, 54, SpringLayout.SOUTH, lblFirstName);
@@ -96,7 +108,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		contentPane.add(txtField_lastName);
 		txtField_lastName.setColumns(1);
 		
-		JLabel lblUsername = new JLabel("Username");
+		JLabel lblUsername = new JLabel("Utilisateur");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblUsername, 0, SpringLayout.SOUTH, lblLastName);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblUsername, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblUsername, 54, SpringLayout.SOUTH, lblLastName);
@@ -114,7 +126,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		contentPane.add(txtField_username);
 		txtField_username.setColumns(1);
 		
-		JLabel lblPassword = new JLabel("Password");
+		JLabel lblPassword = new JLabel("Mot de passe");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPassword, 0, SpringLayout.SOUTH, lblUsername);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblPassword, 45, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblPassword, 54, SpringLayout.SOUTH, lblUsername);
@@ -131,7 +143,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, txtField_username);
 		contentPane.add(passwordField);
 		
-		JLabel lblConfirmPassword = new JLabel("Confirm password");
+		JLabel lblConfirmPassword = new JLabel("Confirmation MDP");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblConfirmPassword, 0, SpringLayout.SOUTH, lblPassword);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblConfirmPassword, 30, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblConfirmPassword, 54, SpringLayout.SOUTH, lblPassword);
@@ -175,7 +187,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		lblErrorCreate.setVisible(false);
 		contentPane.add(lblErrorCreate);
 		
-		DefaultButton btnCreate = new DefaultButton("Create", CustomColor.CrimsonRed, 14, true);
+		this.btnCreate = new DefaultButton("Créer", CustomColor.CrimsonRed, 14, true);
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCreateActionPerformed(e);
@@ -188,7 +200,7 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnCreate, -110, SpringLayout.EAST, contentPane);
 		contentPane.add(btnCreate);
 		
-		DefaultButton btnCancel = new DefaultButton("Cancel", CustomColor.Black, 14, true);
+		this.btnCancel = new DefaultButton("Fermer", CustomColor.Black, 14, true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelActionPerformed(e); 				
@@ -201,7 +213,10 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 		contentPane.add(btnCancel);
 	}
 	
+	
 	private void btnCancelActionPerformed(ActionEvent e) {
+		
+		uiController.setEnableCreateAccountButton();
 		dispose();
 	}
 	
@@ -219,23 +234,28 @@ public class CreateAccount extends JFrame implements PropertyChangeListener {
 					databaseService.addNewUserAccount(txtField_firstName.getText(), txtField_lastName.getText(), 
 							txtField_username.getText(), String.valueOf(passwordField.getPassword()), txtField_question.getText() );
 					dispose();
+					JFrame PopUp = new PopUpForm(userModel, databaseService, "Compte créé avec succès ");
+					PopUp.setVisible(true);
+					
+					uiController.setEnableCreateAccountButton();
+
 				}
 				else
 				{
-					lblErrorCreate.setText("Username already exist ");
+					lblErrorCreate.setText("Utilisateur existe déjà ");
 					lblErrorCreate.setVisible(true);
 				}
 			}
 			else
 			{
-				lblErrorCreate.setText("Passwords are not the same ");
+				lblErrorCreate.setText("MDPs ne sont pas les mêmes ");
 				lblErrorCreate.setVisible(true);
 			}
 				
 		}
 		else
 		{
-			lblErrorCreate.setText("A field is empty ");
+			lblErrorCreate.setText("Un champ est vide ");
 			lblErrorCreate.setVisible(true);
 		}
 		

@@ -1,44 +1,77 @@
 package app.ui.components;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import app.dto.ResponseDto;
 import app.dto.ResultDto;
+import app.entities.Issue;
+import app.models.UserModel;
 import app.services.ComicVineService;
+import app.services.DatabaseService;
 import app.ui.themes.CustomColor;
 
 /*
  *  The goal of this class is to create a panel in which the informations of the selected comic will be displayed.
  */
 @SuppressWarnings("serial")
-public class ComicsInfosPanel extends JPanel {
+public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 	
 	private ResultDto result;
 	private ComicVineService cvs;
 	private ResponseDto response;
-	private String type;
+	private String type = "";
+	private ResultDto result_volume;
+	private ResultDto result_prev;
+	private ResultDto result_next;
+	private DatabaseService databaseService;
+	private UserModel userModel;
+	private ComicCoverPanel comicCoverPanel_current;
+	private ComicCoverPanel comicCoverPanel_prev;
+	private ComicCoverPanel comicCoverPanel_next;
+	private List<ComicCoverPanel> comicCoverPanels = new ArrayList<>();
+	private boolean hasNext = false;
+	private boolean hasPrev = false;
 	
-	// This constructor is used when doing a research
+	
+	// This constructor is used when doing a research of an issue
+	public ComicsInfosPanel(ResultDto result, DatabaseService dbS, UserModel um) {
+		this.result = result;
+		this.cvs = new ComicVineService();
+		this.type = "issue";
+		this.databaseService = dbS;
+		this.userModel = um;
+		this.userModel.addPropertyChangeListener(this);
+	}
+	
+	// This constructor is used when doing a research of a character
 	public ComicsInfosPanel(ResultDto result, String type) {
 		this.result = result;
 		this.cvs = new ComicVineService();
 		this.type = type;
 	}
-	
-	// This constructor is used when displaying a favorite issue
-	public ComicsInfosPanel(String api_detail_url) {
+		
+	// This constructor is used when displaying an issue from local issue
+	public ComicsInfosPanel(String api_detail_url, DatabaseService dbS, UserModel um) {
+		this.databaseService = dbS;
+		this.userModel = um;
 		this.cvs = new ComicVineService();
 		this.result = new ResultDto();
 		this.result.setApi_detail_url(api_detail_url);
-		// Since it is always an issue, the type is defined here
 		this.type = "issue";
+		this.userModel.addPropertyChangeListener(this);
 	}
 	
 	public ResponseDto getResponse() {
@@ -50,9 +83,62 @@ public class ComicsInfosPanel extends JPanel {
 	}
 	
 	public void fetchInformations() {
+		// Fetching the informations of the issue/character
 		this.cvs.search_from_url(this.result.getApi_detail_url()); 
 		this.response = this.cvs.getInfosResult();
 		this.result = this.cvs.getInfosResult().getResults();
+		
+		// Fetching the informations of the volume if the type is "issue"
+		if (this.type == "issue") {
+			this.cvs = new ComicVineService();
+			this.response = new ResponseDto();
+			this.cvs.search_from_url(this.result.getVolume().getApi_detail_url());
+			this.response = this.cvs.getInfosResult();
+			this.result_volume = this.cvs.getInfosResult().getResults();
+			this.comicCoverPanel_current = new ComicCoverPanel(this.result.convertToIssue(), this.databaseService, this.userModel.getUser());
+			this.comicCoverPanels.add(this.comicCoverPanel_current);
+		}
+	}
+	
+	public void fetchPreviousNextInformations() {
+		// Sometimes the API has missing issues (ex: 2, 3, 4, 6, 7...)
+		
+		// Verifying if the current issue has has a sequel and/or prequel
+		if (this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) + 1).getApi_detail_url() != null) {
+			this.hasNext = true;
+		}
+		if (this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) - 1).getApi_detail_url() != null) {
+			this.hasPrev = true;
+		}
+
+		// Fetching the informations of the sequel
+		if (this.hasNext) {
+			this.cvs = new ComicVineService();
+			this.response = new ResponseDto();
+			try {
+				this.cvs.search_from_url(this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) + 1).getApi_detail_url());
+			} catch (IllegalArgumentException e) {
+				// error msg
+			}
+			this.response = this.cvs.getInfosResult();
+			this.result_next = this.cvs.getInfosResult().getResults();
+			this.comicCoverPanel_next = new ComicCoverPanel(this.result_next.convertToIssue(), this.databaseService, this.userModel.getUser());
+			this.comicCoverPanels.add(comicCoverPanel_next);
+		}
+		// Fetching the informations of the prequel
+		if (this.hasPrev) {
+			this.cvs = new ComicVineService();
+			this.response = new ResponseDto();
+			try {
+				this.cvs.search_from_url(this.result_volume.getSpecificIssue(Integer.parseInt(this.result.getIssue_number()) - 1).getApi_detail_url());
+			} catch (IllegalArgumentException e) {
+				// error msg
+			}
+			this.response = this.cvs.getInfosResult();
+			this.result_prev = this.cvs.getInfosResult().getResults();
+			this.comicCoverPanel_prev = new ComicCoverPanel(this.result_prev.convertToIssue(), this.databaseService, this.userModel.getUser());
+			this.comicCoverPanels.add(this.comicCoverPanel_prev);
+		}
 	}
 	
 	/*
@@ -65,15 +151,20 @@ public class ComicsInfosPanel extends JPanel {
 	 */
 	public void createInfosPanel() {
 		
+		removeAll();
+		
+		JPanel subpanel1 = new JPanel();
+		JPanel subpanel2 = new JPanel();
+		
 		JPanel box1 = new JPanel();
-		JTextArea synopsis_title = new JTextArea("Summary");
+		JTextArea synopsis_title = new JTextArea("Résumé");
 		JTextArea synopsis = new JTextArea();
 		String synopsis_text = "";
 		JScrollPane scroll_synopsis_text;
 		JTextArea creators_title = new JTextArea();
 		JTextArea creators = new JTextArea();
 		JScrollPane scroll_creators;
-		JTextArea characters_title = new JTextArea("Characters");
+		JTextArea characters_title = new JTextArea("Personnages");
 		JTextArea characters = new JTextArea();
 		JScrollPane scroll_characters;
 		
@@ -90,11 +181,12 @@ public class ComicsInfosPanel extends JPanel {
 		JTextArea volume = new JTextArea();
 		JTextArea issue_number = new JTextArea();
 		JTextArea cover_date = new JTextArea();
+		
+		JPanel box3 = new JPanel();
 
 
 		Font title_font = new Font("Dialog", Font.BOLD, 16);
 		Font field_title_font = new Font("Dialog", Font.BOLD, 12);
-		JScrollPane scrollPaneComicsInfos = new JScrollPane(this);
 		
 		
 		/* -------------------------------------------------- */
@@ -121,17 +213,17 @@ public class ComicsInfosPanel extends JPanel {
 				if (!this.result.getDescription().isEmpty()) {
 					synopsis_text = this.result.getDescription().replaceAll("\\<.*?\\>", "");
 				} else {
-					synopsis_text = "Sorry, no description was found.";
+					synopsis_text = "Désolé, nous n'avons pas trouvé de résumé.";
 				}
 			} else if (this.type == "character") {
 				if (!this.result.getDeck().isEmpty()) {
 					synopsis_text = this.result.getDeck().replaceAll("\\<.*?\\>", "");
 				} else {
-					synopsis_text = "Sorry, no description was found.";
+					synopsis_text = "Désolé, nous n'avons pas trouvé de résumé.";
 				}
 			}
 		} catch (NullPointerException e) {
-			synopsis_text = "Sorry, no description was found.";
+			synopsis_text = "Désolé, nous n'avons pas trouvé de résumé.";
 		}
 		synopsis.setText(synopsis_text);
 		synopsis.setEditable(false);
@@ -151,9 +243,9 @@ public class ComicsInfosPanel extends JPanel {
 		box1.add(Box.createRigidArea(new Dimension(0, 50)));
 		
 		if (this.type == "character") {
-			creators_title.setText("Creators");
+			creators_title.setText("Créateurs");
 		} else if (this.type == "issue") {
-			creators_title.setText("Person Credits");
+			creators_title.setText("Crédits");
 		}
 		creators_title.setEditable(false);
 		creators_title.setFont(title_font);
@@ -168,23 +260,23 @@ public class ComicsInfosPanel extends JPanel {
 						creators.setText(this.result.getCreators().get(i).getName() + "\n");
 					}
 				} else {
-					creators.setText("Sorry, no creators were found.");
+					creators.setText("Désolé, nous n'avons pas trouvé de créateurs.");
 				}
 			} else if (this.type == "issue") {
-				if (this.type == "character") {
+				if (!this.result.getPerson_credits().isEmpty()) {
 					for (int i = 0; i < this.result.getPerson_credits().size(); i++) {
 						creators.setText(this.result.getPerson_credits().get(i).getRole() + " : "
 								+ this.result.getPerson_credits().get(i).getName() + "\n");
 					}
 				} else {
-					creators.setText("Sorry, no person credits were found.");
+					creators.setText("Désolé, nous n'avons pas trouvé de crédits.");
 				}
 			}
 		} catch (NullPointerException e) {
 			if (this.type == "issue") {
-				creators.setText("Sorry, no person credits were found.");
+				creators.setText("Désolé, nous n'avons pas trouvé de crédits.");
 			} else if (this.type == "character") {
-				creators.setText("Sorry, no creators were found.");
+				creators.setText("Désolé, nous n'avons pas trouvé de crédits.");
 			}
 		}
 		creators.setEditable(false);
@@ -215,10 +307,10 @@ public class ComicsInfosPanel extends JPanel {
 					characters.setText(characters.getText() + this.result.getCharacter_credits().get(i).getName() + '\n');
 				}
 			} else {
-				characters.setText("Sorry, no characters were found.");
+				characters.setText("Désolé, nous n'avons pas trouvé de personnages.");
 			}
 		} catch (NullPointerException e) {
-			characters.setText("Sorry, no characters were found.");
+			characters.setText("Désolé, nous n'avons pas trouvé de personnages.");
 		}
 		characters.setEditable(false);
 		characters.setLineWrap(true);
@@ -243,25 +335,31 @@ public class ComicsInfosPanel extends JPanel {
 		box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));
 		box2.setBackground(CustomColor.WhiteCloud);
 		
-		ImageIcon img;
-		try {
-			URL url_img = new URL(this.result.getImage().getMedium_url());
-			BufferedImage imageBrute = ImageIO.read(url_img);
-			Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
-			img = new ImageIcon(imageResize);
+		if (this.type == "issue") {
+			box2.add(this.comicCoverPanel_current);
+		} else if (this.type == "character") {
+			ImageIcon img;
+			try {
+				URL url_img = new URL(this.result.getImage().getMedium_url());
+				BufferedImage imageBrute = ImageIO.read(url_img);
+				Image imageResize = imageBrute.getScaledInstance(206, 310, Image.SCALE_DEFAULT);
+				img = new ImageIcon(imageResize);
+				image.setIcon(img);
+			} catch (IOException e) {
+				// The url is displayed in case the image cold not be loaded
+				img = new ImageIcon(this.result.getImage().getMedium_url());
+			}
 			image.setIcon(img);
-		} catch (IOException e) {
-			// The url is displayed in case the image cold not be loaded
-			img = new ImageIcon(this.result.getImage().getMedium_url());
+			box2.add(image);
+			image.setAlignmentX(Component.CENTER_ALIGNMENT);
+			box2.add(Box.createRigidArea(new Dimension(0, 50)));
 		}
-		image.setIcon(img);
-		box2.add(image);
-		
-		box2.add(Box.createRigidArea(new Dimension(0, 50)));
-		image.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		// matching the size of the block to the size of the image
-		infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
+		if (this.type == "character") {
+			infos.setMaximumSize(new Dimension(image.getMaximumSize().width, 500));
+		}
+		
 		infos.setLayout(new BoxLayout(infos, BoxLayout.X_AXIS));
 		field_title.setLayout(new BoxLayout(field_title, BoxLayout.Y_AXIS));
 		infos.setOpaque(true);
@@ -273,25 +371,25 @@ public class ComicsInfosPanel extends JPanel {
 		infos.add(field_title);
 		infos.add(other_data);
 		
-		field_title_name.setText("Name :");
+		field_title_name.setText("Nom :");
 		field_title_name.setFont(field_title_font);
 		field_title_name.setBackground(null);
 		field_title_volume.setText("Volume :");
 		field_title_volume.setFont(field_title_font);
 		field_title_volume.setBackground(null);
-		field_title_issue_number.setText("Issue number :");
+		field_title_issue_number.setText("Numéro :");
 		field_title_issue_number.setFont(field_title_font);
 		field_title_issue_number.setBackground(null);
-		field_title_cover_date.setText("Cover date :");
+		field_title_cover_date.setText("Date :");
 		field_title_cover_date.setFont(field_title_font);
 		field_title_cover_date.setBackground(null);
-		name.setText("Not found");
+		name.setText("Non trouvé");
 		name.setBackground(null);
-		volume.setText("Not found");
+		volume.setText("Non trouvé");
 		volume.setBackground(null);
-		issue_number.setText("Not found");
+		issue_number.setText("Non trouvé");
 		issue_number.setBackground(null);
-		cover_date.setText("Not found");
+		cover_date.setText("Non trouvé");
 		cover_date.setBackground(null);
 		// The following lines handle the case where the comic informations are null
 		if (this.result.getName() != null)
@@ -316,19 +414,257 @@ public class ComicsInfosPanel extends JPanel {
 		infos.setBorder(null);
 		box2.add(infos);
 		
-		this.setBackground(CustomColor.WhiteCloud);
-		this.setPreferredSize(new Dimension(1000, 600));
+		
+		/* -------------------------------------------------- */
+		
+		
+		/*
+		 * This part displays the previous and next issue when an issue is selected
+		 */
+		if (this.type == "issue") {
+			box3.setLayout(new BoxLayout(box3, BoxLayout.X_AXIS));
+			box3.setBackground(CustomColor.WhiteCloud);
+			if (this.hasNext && this.hasPrev) {
+				this.comicCoverPanel_prev.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_prev.getIssue().getApi_detail_url(), databaseService, userModel);
+						infos.fetchInformations();
+						infos.fetchPreviousNextInformations();
+						infos.createInfosPanel();
+						JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+						// Creating the new frame that will display the informations the user wants.
+						String frame_name = "";
+						try {
+							frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+						} catch (NullPointerException e1) {}
+						
+						JFrame f = new JFrame(frame_name);
+						try {
+
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
+						f.setSize(1050, 600);
+						f.add(scrollPaneComicsInfos);
+						f.setResizable(false);
+						f.setVisible(true);
+					}
+				});
+				box3.add(this.comicCoverPanel_prev);
+				box3.add(Box.createRigidArea(new Dimension(70, 0)));
+				this.comicCoverPanel_next.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_next.getIssue().getApi_detail_url(), databaseService, userModel);
+						infos.fetchInformations();
+						infos.fetchPreviousNextInformations();
+						infos.createInfosPanel();
+						JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+						// Creating the new frame that will display the informations the user wants.
+						String frame_name = "";
+						try {
+							frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+						} catch (NullPointerException e1) {}
+						
+						JFrame f = new JFrame(frame_name);
+						try {
+
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
+						f.setSize(1050, 600);
+						f.add(scrollPaneComicsInfos);
+						f.setResizable(false);
+						f.setVisible(true);
+					}
+				});
+				box3.add(this.comicCoverPanel_next);
+			} else if (this.hasNext && !this.hasPrev) {
+				this.comicCoverPanel_next.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_next.getIssue().getApi_detail_url(), databaseService, userModel);
+						infos.fetchInformations();
+						infos.fetchPreviousNextInformations();
+						infos.createInfosPanel();
+						JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+						// Creating the new frame that will display the informations the user wants.
+						String frame_name = "";
+						try {
+							frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+						} catch (NullPointerException e1) {}
+						
+						JFrame f = new JFrame(frame_name);
+						try {
+
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
+						f.setSize(1050, 600);
+						f.add(scrollPaneComicsInfos);
+						f.setResizable(false);
+						f.setVisible(true);
+					}
+				});
+				box3.add(this.comicCoverPanel_next);
+			} else if ((!this.hasNext) && this.hasPrev) {
+				this.comicCoverPanel_prev.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						ComicsInfosPanel infos = new ComicsInfosPanel(comicCoverPanel_prev.getIssue().getApi_detail_url(), databaseService, userModel);
+						infos.fetchInformations();
+						infos.fetchPreviousNextInformations();
+						infos.createInfosPanel();
+						JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+						scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+						// Creating the new frame that will display the informations the user wants.
+						String frame_name = "";
+						try {
+							frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+						} catch (NullPointerException e1) {}
+						
+						JFrame f = new JFrame(frame_name);
+						try {
+
+							URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+							Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+							f.setIconImage(icon);
+						} catch (MalformedURLException e1) {}
+						f.setSize(1050, 600);
+						f.add(scrollPaneComicsInfos);
+						f.setResizable(false);
+						f.setVisible(true);
+					}
+				});
+				box3.add(this.comicCoverPanel_prev);
+			}
+		}
+
+			
+		
+		subpanel1.setBackground(CustomColor.WhiteCloud);
+		subpanel1.setPreferredSize(new Dimension(1000, 600));
+		subpanel1.setLayout(new BoxLayout(subpanel1, BoxLayout.LINE_AXIS));
+		subpanel1.add(BorderLayout.WEST, box1);
+		subpanel1.add(Box.createHorizontalGlue());
+		subpanel1.add(BorderLayout.WEST, box2);
+		subpanel1.setVisible(true);
+		
+		subpanel2.setBackground(CustomColor.WhiteCloud);
+//		subpanel2.setLayout(new BoxLayout(subpanel2, BoxLayout.X_AXIS));
+		subpanel2.add(BorderLayout.CENTER, box3);
+		subpanel2.setVisible(true);
+
+		
 		this.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		this.add(BorderLayout.WEST, box1);
-		// Vertical separator
-		this.add(Box.createHorizontalGlue());
-		this.add(BorderLayout.WEST, box2);
+		this.setBackground(CustomColor.WhiteCloud);
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.add(BorderLayout.NORTH, subpanel1);
+		this.add(Box.createRigidArea(new Dimension(0, 60)));
+		this.add(BorderLayout.SOUTH, subpanel2);
+		if (this.type == "issue") {
+			if(userModel.getIsAuthenticated())
+				this.updateButtonStates(0);
+		}
 		this.setVisible(true);
 		
-		scrollPaneComicsInfos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
-		scrollPaneComicsInfos.getHorizontalScrollBar().setUnitIncrement(14);
+	}
+
+	public void updateButtonStates(int itemRefreshCode) {
+		
+		for(int i=0; i<this.comicCoverPanels.size();i++) {
+			//Favorite update
+			if(itemRefreshCode == 1 || itemRefreshCode == 0) {
+				boolean isFavorite = false;
+				for(Issue favorite : userModel.getUserFavoriteIssues()) {
+					if(favorite.getId() == this.comicCoverPanels.get(i).getIssue().getId()) {
+						isFavorite = true;
+						break;
+					}
+				}
+				this.comicCoverPanels.get(i).refreshStateButtons(isFavorite);
+			}
+			//Reading/Readed UPDATE
+			if(itemRefreshCode == 2 || itemRefreshCode == 0) {
+				int readState = 0;
+				for(Issue reading : userModel.getUserReadingIssues()) {
+					if(reading.getId() == this.comicCoverPanels.get(i).getIssue().getId()) {
+						readState = 1;
+						break;
+					}
+				}
+				// Find if the issue displayed is readed by the User
+				for(Issue readed : userModel.getUserReadedIssues()) {
+					if(readed.getId() == this.comicCoverPanels.get(i).getIssue().getId()) {
+						readState = 2;
+						break;
+					}
+				}
+				this.comicCoverPanels.get(i).refreshStateButtons(readState);
+			}
+			//COLLECTION UPDATE
+			if(itemRefreshCode == 3 || itemRefreshCode == 0) {
+				String selectedItem = "All";
+				Boolean findCorrespondance = false;
+				for(int j=0; j<userModel.getUserCollections().size();j++) {
+					if (!findCorrespondance) {
+						for(Issue issue_col: userModel.getUserCollections().get(j).getIssues()) {
+							if(issue_col.getId() == this.comicCoverPanels.get(i).getIssue().getId()) {
+								selectedItem = userModel.getUserCollections().get(j).getName();
+								findCorrespondance = true;
+								break;
+							}
+						}
+					}
+					else 
+						break;
+				}
+
+				this.comicCoverPanels.get(i).refreshStateComboBox(selectedItem);
+			}
+			if(itemRefreshCode == 4 || itemRefreshCode == 0) {
+				this.comicCoverPanels.get(i).updateComboBoxList();
+				updateButtonStates(3);
+			}
+		}
+	}
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(userModel.getIsAuthenticated()) {
+			if(evt.getPropertyName() == "userChange") {
+				updateButtonStates(0);
+			}
+			else if(evt.getPropertyName() == "favoriteChange"){
+				if(evt.getNewValue() == "add")
+					System.out.println("Add one new favorite (VueInfo)");
+				else if(evt.getNewValue() == "remove")
+					System.out.println("Remove one favorite (VueInfo)");
+				updateButtonStates(1);
+			}
+			else if(evt.getPropertyName() == "readChange") {
+				if(evt.getNewValue() == "add")
+					System.out.println("Add new read (change state)");
+				else if(evt.getNewValue() == "remove")
+					System.out.println("remove read");
+				updateButtonStates(2);
+			}
+			else if(evt.getPropertyName() == "collectionChange") {
+				if(evt.getNewValue() == "add")
+					System.out.println("Collection change [add] (VueInfo)");
+				else if(evt.getNewValue() == "remove")
+					System.out.println("Collection change [remove] (VueInfo)");
+				updateButtonStates(3);
+			}
+			else if(evt.getPropertyName() == "collectionListChange") {
+				updateButtonStates(4);
+			}
+		}
 	}
 }

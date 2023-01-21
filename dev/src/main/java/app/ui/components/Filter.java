@@ -28,9 +28,9 @@ public class Filter extends JPanel {
 	boolean checkIssue = true;
 	boolean checkCharacter = false; 
 	public Filter(ComicVineService comicVineService) {
-		JCheckBox checkboxIssue  = new JCheckBox("Issue");
+		JCheckBox checkboxIssue  = new JCheckBox("Comics");
 		this.setOpaque(false);
-		JCheckBox checkboxCharacter  = new JCheckBox("Character");
+		JCheckBox checkboxCharacter  = new JCheckBox("Héros");
 		checkboxIssue.setBounds(40,0,10,50);
 		checkboxIssue.setForeground(CustomColor.Red);
 		checkboxCharacter.setOpaque(false);

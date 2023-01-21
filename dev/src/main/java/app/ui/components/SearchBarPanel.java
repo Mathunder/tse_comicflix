@@ -43,15 +43,15 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 		this.add(btnFilter);
 
 		searchRoundBar = new SearchBar();
-		searchRoundBar.setSearchText("Search");
+		searchRoundBar.setSearchText("Rechercher");
 		searchRoundBar.searchTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				super.keyReleased(e);
 
 				if (searchRoundBar.getSearchText().trim().equals("")
-						|| searchRoundBar.getSearchText().trim().equals("Search")
-						|| searchRoundBar.getSearchText().trim().equals("Loading...")) {
+						|| searchRoundBar.getSearchText().trim().equals("Rechercher")
+						|| searchRoundBar.getSearchText().trim().equals("Chargement en cours...")) {
 					btnFilter.setEnabled(false);
 				} else {
 					if (comicVineService.getFilters().size() != 0)
@@ -83,7 +83,7 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 	// Init button search
 	private void initButtonSearch() {
 		btnFilter = new DefaultButton(" Search ", CustomColor.Red, 20, true);
-		btnFilter.setText("Go");
+		btnFilter.setText("Valider");
 
 		btnFilter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -95,7 +95,7 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 	// Action button search
 	private void btnFilterActionPerformed(ActionEvent evt) {
 		if (!searchRoundBar.getSearchText().trim().equals("") && !searchRoundBar.getSearchText().trim().equals("Search")
-				&& !searchRoundBar.getSearchText().trim().equals("Loading...")) {
+				&& !searchRoundBar.getSearchText().trim().equals("Chargement en cours...")) {
 			String keyword = searchRoundBar.getSearchText().replaceAll(" ", "-");
 			this.comicVineService.initialSearch(keyword);
 		}
@@ -114,10 +114,10 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "searchStatus") {
 			if (evt.getNewValue() == ComicVineSearchStatus.FETCHING) {
-				this.searchRoundBar.setSearchText("Loading...");
+				this.searchRoundBar.setSearchText("Chargement en cours...");
 				this.btnFilter.setEnabled(false);
 			} else if (evt.getNewValue() == ComicVineSearchStatus.DONE) {
-				this.searchRoundBar.setSearchText("Search");
+				this.searchRoundBar.setSearchText("Rechercher");
 				if (this.comicVineService.getFilters().size() != 0)
 					this.btnFilter.setEnabled(true);
 
@@ -129,8 +129,8 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 				btnFilter.setEnabled(false);
 			} else {
 				if (!searchRoundBar.getSearchText().trim().equals("")
-					&& !searchRoundBar.getSearchText().trim().equals("Search")
-						&& !searchRoundBar.getSearchText().trim().equals("Loading..."))
+					&& !searchRoundBar.getSearchText().trim().equals("Rechercher")
+						&& !searchRoundBar.getSearchText().trim().equals("Chargement en cours..."))
 					btnFilter.setEnabled(true);
 
 			}

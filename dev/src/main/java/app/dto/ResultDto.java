@@ -57,6 +57,10 @@ public class ResultDto {
 	private ImageResultDto image;
 	private String cover_date;
 	private String resource_type;
+	
+	// Fields specific to the Volume type
+	private int count_of_issues;
+	private ArrayList<Issue> issues;
 
 	public Issue convertToIssue() {
 		return new Issue(aliases, api_detail_url, id, issue_number, name, this.image.getMedium_url(), deck,
@@ -66,5 +70,15 @@ public class ResultDto {
 	public VineCharacter convertToCharacter() {
 		return new VineCharacter(aliases, api_detail_url, id, issue_number, name, this.image.getMedium_url(), deck,
 				description);
+	}
+	
+	public Issue getSpecificIssue(int issue_number) {
+		Issue issue = new Issue();
+		for (int i = 0; i < this.issues.size(); i++) {
+			if (Integer.parseInt(this.issues.get(i).getIssue_number()) == issue_number) {
+				issue = this.issues.get(i);
+			}
+		}
+		return issue;
 	}
 }
