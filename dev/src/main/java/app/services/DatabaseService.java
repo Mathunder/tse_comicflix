@@ -772,6 +772,7 @@ public class DatabaseService {
 	}
 	
 	public List<String> getNotes(User user, int issue_id){
+		//load the comments linked to user and issue
 		List<String> notes = new ArrayList<>();
 		String sql_query = "SELECT note_message FROM notes WHERE user_id = " + user.getId() + " AND issue_id = " + issue_id;
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)){
@@ -790,6 +791,7 @@ public class DatabaseService {
 	}
 	
 	public void addNotes(User user, int issue_id, String note) {
+		//This function add the comment note in the database
 	    String sql_query = "INSERT INTO notes (issue_id, user_id, note_message, note_date) VALUES (?, ?, ?, ?)";
 	    java.sql.Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
 	    try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)) {
@@ -798,7 +800,6 @@ public class DatabaseService {
 	        pstmt.setString(3, note);
 	        pstmt.setTimestamp(4, timestamp);
 	        pstmt.executeUpdate();
-	        System.out.println("data added");
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }

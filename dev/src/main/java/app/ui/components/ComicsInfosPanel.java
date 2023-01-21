@@ -184,8 +184,11 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		JTextArea issue_number = new JTextArea();
 		JTextArea cover_date = new JTextArea();
 		JPanel box3 = new JPanel();
+		JTextArea title_notes = new JTextArea("Commentaires sur ce comics\n");
 		JPanel box_notes = new JPanel();
 		JTextArea notes = new JTextArea();
+		JTextField inputBox = new JTextField();
+		DefaultButton submitButton = new DefaultButton("Enregistrer la note", CustomColor.CrimsonRed, 13, false);
 
 		Font title_font = new Font("Dialog", Font.BOLD, 16);
 		Font field_title_font = new Font("Dialog", Font.BOLD, 12);
@@ -424,32 +427,36 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		 * This part displays user personal notes if a user is connected and if it is an issue
 		 */
 		if (this.type == "issue" && userModel.getIsAuthenticated()) {
-			System.out.println(userModel.getUser().getId());
-			System.out.println(result.getId());
-			System.out.println(databaseService.getNotes(userModel.getUser(), result.getId()));
+			//load comments linked to this user and this comics
 			List<String> list_notes= databaseService.getNotes(userModel.getUser(), result.getId());
-			JTextArea title = new JTextArea("Commentaires sur ce comics");
-			title.setFont(new Font("Arial", Font.BOLD, 15));
-			title.setEditable(false);
+			//Title display
+			title_notes.setFont(new Font("Arial", Font.BOLD, 15));
+			title_notes.setEditable(false);
+			//notes display
 			notes.setText(String.join("\n", list_notes));
 			notes.setFont(new Font("Verdana", Font.ITALIC, 12));
 			notes.setEditable(false);
 			notes.setLineWrap(true);
 			notes.setWrapStyleWord(true);
+			
+			box_notes.setBackground(CustomColor.WhiteCloud);
 			box_notes.setLayout(new BoxLayout(box_notes, BoxLayout.Y_AXIS));
-			box_notes.add(title);
+			box_notes.add(title_notes);
 			box_notes.add(notes);
 			
-			JTextField inputBox = new JTextField();
-			JButton submitButton = new JButton("Enregistrer la note");
-
+			//add a new comment
 			submitButton.addActionListener(new ActionListener() {
 			    public void actionPerformed(ActionEvent e) {
 			        String inputText = inputBox.getText();
-			       databaseService.addNotes(userModel.getUser(), result.getId(), inputText);
+			        if (inputText != "") {
+			        	databaseService.addNotes(userModel.getUser(), result.getId(), inputText);
+			        	inputBox.setText("");
+			        	List<String> list_notes= databaseService.getNotes(userModel.getUser(), result.getId());
+			        	notes.setText(String.join("\n", list_notes));
+			        }
+			       
 			    }
 			});
-
 			box_notes.add(inputBox);
 			box_notes.add(submitButton);
 
@@ -600,6 +607,7 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 //		subpanel2.setLayout(new BoxLayout(subpanel2, BoxLayout.X_AXIS));
 		subpanel2.add(BorderLayout.WEST, box3);
 		subpanel2.add(BorderLayout.EAST, box_notes);
+		box_notes.setBorder(BorderFactory.createEmptyBorder(10,30 ,10,10));
 		subpanel2.setVisible(true);
 
 		
