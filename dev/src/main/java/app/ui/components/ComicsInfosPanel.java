@@ -189,6 +189,7 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		JTextArea notes = new JTextArea();
 		JTextField inputBox = new JTextField();
 		DefaultButton submitButton = new DefaultButton("Enregistrer la note", CustomColor.CrimsonRed, 13, false);
+		DefaultButton cancelButton = new DefaultButton("\u2190", CustomColor.CrimsonRed, 14, false);
 
 		Font title_font = new Font("Dialog", Font.BOLD, 16);
 		Font field_title_font = new Font("Dialog", Font.BOLD, 12);
@@ -428,40 +429,70 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 		 */
 		if (this.type == "issue" && userModel.getIsAuthenticated()) {
 			//load comments linked to this user and this comics
-			List<String> list_notes= databaseService.getNotes(userModel.getUser(), result.getId());
-			//Title display
+			List<String> list_notes = databaseService.getNotes(userModel.getUser(), result.getId());
+
+			// Title display
 			title_notes.setFont(new Font("Arial", Font.BOLD, 15));
 			title_notes.setEditable(false);
-			//notes display
-			notes.setText(String.join("\n", list_notes));
+
+			String formattedNotes = "";
+			for (String note : list_notes) {
+			    formattedNotes += note + "\n";
+			}
+
+			// Notes display
+			notes.setText(formattedNotes);
 			notes.setFont(new Font("Verdana", Font.ITALIC, 12));
 			notes.setEditable(false);
 			notes.setLineWrap(true);
 			notes.setWrapStyleWord(true);
 			
 			box_notes.setBackground(CustomColor.WhiteCloud);
-			box_notes.setLayout(new BoxLayout(box_notes, BoxLayout.Y_AXIS));
 			box_notes.add(title_notes);
 			box_notes.add(notes);
 			
 			//add a new comment
 			submitButton.addActionListener(new ActionListener() {
+				//action when 'add comment' button is pushed
 			    public void actionPerformed(ActionEvent e) {
 			        String inputText = inputBox.getText();
 			        if (inputText != "") {
 			        	databaseService.addNotes(userModel.getUser(), result.getId(), inputText);
 			        	inputBox.setText("");
 			        	List<String> list_notes= databaseService.getNotes(userModel.getUser(), result.getId());
-			        	notes.setText(String.join("\n", list_notes));
+			        	String formattedNotes = "";
+						for (String note : list_notes) {
+						    formattedNotes += note + "\n";
+						}
+						notes.setText(formattedNotes);
 			        }
-			       
 			    }
 			});
-			box_notes.add(inputBox);
-			box_notes.add(submitButton);
-
 			
+			cancelButton.addActionListener(new ActionListener() {
+				//action when remove button pushed
+				public void actionPerformed(ActionEvent e) {
+					databaseService.removeLastNote(userModel.getUser(), result.getId());
+		        	List<String> list_notes= databaseService.getNotes(userModel.getUser(), result.getId());
+		        	String formattedNotes = "";
+					for (String note : list_notes) {
+					    formattedNotes += note + "\n";
+					}
+					notes.setText(formattedNotes);
+				}
+			});
+			box_notes.add(inputBox);
+			//create box to have the 2 buttons next to each other
+			Box hbox = Box.createHorizontalBox();
+			hbox.add(cancelButton);
+			hbox.add(Box.createHorizontalStrut(20)); // add 20 pixels of horizontal space
+			hbox.add(submitButton);
+			box_notes.add(hbox);
+			box_notes.setLayout(new BoxLayout(box_notes, BoxLayout.Y_AXIS));
+
 		}
+		
+		/*---------------------------------------------------------------*/
 		
 		
 		/*
