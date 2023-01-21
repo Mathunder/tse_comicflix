@@ -1,4 +1,4 @@
-package app.ui.components;
+ package app.ui.components;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
