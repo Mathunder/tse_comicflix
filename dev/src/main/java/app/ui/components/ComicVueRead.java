@@ -1,8 +1,18 @@
 package app.ui.components;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import app.entities.Issue;
 import app.models.UserModel;
@@ -21,14 +31,74 @@ public class ComicVueRead extends ComicVue{
 		
 		//Show userReadingdIssues
 		for(int i=0;i<userModel.getUserReadingIssues().size();i++) {
-			ComicCoverPanel comicCover = new ComicCoverPanel(userModel.getUserReadingIssues().get(i), databaseService, userModel.getUser());
+			Issue read_issue = userModel.getUserReadingIssues().get(i);
+			ComicCoverPanel comicCover = new ComicCoverPanel(read_issue, databaseService, userModel.getUser());
+			// Adding the mouse listener to enable the click on an issue 
+			comicCover.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+
+					ComicsInfosPanel infos = new ComicsInfosPanel(read_issue.getApi_detail_url(), databaseService, userModel);
+					infos.fetchInformations();
+					infos.fetchPreviousNextInformations();
+					infos.createInfosPanel();
+					// Creating the new frame that will display the informations the user wants.
+					String frame_name = "";
+					try {
+						frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+					} catch (NullPointerException e1) {}
+					
+					JFrame f = new JFrame(frame_name);
+					try {
+
+						URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+						Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+						f.setIconImage(icon);
+					} catch (MalformedURLException e1) {}
+					f.setSize(1050, 600);
+					f.add(infos);
+					f.setResizable(false);
+					f.setVisible(true);
+
+				}
+			});
+
 			this.ComicCoverPanels.add(comicCover);
 			this.add(comicCover);
 		}
 		
 		//Show userReadedIssues
 		for(int i=0;i<userModel.getUserReadedIssues().size();i++) {
-			ComicCoverPanel comicCover = new ComicCoverPanel(userModel.getUserReadedIssues().get(i), databaseService, userModel.getUser());
+			Issue readed_issue = userModel.getUserReadedIssues().get(i);
+			ComicCoverPanel comicCover = new ComicCoverPanel(readed_issue, databaseService, userModel.getUser());
+			comicCover.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+
+					ComicsInfosPanel infos = new ComicsInfosPanel(readed_issue.getApi_detail_url(),databaseService ,userModel);
+					infos.fetchInformations();
+					infos.createInfosPanel();
+					JScrollPane scrollPaneComicsInfos = new JScrollPane(infos);
+					scrollPaneComicsInfos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+					scrollPaneComicsInfos.getVerticalScrollBar().setUnitIncrement(14);
+					// Creating the new frame that will display the informations the user wants.
+					String frame_name = "";
+					try {
+						frame_name = infos.getResult().getVolume().getName() + ' ' + '(' + infos.getResult().getIssue_number() + ')';
+					} catch (NullPointerException e1) {}
+					
+					JFrame f = new JFrame(frame_name);
+					try {
+
+						URL url_image = new URL(infos.getResult().getImage().getIcon_url());
+						Image icon = Toolkit.getDefaultToolkit().getImage(url_image);
+						f.setIconImage(icon);
+					} catch (MalformedURLException e1) {}
+					f.setSize(1050, 600);
+					f.add(scrollPaneComicsInfos);
+					f.setResizable(false);
+					f.setVisible(true);
+
+				}
+			});
 			this.ComicCoverPanels.add(comicCover);
 			this.add(comicCover);
 		}

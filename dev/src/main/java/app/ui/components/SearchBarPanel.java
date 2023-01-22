@@ -39,20 +39,23 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 		springLayout.putConstraint(SpringLayout.SOUTH, btnFilter, -25, SpringLayout.SOUTH, this);
 		springLayout.putConstraint(SpringLayout.EAST, btnFilter, -350, SpringLayout.EAST, this);
 		setLayout(springLayout);
+		btnFilter.setEnabled(false);
 		this.add(btnFilter);
 
 		searchRoundBar = new SearchBar();
-		searchRoundBar.setSearchText("Search");
+		searchRoundBar.setSearchText("Rechercher");
 		searchRoundBar.searchTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				super.keyReleased(e);
-				
-				if (searchRoundBar.getSearchText().trim().equals("") || searchRoundBar.getSearchText().trim().equals("Search")
-						|| searchRoundBar.getSearchText().trim().equals("Loading...")) {
+
+				if (searchRoundBar.getSearchText().trim().equals("")
+						|| searchRoundBar.getSearchText().trim().equals("Rechercher")
+						|| searchRoundBar.getSearchText().trim().equals("Chargement en cours...")) {
 					btnFilter.setEnabled(false);
 				} else {
-					btnFilter.setEnabled(true);
+					if (comicVineService.getFilters().size() != 0)
+						btnFilter.setEnabled(true);
 				}
 			}
 		});
@@ -68,19 +71,19 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 		springLayout.putConstraint(SpringLayout.SOUTH, searchRoundBar, -50, SpringLayout.SOUTH, btnFilter);
 		springLayout.putConstraint(SpringLayout.EAST, searchRoundBar, -250, SpringLayout.EAST, this);
 		add(searchRoundBar);
-		FilterComBox filterCombox = new FilterComBox(comicVineService);
+		Filter filter = new Filter(comicVineService);
 		DefaultButton btnFilter1 = new DefaultButton(" Search ", CustomColor.Red, 20, true);
-		springLayout.putConstraint(SpringLayout.NORTH, filterCombox, 25, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, filterCombox, 625, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.SOUTH, filterCombox, -70, SpringLayout.SOUTH, this);
-		springLayout.putConstraint(SpringLayout.EAST, filterCombox, -50, SpringLayout.EAST, this);
-		add(filterCombox);
+		springLayout.putConstraint(SpringLayout.NORTH, filter, 30, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.WEST, filter, 625, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.SOUTH, filter, -70, SpringLayout.SOUTH, this);
+		springLayout.putConstraint(SpringLayout.EAST, filter, -50, SpringLayout.EAST, this);
+		add(filter);
 	}
 
 	// Init button search
 	private void initButtonSearch() {
 		btnFilter = new DefaultButton(" Search ", CustomColor.Red, 20, true);
-		btnFilter.setText("Go");
+		btnFilter.setText("Valider");
 
 		btnFilter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -92,7 +95,7 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 	// Action button search
 	private void btnFilterActionPerformed(ActionEvent evt) {
 		if (!searchRoundBar.getSearchText().trim().equals("") && !searchRoundBar.getSearchText().trim().equals("Search")
-				&& !searchRoundBar.getSearchText().trim().equals("Loading...")) {
+				&& !searchRoundBar.getSearchText().trim().equals("Chargement en cours...")) {
 			String keyword = searchRoundBar.getSearchText().replaceAll(" ", "-");
 			this.comicVineService.initialSearch(keyword);
 		}
@@ -111,13 +114,26 @@ public class SearchBarPanel extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "searchStatus") {
 			if (evt.getNewValue() == ComicVineSearchStatus.FETCHING) {
-				this.searchRoundBar.setSearchText("Loading...");
+				this.searchRoundBar.setSearchText("Chargement en cours...");
 				this.btnFilter.setEnabled(false);
 			} else if (evt.getNewValue() == ComicVineSearchStatus.DONE) {
-				this.searchRoundBar.setSearchText("Search");
-				this.btnFilter.setEnabled(true);
+				this.searchRoundBar.setSearchText("Rechercher");
+				if (this.comicVineService.getFilters().size() != 0)
+					this.btnFilter.setEnabled(true);
+
 			}
 
+		} else if (evt.getPropertyName() == "updateFilter") {
+
+			if (evt.getNewValue().equals(0)) {
+				btnFilter.setEnabled(false);
+			} else {
+				if (!searchRoundBar.getSearchText().trim().equals("")
+					&& !searchRoundBar.getSearchText().trim().equals("Rechercher")
+						&& !searchRoundBar.getSearchText().trim().equals("Chargement en cours..."))
+					btnFilter.setEnabled(true);
+
+			}
 		}
 
 	}

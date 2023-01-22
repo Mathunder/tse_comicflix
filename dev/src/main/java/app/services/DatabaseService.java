@@ -3,7 +3,10 @@ package app.services;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -35,7 +38,7 @@ public class DatabaseService {
 	
 	private Connection connect() {
 		
-		String path = "jdbc:sqlite:src\\main\\resources\\db\\app.db";
+		String path = "jdbc:sqlite::resource:app.db";
 		
 		Connection conn = null;
         try {
@@ -87,17 +90,34 @@ public class DatabaseService {
 	}
 	
 	// Users table methods
-	public void addNewUserAccount(String first_name, String last_name, String username, String password) {
+	public void addNewUserAccount(String first_name, String last_name, String username, String password, String question) {
 		
 		String encodePassword = encoder.encode(password);
-		String sql = "INSERT INTO users(first_name,last_name,username,password) VALUES(?,?,?,?)";
+		String encodeQuestion = encoder.encode(question);
+		String sql = "INSERT INTO users(first_name,last_name,username,password,question) VALUES(?,?,?,?,?)";
 		
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, first_name);
 			pstmt.setString(2, last_name);
 			pstmt.setString(3, username);
 			pstmt.setString(4, encodePassword);
+			pstmt.setString(5, encodeQuestion);
 			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void updatePassword(String password, String username)
+	{
+		String encodePassword = encoder.encode(password);
+		String sql = "UPDATE users SET password =" + '"' + encodePassword + '"' + "WHERE username =" + '"' + username + '"';
+		
+		try (Connection conn = this.connect(); Statement stmt = conn.createStatement();){
+			
+			stmt.executeUpdate(sql);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -117,7 +137,8 @@ public class DatabaseService {
 								   rs.getString("first_name") + "\t" +
 								   rs.getString("last_name") + "\t" +
 								   rs.getString("username") + "\t" + 
-								   rs.getString("password"));
+								   rs.getString("password")+ "\t" +
+								   rs.getString("question"));
 			}
 			
 			return rs;
@@ -152,9 +173,39 @@ public class DatabaseService {
 		}
 	}
 	
+	public boolean verifQuestion(String username, String question) {
+		String sql = "SELECT question FROM users WHERE username=" + '"' + username + '"' + " LIMIT 1";
+		
+		try (Connection conn = this.connect();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)){
+			
+			if(rs.next()) //Check if we have a result of the sql execute
+			{
+				if(encoder.matches(question, rs.getString("question")))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	
 	public void loginUserFromUsername(String username, String password) {
-		String sql = "SELECT user_id, first_name, last_name, username, password FROM users WHERE username=" 
+		String sql = "SELECT user_id, first_name, last_name, username, password, question FROM users WHERE username=" 
 				+ '"' +  username + '"'
 				+ " LIMIT 1";
 		
@@ -172,28 +223,23 @@ public class DatabaseService {
 					if(rs.getInt("user_id") != 0)
 						isAuthenticated = true;
 					
-					userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
+					userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserRecommandation(),getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
 				}
 				else
 				{
-					userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+					userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 				}
-
-				if(rs.getInt("user_id") != 0)
-					isAuthenticated = true;
-				
-				userModel.setUser(isAuthenticated, new User(rs.getInt("user_id"), rs.getString("username"),rs.getString("first_name"),rs.getString("last_name")), getUserFavorites(rs.getInt("user_id")), getUserReading(rs.getInt("user_id")), getUserReaded(rs.getInt("user_id")), getAllUserCollection(rs.getInt("user_id")));
 
 			}
 			else
 			{
-				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+				userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			}
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+			userModel.setUser(false, new User(0,"Invité","",""),new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		}	
 	}
 	
@@ -236,6 +282,7 @@ public class DatabaseService {
 			e.printStackTrace();
 		}
 		
+		
 		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
 		if(!isTupleAlreadyExists) {
 			sql = "INSERT INTO issues(issue_id,issue_number,issue_name,api_detail_url,image_url) VALUES(?,?,?,?,?)";
@@ -254,6 +301,33 @@ public class DatabaseService {
 			}
 		}
 
+	}
+	
+	// Recommandations methods
+	public List<Issue> getUserRecommandation(){
+		List<Issue> issuesResult = new ArrayList<>();
+		
+		String sql = "SELECT * FROM issues WHERE issue_id IN (SELECT issue_id FROM issues ORDER BY RANDOM() LIMIT 16);";
+		
+		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next())
+			{
+				// Build the issue
+				Issue i = new Issue("", rs.getString("api_detail_url"), rs.getInt("issue_id"), rs.getString("issue_number"), rs.getString("issue_name"), rs.getString("image_url"));
+				issuesResult.add(i);
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		return issuesResult;
 	}
 
 	// Favorites table methods
@@ -325,6 +399,7 @@ public class DatabaseService {
 				e.printStackTrace();
 		}
 	}
+	
 	
 
 	private List<Issue> getUserFavorites(int user_id){
@@ -641,7 +716,7 @@ public class DatabaseService {
 			
 		// THEN ADD TUPLE IF NOT ALREAY EXISTS	
 		if(!checkIfIssueInUserCollection(cName, user, issue)) {
-			
+			addNewIssue(issue);
 			String sql = "INSERT INTO collections(issue_id,user_id,collection_id) VALUES(?,?,?)";
 			try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)){
 				pstmt.setInt(1, issue_id);
@@ -698,6 +773,68 @@ public class DatabaseService {
 		return collection_names;
 	}
 	
+	public List<String> getNotes(User user, int issue_id) {
+		//return a list of notes from this user and issue id 
+	    List<String> notes = new ArrayList<>();
+	    String sql_query = "SELECT note_message, note_date FROM notes WHERE user_id = ? AND issue_id = ?";
+	    try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)) {
+	        pstmt.setInt(1, user.getId());
+	        pstmt.setInt(2, issue_id);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            java.sql.Timestamp timestamp = rs.getTimestamp("note_date");
+	            LocalDateTime dateTime = timestamp.toLocalDateTime();
+	            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	            String formattedDate = dateTime.format(formatter);
+	            notes.add(formattedDate + " : " + rs.getString("note_message"));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return notes;
+	}
+
+	
+	public void addNotes(User user, int issue_id, String note) {
+		//This function add the comment note in the database
+	    String sql_query = "INSERT INTO notes (issue_id, user_id, note_message, note_date) VALUES (?, ?, ?, ?)";
+	    java.sql.Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
+	    try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)) {
+	        pstmt.setInt(1, issue_id);
+	        pstmt.setInt(2, user.getId());
+	        pstmt.setString(3, note);
+	        pstmt.setTimestamp(4, timestamp);
+	        pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	public void removeLastNote(User user, int issue_id) {
+		//remove the last note with this user and issue id 
+	    String select_query = "SELECT note_id FROM notes WHERE user_id = ? and issue_id = ? ORDER BY note_id DESC LIMIT 1";
+	    String delete_query = "DELETE FROM notes WHERE note_id = ?";
+	    try (Connection conn = this.connect(); PreparedStatement select_stmt = conn.prepareStatement(select_query);
+	    PreparedStatement delete_stmt = conn.prepareStatement(delete_query)) {
+	        select_stmt.setInt(1, user.getId());
+	        select_stmt.setInt(2, issue_id);
+	        ResultSet rs = select_stmt.executeQuery();
+	        if (rs.next()) {
+	            int note_id = rs.getInt("note_id");
+	            delete_stmt.setInt(1, note_id);
+	            delete_stmt.executeUpdate();
+	            System.out.println("Note with id " + note_id + " was deleted");
+	        } else {
+	            System.out.println("No note found with user_id: " + user.getId() + " and issue_id: " + issue_id);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
+	
 	private Collection getAllIssuesFromUserCollection(int user_id, String cName){
 		List<Issue> issues = new ArrayList<>();
 		
@@ -744,4 +881,5 @@ public class DatabaseService {
 		
 		return user_collections;
 	}
+	
 }

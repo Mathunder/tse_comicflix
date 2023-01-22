@@ -2,9 +2,12 @@ package app.ui.frames;
 
 import app.entities.User;
 import app.helpers.ComicVineSearchStatus;
+import app.models.UiModel;
 import app.models.UserModel;
 import app.services.ComicVineService;
 import app.services.DatabaseService;
+import app.services.UiController;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -17,7 +20,7 @@ import lombok.Data;
 
 @SuppressWarnings("serial")
 
-public class MainFrame extends JFrame implements PropertyChangeListener {
+public class MainFrame extends JFrame implements PropertyChangeListener{
 		
 		// UI COMPONENTS
 		static JFrame mf;
@@ -26,6 +29,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		static JPanel searchBarPanel;
 		static JPanel creationCollection;
 		public static ComicVueSearch visuSearchComics;
+		private static ComicVueRecommandation visuRecommandedComics;
 		private static ComicVueFavorite visuFavoriteComics;
 		private static ComicVueRead visuReadComics;
 		private static ComicVueCollection visuCollectionComics;
@@ -43,19 +47,23 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		
 		//Models
 		protected UserModel userModel;
+		protected UiModel uiModel;
 		
 		//Controllers
 		protected ComicVineService comicVineService;
 		protected DatabaseService dataBaseService;
+		protected UiController uiController;
 		
-		public MainFrame(UserModel um, ComicVineService comicVineService, DatabaseService dbS) {	
+		public MainFrame(UserModel um, UiModel uim, ComicVineService comicVineService, DatabaseService dbS, UiController uiC) {	
 			super();
 			this.userModel = um;
+			this.uiModel = uim;
 			this.comicVineService = comicVineService;
 			this.dataBaseService = dbS;
+			this.uiController = uiC;
 			this.userModel.addPropertyChangeListener(this);
 			this.comicVineService.addPropertyChangeListener(this);
-			
+			this.uiModel.addPropertyChangeListener(this);
 			initComponents();
 		}
 		
@@ -64,7 +72,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			mf = new JFrame("Comics Library");   
 			mf.getContentPane().setBackground(new Color(172, 0, 0));
 			
-			Image icon = Toolkit.getDefaultToolkit().getImage("src\\main\\resources\\icon.png");  
+			Image icon = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("icon.png"));  
 			mf.setIconImage(icon);  
 			mf.setSize(1050,600);      
 			mf.setBackground(CustomColor.Red);
@@ -97,7 +105,10 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 
 			//VisuComics Panels
 			visuSearchComics = new ComicVueSearch(userModel, comicVineService, dataBaseService);
-						
+			
+			//Recommendation Panels
+			visuRecommandedComics = new ComicVueRecommandation(userModel, comicVineService, dataBaseService);
+			
 			//FavoriteComics Panels
 			visuFavoriteComics = new ComicVueFavorite(userModel, comicVineService, dataBaseService);
 			
@@ -245,7 +256,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	btn_myFavorites.setBorderColorOnUnfocus();
 	    	btn_myReads.setBorderColorOnUnfocus();
 	    	btn_myCollections.setBorderColorOnUnfocus();
-	    	scrollPaneVisuComics.setViewportView(null);
+	    	scrollPaneVisuComics.setViewportView(visuRecommandedComics);
 	    	searchBarPanel.setVisible(true);
 	    	paginationPanel.setVisible(true);
 	    	creationCollection.setVisible(false);
@@ -291,11 +302,12 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	
 	    	//If user is not authenticated
 	    	if (!userModel.getIsAuthenticated()) {
-		    	JFrame loginFrame = new LoginForm(userModel, dataBaseService);
+		    	JFrame loginFrame = new LoginForm(userModel, dataBaseService, uiController, uiModel);
 		    	loginFrame.setVisible(true);
+		    	uiController.setDisableLoginButton();
 	    	}
 	    	else { 
-	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+	    		userModel.setUser(false, new User(0, "Invité", "",""), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	    	}
 	    	
 	    }
@@ -333,6 +345,10 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 	    	}
 	    }
 	    
+	    public void changeStateLoginButton(boolean state) {
+	    	this.btnUserLogin.setEnabled(state);
+	    }
+	    
 	    public void propertyChange(PropertyChangeEvent evt) {
 	    	if (evt.getPropertyName() == "userChange") {
 				showUserInfo();
@@ -345,5 +361,16 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 					setFocusOnDiscoverPanel();
 				}
 			}
+	    	
+	    	if(evt.getPropertyName() == "loginButtonStateChange") //From Controller/Model ComicVineService
+			{
+				if(evt.getNewValue().equals(true)) {
+					changeStateLoginButton(true);
+				}
+				else {
+					changeStateLoginButton(false);
+				}
+			}
+	    	
 	    }
 }

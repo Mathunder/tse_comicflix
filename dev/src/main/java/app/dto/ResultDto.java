@@ -4,12 +4,7 @@ import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import app.entities.CharacterCredits;
-import app.entities.Creators;
-import app.entities.Issue;
-import app.entities.Publisher;
-import app.entities.VineCharacter;
-import app.entities.Volume;
+import app.entities.*;
 import lombok.Data;
 
 /*
@@ -41,6 +36,7 @@ public class ResultDto {
 	private ArrayList<CharacterCredits> character_credits;
 	private String issue_number;
 	private Volume volume;
+	private ArrayList<PersonCredits> person_credits;
 
 	// Fields that are specific to the character type
 	private String birth;
@@ -61,6 +57,10 @@ public class ResultDto {
 	private ImageResultDto image;
 	private String cover_date;
 	private String resource_type;
+	
+	// Fields specific to the Volume type
+	private int count_of_issues;
+	private ArrayList<Issue> issues;
 
 	public Issue convertToIssue() {
 		return new Issue(aliases, api_detail_url, id, issue_number, name, this.image.getMedium_url(), deck,
@@ -70,5 +70,15 @@ public class ResultDto {
 	public VineCharacter convertToCharacter() {
 		return new VineCharacter(aliases, api_detail_url, id, issue_number, name, this.image.getMedium_url(), deck,
 				description);
+	}
+	
+	public Issue getSpecificIssue(int issue_number) {
+		Issue issue = new Issue();
+		for (int i = 0; i < this.issues.size(); i++) {
+			if (Integer.parseInt(this.issues.get(i).getIssue_number()) == issue_number) {
+				issue = this.issues.get(i);
+			}
+		}
+		return issue;
 	}
 }

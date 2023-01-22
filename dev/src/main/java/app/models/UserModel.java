@@ -18,15 +18,17 @@ public class UserModel {
 	private List<Issue> userReadingIssues = new ArrayList<>();
 	private List<Issue> userReadedIssues = new ArrayList<>();
 	private List<Collection> userCollections = new ArrayList<>();
+	private List<Issue> userRecommandedIssues = new ArrayList<>();
 	
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		this.pcs.addPropertyChangeListener(listener);
 	}
 	
-	public void setUser(boolean isAuth, User u, List<Issue> userFavIss, List<Issue> userReadingIss, List<Issue> userReadedIss, List<Collection> userCols) {
+	public void setUser(boolean isAuth, User u, List<Issue> userReco, List<Issue> userFavIss, List<Issue> userReadingIss, List<Issue> userReadedIss, List<Collection> userCols) {
 		User previousUser = user;
 		user = u;
 		isAuthenticated = isAuth;
+		userRecommandedIssues = userReco;
 		userFavoriteIssues = userFavIss;
 		userReadingIssues = userReadingIss;
 		userReadedIssues = userReadedIss;
@@ -156,4 +158,9 @@ public class UserModel {
 		}
 		return resultIssueList;
 	}
+	
+	public List<Issue> getRecommandedIssueList(){
+		return this.userRecommandedIssues;
+	}
+
 }
