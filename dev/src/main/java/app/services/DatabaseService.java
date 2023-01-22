@@ -3,7 +3,10 @@ package app.services;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -770,6 +773,68 @@ public class DatabaseService {
 		return collection_names;
 	}
 	
+	public List<String> getNotes(User user, int issue_id) {
+		//return a list of notes from this user and issue id 
+	    List<String> notes = new ArrayList<>();
+	    String sql_query = "SELECT note_message, note_date FROM notes WHERE user_id = ? AND issue_id = ?";
+	    try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)) {
+	        pstmt.setInt(1, user.getId());
+	        pstmt.setInt(2, issue_id);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            java.sql.Timestamp timestamp = rs.getTimestamp("note_date");
+	            LocalDateTime dateTime = timestamp.toLocalDateTime();
+	            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	            String formattedDate = dateTime.format(formatter);
+	            notes.add(formattedDate + " : " + rs.getString("note_message"));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return notes;
+	}
+
+	
+	public void addNotes(User user, int issue_id, String note) {
+		//This function add the comment note in the database
+	    String sql_query = "INSERT INTO notes (issue_id, user_id, note_message, note_date) VALUES (?, ?, ?, ?)";
+	    java.sql.Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
+	    try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql_query)) {
+	        pstmt.setInt(1, issue_id);
+	        pstmt.setInt(2, user.getId());
+	        pstmt.setString(3, note);
+	        pstmt.setTimestamp(4, timestamp);
+	        pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	public void removeLastNote(User user, int issue_id) {
+		//remove the last note with this user and issue id 
+	    String select_query = "SELECT note_id FROM notes WHERE user_id = ? and issue_id = ? ORDER BY note_id DESC LIMIT 1";
+	    String delete_query = "DELETE FROM notes WHERE note_id = ?";
+	    try (Connection conn = this.connect(); PreparedStatement select_stmt = conn.prepareStatement(select_query);
+	    PreparedStatement delete_stmt = conn.prepareStatement(delete_query)) {
+	        select_stmt.setInt(1, user.getId());
+	        select_stmt.setInt(2, issue_id);
+	        ResultSet rs = select_stmt.executeQuery();
+	        if (rs.next()) {
+	            int note_id = rs.getInt("note_id");
+	            delete_stmt.setInt(1, note_id);
+	            delete_stmt.executeUpdate();
+	            System.out.println("Note with id " + note_id + " was deleted");
+	        } else {
+	            System.out.println("No note found with user_id: " + user.getId() + " and issue_id: " + issue_id);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
+	
 	private Collection getAllIssuesFromUserCollection(int user_id, String cName){
 		List<Issue> issues = new ArrayList<>();
 		
@@ -816,4 +881,5 @@ public class DatabaseService {
 		
 		return user_collections;
 	}
+	
 }
