@@ -456,7 +456,8 @@ public class ComicsInfosPanel extends JPanel implements PropertyChangeListener {
 				//action when 'add comment' button is pushed
 			    public void actionPerformed(ActionEvent e) {
 			        String inputText = inputBox.getText();
-			        if (inputText != "") {
+			        //impossible to enter an empty note
+			        if (!inputText.equals("")) {
 			        	databaseService.addNotes(userModel.getUser(), result.getId(), inputText);
 			        	inputBox.setText("");
 			        	List<String> list_notes= databaseService.getNotes(userModel.getUser(), result.getId());
